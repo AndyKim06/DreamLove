@@ -1,4 +1,4 @@
-# 💌 DreamLove (AI Dating Simulation Backend)
+# 💌 DreamLove (Dating Simulation AI)
 
 **Solar API**를 활용한 연애 시뮬레이션 AI 챗봇 백엔드 서비스입니다. 사용자의 연애 고민을 분석하여 가상의 데이트 상대와 대화하며 연애 능력을 진단하고 피드백을 제공합니다.
 
