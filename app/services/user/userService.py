@@ -3,7 +3,7 @@ from app.models.user.userSchemas import UserInfoRequest, ExternalIdealRequest, U
 
 fake_user_db = {}
 
-async def saveUserInfo(request: UserInfoRequest):
+async def saveUserInfoService(request: UserInfoRequest):
     user_id = str(uuid.uuid4())
 
     fake_user_db[user_id] = {
@@ -14,9 +14,10 @@ async def saveUserInfo(request: UserInfoRequest):
 
     return user_id
 
-async def getUserId(userId: str):
+async def getUserIdService(userId: str):
     return fake_user_db.get(userId)
 
-async def saveUserConcern(request: UserConcernRequest, userId: str):
+async def saveUserConcernService(request: UserConcernRequest, userId: str):
     fake_user_db[userId]["concern"] = request.concern
     return "ok"
+
