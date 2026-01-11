@@ -8,7 +8,7 @@ import json
 import random
 from typing import Optional
 from app.models.chat.chatSchemas import ParsedContext
-from app.services.solar_client import query_solar, SolarAPIError
+from app.services.chat.solar_client import query_solar, SolarAPIError
 
 
 # 랜덤 선택용 기본값

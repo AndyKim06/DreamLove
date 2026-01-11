@@ -6,8 +6,8 @@ DreamLove 프로젝트 대화 흐름 관리 모듈
 import json
 from typing import Optional
 from app.models.chat.chatSchemas import UserInfo, IdealType, ChatRequest, ChatResponse, ParsedContext, NegativeFeedbackItem
-from app.services.solar_client import query_solar, SolarAPIError
-from app.services.concern_parser import parse_concern
+from app.services.chat.solar_client import query_solar, SolarAPIError
+from app.services.chat.concern_parser import parse_concern
 
 
 async def generate_greeting(user_info: UserInfo, ideal_type: IdealType, parsed_context: ParsedContext) -> str:

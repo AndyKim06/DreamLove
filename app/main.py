@@ -6,7 +6,7 @@ FastAPI 메인 애플리케이션
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.routers import chatRouters
+from app.routers import chatRouters, userRouters
 
 # FastAPI 앱 생성
 app = FastAPI(
@@ -27,8 +27,8 @@ app.add_middleware(
 )
 
 # 라우터 등록
+app.include_router(userRouters.router)
 app.include_router(chatRouters.router)
-
 
 @app.get("/")
 async def root():
