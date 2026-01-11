@@ -1,9 +1,9 @@
 import uuid
-from app.models.user.userSchemas import UserInfoRequest, ExternalIdealRequest
+from app.models.user.userSchemas import UserInfoRequest, ExternalIdealRequest, UserConcernRequest
 
 fake_user_db = {}
 
-async def userInfoService(request: UserInfoRequest):
+async def saveUserInfo(request: UserInfoRequest):
     user_id = str(uuid.uuid4())
 
     fake_user_db[user_id] = {
@@ -14,9 +14,9 @@ async def userInfoService(request: UserInfoRequest):
 
     return user_id
 
-async def get_user_id(name: str) -> str:
-    for user_id, user in fake_user_db.items():
-        if user["name"] == name:
-            return user_id
+async def getUserId(userId: str):
+    return fake_user_db.get(userId)
 
-    raise ValueError("해당 이름의 사용자가 존재하지 않습니다.")
+async def saveUserConcern(request: UserConcernRequest, userId: str):
+    fake_user_db[userId]["concern"] = request.concern
+    return "ok"

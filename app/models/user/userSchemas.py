@@ -33,7 +33,9 @@ class UserInfoRequest(BaseModel):
     gender: Literal["남자", "여자"] = Field(..., description="성별")
     image: Optional[str] = Field(None, description="프로필 이미지")
     
-
+class UserConcernRequest(BaseModel):
+    concern : str = Field(..., description = "사용자 고민")
+    
 class ExternalIdealRequest(BaseModel):
     reference: int = Field(..., description="외적 이상형 레퍼런스")
     faceShape: FaceShape = Field(..., description="얼굴형")
