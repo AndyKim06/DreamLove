@@ -5,7 +5,7 @@ DreamLove 프로젝트 대화 흐름 관리 모듈
 
 import json
 from typing import Optional
-from app.models.schemas import UserInfo, IdealType, ChatRequest, ChatResponse, ParsedContext, NegativeFeedbackItem
+from app.models.chat.chatSchemas import UserInfo, IdealType, ChatRequest, ChatResponse, ParsedContext, NegativeFeedbackItem
 from app.services.solar_client import query_solar, SolarAPIError
 from app.services.concern_parser import parse_concern
 
