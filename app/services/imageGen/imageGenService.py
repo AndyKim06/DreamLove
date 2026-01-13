@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 from aura_sr import AuraSR
 
-load_dotenv()
+load_dotenv("gemini_api_key.env")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 client = genai.Client(GEMINI_API_KEY)
