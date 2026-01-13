@@ -7,7 +7,7 @@ DreamLove 프로젝트 연애고민 파서 모듈
 import json
 import random
 from typing import Optional
-from app.models.chat.chatSchemas import ParsedContext
+from app.models.chatSchemas import ParsedContext
 from app.services.chat.solar_client import query_solar, SolarAPIError
 
 
