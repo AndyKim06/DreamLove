@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Response, Cookie
-from app.models.user.userSchemas import UserInfoRequest, ExternalIdealRequest, UserConcernRequest
+from app.models.userSchemas import UserInfoRequest, ExternalIdealRequest, UserConcernRequest
 from app.services.user.userService import saveUserInfoService, getUserIdService, saveUserConcernService
 router = APIRouter(
     prefix="/user",

@@ -1,5 +1,5 @@
 import uuid
-from app.models.user.userSchemas import UserInfoRequest, ExternalIdealRequest, UserConcernRequest
+from app.models.userSchemas import UserInfoRequest, ExternalIdealRequest, UserConcernRequest
 
 fake_user_db = {}
 
@@ -20,4 +20,6 @@ async def getUserIdService(userId: str):
 async def saveUserConcernService(request: UserConcernRequest, userId: str):
     fake_user_db[userId]["concern"] = request.concern
     return "ok"
+
+
 
