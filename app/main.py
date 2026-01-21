@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.routers import chatRouters, userRouters, imageRouters
+from fastapi.staticfiles import StaticFiles
 
 # FastAPI 앱 생성
 app = FastAPI(
@@ -43,6 +44,7 @@ async def root():
         "docs": "/docs",
         "health": "/chat/health"
     }
+app.mount("/static", StaticFiles(directory="frontend", html=True), name="static")
 
 
 @app.get("/health")

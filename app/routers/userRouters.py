@@ -15,10 +15,10 @@ router = APIRouter(
     description="사용자에게 정보를 입력받고 저장, 클라이언트에게 쿠키 or 세션줘서 식별가능하게함"
 )
 def saveUserInfo(
+    response: Response,
     name: str = Form(...),
     gender: Literal["남자", "여자"] = Form(...),
     image: UploadFile = File(None),
-    response: Response = None,
     service: UserService = Depends(getUserService)
 ):
     user = service.create_user(name, gender, image)
