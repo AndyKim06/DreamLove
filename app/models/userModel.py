@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from typing import Optional, Literal
-from app.schemas.userSchemas import FaceShape, Eyes, Eyelid, Hair
 
 class User(BaseModel):
     userId: str # pk

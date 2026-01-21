@@ -1,6 +1,10 @@
 from fastapi import APIRouter, Response, Cookie, Depends
+from fastapi.responses import FileResponse
 from app.services.imageGen.imageGenService import ImageGenService
 from app.dependency import getImageGenService
+import qrcode
+import tempfile
+
 router = APIRouter(
     prefix="/imageGen",
     tags=["imageGen"]
@@ -28,3 +32,27 @@ def changeExpression(location: str,
     image = service.generateCoupleImageService(location, userId)
     return "ok"
     
+@router.get("/download", summary="test.png 다운로드")
+def download_test_image():
+    return FileResponse(
+        path="C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\test.png",
+        media_type="image/png",
+        filename="test.png"
+    )
+
+
+@router.get("/download/qr", summary="test.png 다운로드용 QR 코드")
+def get_test_image_qr():
+    download_url = "http://localhost:8000/imageGen/download"
+
+    qr = qrcode.make(download_url)
+
+    # 임시 파일로 QR 생성
+    tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+    qr.save(tmp_file.name)
+
+    return FileResponse(
+        path=tmp_file.name,
+        media_type="image/png",
+        filename="test_image_qr.png"
+    )

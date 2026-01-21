@@ -47,12 +47,12 @@ class ImageGenService:
     def getUserIdealImagePath(self, userId):
         user = self.repo.findById(userId)
         if user.userCustom:
-            idealImage = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\{userId}__{user.userIdealType}"
+            idealImage = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\{userId}__{user.userIdealType}.png"
         else:
             if user.userGender == "남자":
-                idealImage = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\standard_female_{user.userIdealType}"
+                idealImage = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\standard_female_{user.userIdealType}.png"
             else:
-                idealImage = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\standard_male_{user.userIdealType}"
+                idealImage = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\standard_male_{user.userIdealType}.png"
         return idealImage
     
     def generateExpressionService(self, location:str, userId:str):
