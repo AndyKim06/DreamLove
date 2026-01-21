@@ -35,7 +35,8 @@ def saveUserInfo(request: UserInfoRequest,
     "/get",
     summary="정보 저장 테스트용"
 )
-def getUserInfo(userId: str = Cookie(None), service: UserService = Depends(getUserService)):
+def getUserInfo(userId: str = Cookie(None), 
+                service: UserService = Depends(getUserService)):
     return service.getUserIdService(userId)
 
 @router.patch(

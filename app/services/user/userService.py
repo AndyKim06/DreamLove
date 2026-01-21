@@ -1,6 +1,6 @@
 from uuid import uuid4
 from app.models.userModel import User
-from app.schemas.userSchemas import UserInfoRequest, ExternalIdealRequest, UserConcernRequest
+from app.schemas.userSchemas import UserInfoRequest, UserConcernRequest
 from app.repositories.userRepo import UserRepository
 
 class UserService:
