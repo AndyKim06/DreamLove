@@ -1,18 +1,25 @@
 from uuid import uuid4
+from fastapi import UploadFile
 from app.models.userModel import User
-from app.schemas.userSchemas import UserInfoRequest, UserConcernRequest
+from app.schemas.userSchemas import UserConcernRequest
 from app.repositories.userRepo import UserRepository
+from PIL import Image
 
 class UserService:
     def __init__(self, repo: UserRepository):
         self.repo = repo
 
-    def create_user(self, req: UserInfoRequest) -> User:
+    def create_user(self, name:str, gender:str, image: UploadFile) -> User:
+        userId = str(uuid4())
+        image_path = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\user\\{userId}.png"
+        with open(image_path, "wb") as f:
+            f.write(image.file.read())
+
         user = User(
-            userId=str(uuid4()),
-            userName=req.name,
-            userGender=req.gender,
-            userImage=req.image,
+            userId= userId,
+            userName=name,
+            userGender=gender,
+            userImage=image_path,
             userCustom=False,
             userConcern="",
             userIdealType=0

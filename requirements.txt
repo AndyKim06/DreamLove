@@ -16,3 +16,4 @@ python-dotenv==1.0.0
 qrcode
 aura_sr
 google-genai
+python-multipart

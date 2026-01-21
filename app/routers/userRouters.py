@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Response, Cookie, Depends
-from app.schemas.userSchemas import UserInfoRequest, UserConcernRequest
+from fastapi import APIRouter, Response, Cookie, Depends, UploadFile, File, Form
+from app.schemas.userSchemas import UserConcernRequest
+from typing import Optional, Literal
 from app.dependency import getUserService
 from app.services.user.userService import UserService
 router = APIRouter(
@@ -13,10 +14,14 @@ router = APIRouter(
     summary="사용자의 정보 입력",
     description="사용자에게 정보를 입력받고 저장, 클라이언트에게 쿠키 or 세션줘서 식별가능하게함"
 )
-def saveUserInfo(request: UserInfoRequest, 
-                       response : Response,
-                       service: UserService = Depends(getUserService)):
-    user = service.create_user(request)
+def saveUserInfo(
+    name: str = Form(...),
+    gender: Literal["남자", "여자"] = Form(...),
+    image: UploadFile = File(None),
+    response: Response = None,
+    service: UserService = Depends(getUserService)
+):
+    user = service.create_user(name, gender, image)
     response.set_cookie(
         key="userId",
         value=user.userId,
