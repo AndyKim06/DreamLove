@@ -3,5 +3,6 @@ from app.services.user.userService import UserService
 
 _repo = UserMemoryRepository()
 
-def get_user_service():
+def getUserService():
     return UserService(_repo)
+

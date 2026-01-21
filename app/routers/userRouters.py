@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response, Cookie, Depends
-from app.schemas.userSchemas import UserInfoRequest, ExternalIdealRequest, UserConcernRequest
-from app.dependency import get_user_service
+from app.schemas.userSchemas import UserInfoRequest, UserConcernRequest
+from app.dependency import getUserService
 from app.services.user.userService import UserService
 router = APIRouter(
     prefix="/user",
@@ -15,7 +15,7 @@ router = APIRouter(
 )
 def saveUserInfo(request: UserInfoRequest, 
                        response : Response,
-                       service: UserService = Depends(get_user_service)):
+                       service: UserService = Depends(getUserService)):
     user = service.create_user(request)
     response.set_cookie(
         key="userId",
@@ -35,7 +35,7 @@ def saveUserInfo(request: UserInfoRequest,
     "/get",
     summary="정보 저장 테스트용"
 )
-def getUserInfo(userId: str = Cookie(None), service: UserService = Depends(get_user_service)):
+def getUserInfo(userId: str = Cookie(None), service: UserService = Depends(getUserService)):
     return service.getUserIdService(userId)
 
 @router.patch(
@@ -45,7 +45,7 @@ def getUserInfo(userId: str = Cookie(None), service: UserService = Depends(get_u
 )
 def saveUserConcern(request: UserConcernRequest,
                     userId: str = Cookie(None),
-                    service: UserService = Depends(get_user_service)):
+                    service: UserService = Depends(getUserService)):
     return service.saveUserConcernService(userId, request)
 
 @router.patch(
@@ -55,7 +55,7 @@ def saveUserConcern(request: UserConcernRequest,
 )
 def saveUserConcern(customIdeal: bool,
                     userId: str = Cookie(None),
-                    service: UserService = Depends(get_user_service)):
+                    service: UserService = Depends(getUserService)):
     return service.chooseCustomIdealService(userId, customIdeal)
 
 @router.patch(
@@ -65,5 +65,5 @@ def saveUserConcern(customIdeal: bool,
 )
 def saveUserConcern(idealType: int,
                     userId: str = Cookie(None),
-                    service: UserService = Depends(get_user_service)):
+                    service: UserService = Depends(getUserService)):
     return service.chooseIdealTypeService(userId, idealType)
