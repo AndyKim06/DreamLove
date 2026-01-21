@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Love - Profile</title>
+    
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+<body>
+    
+    <header class="main-header">
+        <h1 class="header-title">Write your information...</h1>
+        <div class="heart-container">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+        </div>
+    </header>
+
+    <main class="design-container">
+        
+        <div class="label-name pixel-label">name</div>
+        <div class="input-wrapper">
+            <img src="assets/images/name.png" alt="bubble" class="bubble-bg">
+            <input type="text" id="username" class="pixel-input" autocomplete="off" autofocus>
+        </div>
+
+        <div class="label-girl pixel-label">Girl</div>
+        <div class="gender-item" id="btn-girl" onclick="selectGender('girl')">
+            <img src="assets/images/girl.svg" alt="Girl" class="gender-img">
+        </div>
+
+        <div class="label-boy pixel-label">Boy</div>
+        <div class="gender-item" id="btn-boy" onclick="selectGender('boy')">
+            <img src="assets/images/boy.svg" alt="Boy" class="gender-img">
+        </div>
+
+        <div class="photo-wrapper" onclick="triggerFileUpload()">
+            <img src="assets/images/photo_upload.png" alt="frame" class="frame-bg">
+            <img id="preview-img" class="photo-preview" src="" alt="preview">
+            <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="previewImage(event)">
+        </div>
+
+        <img src="assets/images/back_arrow.svg" class="arrow-btn arrow-back" onclick="goBack()" alt="Back">
+
+        <img src="assets/images/next_arrow.svg" class="arrow-btn arrow-next" onclick="goNext()" alt="Next">
+
+    </main>
+
+    <script src="js/profile.js"></script>
+</body>
+</html>

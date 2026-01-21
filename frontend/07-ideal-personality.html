@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Love - Ideal Personality</title>
+    
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/ideal-personality.css">
+</head>
+<body>
+    
+    <header class="main-header">
+        <h1 class="header-title">Write your information...</h1>
+        <div class="heart-container">
+            <img src="assets/images/heart.svg" class="pixel-heart">
+            <img src="assets/images/heart.svg" class="pixel-heart">
+            <img src="assets/images/heart.svg" class="pixel-heart">
+            <img src="assets/images/heart.svg" class="pixel-heart">
+        </div>
+    </header>
+
+    <main class="design-container">
+        
+        <img src="assets/images/back_arrow.svg" class="arrow-btn arrow-back" onclick="goBack()" alt="Back">
+
+        <img src="assets/images/07-background_box.png" class="main-bg-box" alt="Background Box">
+
+        <h2 class="page-title">나만의 내적 이상형 만들기</h2>
+
+        <div class="deco-arrow arrow-left">&lt;&lt;</div>
+
+        <div class="option-item option-left" onclick="selectPersonality('warm')">
+            <img src="assets/images/select_box.png" class="box-bg" alt="Box">
+            <div class="text-type">Type 1</div>
+            <div class="text-value">다정</div>
+        </div>
+
+        <div class="option-item option-right" onclick="selectPersonality('chic')">
+            <img src="assets/images/select_box.png" class="box-bg" alt="Box">
+            <div class="text-type">Type 2</div>
+            <div class="text-value">시크</div>
+        </div>
+
+        <div class="deco-arrow arrow-right">&gt;&gt;</div>
+
+        <p class="bottom-desc">
+            내가 평소 원하던 성격들을 기입해서 나만의 이상형을 완성해봐요
+        </p>
+
+        <img src="assets/images/next_arrow.svg" class="arrow-btn arrow-next" onclick="goNext()" alt="Next">
+
+    </main>
+
+    <script src="js/ideal-personality.js"></script>
+</body>
+</html>

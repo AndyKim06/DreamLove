@@ -1,0 +1,172 @@
+/* frontend/css/ideal-personality.css */
+
+/* 1. 폰트 로드 (Minecraft, Galmuri14) */
+@font-face {
+    font-family: 'Galmuri14';
+    src: url('../assets/fonts/Galmuri14.ttf') format('truetype');
+    font-weight: normal; font-style: normal;
+}
+@font-face {
+    font-family: 'Minecraft';
+    /* fonts 폴더에 minecraft.ttf가 있어야 합니다. 없으면 Galmuri14로 대체됨 */
+    src: url('../assets/fonts/minecraft.ttf') format('truetype');
+    font-weight: normal; font-style: normal;
+}
+
+/* 2. 공통 요소 */
+.arrow-btn {
+    position: absolute; cursor: pointer; z-index: 20;
+    width: 2.5cqi; height: auto; transition: transform 0.2s;
+}
+.arrow-btn:hover { transform: scale(1.1); }
+.arrow-back { left: 5.02%; top: 26.93%; }
+.arrow-next { right: 4.54%; bottom: 9.83%; }
+
+.header-title {
+    /* 헤더도 Minecraft 폰트 느낌이 나도록 */
+    font-family: 'Minecraft', 'Galmuri14', sans-serif;
+    letter-spacing: 0.1em;
+}
+
+/* 3. 메인 배경 박스 (07-background_box.png) */
+.main-bg-box {
+    position: absolute;
+    /* 피그마 좌표: Top 347.5px -> 32.1% */
+    top: 32.1%; 
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* 너비 비율: 약 65% (화면에 적절히 차게) */
+    width: 65%;
+    height: auto;
+    z-index: 1; /* 제일 뒤 */
+}
+
+/* 4. 페이지 타이틀 ("나만의 내적 이상형 만들기") */
+.page-title {
+    position: absolute;
+    /* 박스 내부 상단 배치 */
+    top: 39%; 
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    
+    font-family: 'Galmuri14';
+    font-size: 2.2cqi;
+    font-weight: bolder;
+    color: #5A4A82; /* 시안의 텍스트 색상 */
+    text-align: center;
+}
+
+/* 5. 장식 화살표 (<< >>) */
+.deco-arrow {
+    position: absolute;
+    top: 54%; /* 옵션 박스 중앙 높이 */
+    transform: translateY(-50%);
+    font-family: 'Minecraft', sans-serif;
+    font-size: 2cqi;
+    color: #6A6A77;
+    z-index: 2;
+}
+.arrow-left { left: 24%; }
+.arrow-right { right: 24%; }
+
+
+/* 6. [핵심] 옵션 아이템 (Type 1, Type 2 박스) */
+.option-item {
+    position: absolute;
+    /* 피그마 Y좌표: 550.43px / 1080px = 50.9% */
+    top:45%;
+    width: 20.3%; /* 389.63px / 1920px */
+    cursor: pointer;
+    transition: transform 0.2s;
+    z-index: 5;
+}
+
+/* 왼쪽 박스 (다정) */
+/* 피그마 X좌표: 562.32px / 1920px = 29.28% */
+.option-left {
+    left: 29.28%;
+}
+
+/* 오른쪽 박스 (시크) */
+/* 피그마 X좌표: 987.9px / 1920px = 51.45% */
+.option-right {
+    left: 51.45%;
+}
+
+/* 호버 및 선택 효과 */
+.option-item:hover { transform: scale(1.02); }
+.option-item.selected {
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 0.5cqi #808CE7); /* 보라색 글로우 */
+}
+
+/* 박스 배경 이미지 (select_box.png) */
+.box-bg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+
+/* --- [텍스트 스타일 정밀 적용] --- */
+
+/* "Type 1", "Type 2" */
+.text-type {
+    position: absolute;
+    /* 박스 내부 위치: Top 10px, Left 20px 비율 환산 */
+    top: 21%; 
+    left: 6%;
+    
+    /* 제공해주신 피그마 CSS 적용 */
+    color: #6A6A77;
+    text-align: center;
+    font-family: 'Minecraft', sans-serif;
+    font-size: 1.7cqi; /* 33.459px 환산 */
+    font-style: normal;
+    font-weight: 500;
+    /* line-height는 박스 안에서 튈 수 있어 제거하거나 조절 */
+    /* line-height: 89.624px; */ 
+    letter-spacing: 0.3cqi; /* 5.765px 환산 */
+}
+
+/* "다정", "시크" */
+.text-value {
+    position: absolute;
+    /* 흰색 영역 중앙 배치 */
+    top: 62%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    /* 제공해주신 피그마 CSS 적용 */
+    color: #6A6A77;
+    text-align: center;
+    font-family: 'Galmuri14', sans-serif;
+    font-size: 2cqi; /* 38.728px 환산 */
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: 0.5cqi; /* 9.316px 환산 */
+    
+    /* 텍스트 외곽선 효과 */
+    -webkit-text-stroke: 0.5px #6A6A77;
+    
+    /* 줄바꿈 방지 */
+    white-space: nowrap;
+}
+
+
+/* 7. 하단 설명 문구 */
+.bottom-desc {
+    position: absolute;
+    /* 피그마 좌표 반영 (박스 아래쪽) */
+    bottom: 25%;
+    width: 100%;
+    text-align: center;
+    
+    font-family: 'Galmuri14';
+    font-size: 1.4cqi;
+    font-weight: bold;
+    color: #51516c;
+    opacity: 0.8;
+}

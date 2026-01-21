@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Love - Appearance</title>
+    
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/appearance.css">
+</head>
+<body>
+    
+    <header class="main-header">
+        <h1 class="header-title">내가 좋아하는 외적 이상형은? ...</h1>
+        <div class="heart-container">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+        </div>
+    </header>
+
+    <main class="design-container">
+        
+        <img src="assets/images/back_arrow.svg" class="arrow-btn arrow-back" onclick="goBack()" alt="Back">
+
+        <div class="choice-item" id="opt-default" onclick="selectOption('default')">
+            <img src="assets/images/choice_box.png" class="choice-bg" alt="Box">
+            <div class="choice-text">
+                <span class="text-bold-blue">기본이미지</span><span class="text-gray">로 시작</span>
+            </div>
+        </div>
+
+        <div class="choice-item" id="opt-custom" onclick="selectOption('custom')">
+            <img src="assets/images/choice_box.png" class="choice-bg" alt="Box">
+            <div class="choice-text">
+                <span class="text-bold-blue">나만의 이상형</span> <span class="text-gray">만들기</span>
+            </div>
+        </div>
+
+        <img src="assets/images/next_arrow.svg" class="arrow-btn arrow-next" onclick="goNext()" alt="Next">
+
+    </main>
+
+    <script src="js/appearance.js"></script>
+</body>
+</html>

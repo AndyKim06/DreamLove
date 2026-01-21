@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Love - Chat</title>
+    
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/chat-screen.css">
+</head>
+<body>
+
+    <div class="bg-image"></div>
+
+    <main class="design-container">
+        
+        <div class="game-wrapper">
+
+            <div id="intro-layer" class="layer-box">
+                <div class="ui-box intro-card">
+                    <div class="mission-header">To. MISSION...</div>
+                    
+                    <div id="step-1" class="mission-content">
+                        <p>당신은 짝남 <span id="intro-name" class="highlight">OOO</span>씨와</p>
+                        <p><span id="intro-place" class="highlight">어딘가</span>에 오게 되었습니다...</p>
+                    </div>
+
+                    <div id="step-2" class="mission-content hidden">
+                        <p><span class="highlight-pink">그(그녀)</span>의 마음을 공략해서</p>
+                        <p>점수를 얻어보세요!</p>
+                    </div>
+                </div>
+
+                <div class="ui-box intro-bottom-bar">
+                    <button id="start-btn" class="start-btn hidden" onclick="startGame()">
+                        ♡ 공 략 하 기 ♡
+                    </button>
+                </div>
+            </div>
+
+
+            <div id="game-layer" class="layer-box hidden">
+                
+                <div class="ui-box dialogue-box">
+                    <div class="dialogue-content">
+                        <span id="char-name" class="char-label">도현 :</span>
+                        <p id="char-msg">여기까지 오는데<br>안힘들었어?</p>
+                    </div>
+                </div>
+
+                <div class="ui-box station-box">
+                    <span class="station-text">STATION 1</span>
+                </div>
+
+                <div class="heart-area">
+                    <img src="assets/images/heart.svg" class="heart-icon active">
+                    <img src="assets/images/heart.svg" class="heart-icon active">
+                    <img src="assets/images/heart.svg" class="heart-icon active">
+                    <img src="assets/images/heart.svg" class="heart-icon">
+                </div>
+
+                <div class="ui-box main-visual-box">
+                    <img id="main-photo" src="" alt="Scene">
+                </div>
+
+                <div class="ui-box bottom-bar-box">
+                    <div class="chat-content">
+                        <span class="cursor">| </span>
+                        <span id="player-text">당연히 너 가까이 만났으니 안힘들었겠지?</span>
+                    </div>
+                    <div class="next-btn" onclick="nextDialogue()">>></div>
+                </div>
+
+            </div> </div> </main>
+
+    <script src="js/chat-screen.js"></script>
+</body>
+</html>

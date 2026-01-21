@@ -1,0 +1,142 @@
+/* frontend/css/required.css */
+
+/* --- 화살표 공통 스타일 --- */
+.arrow-btn {
+    position: absolute;
+    cursor: pointer;
+    z-index: 20;
+    width: 2.5cqi; 
+    height: auto;
+    transition: transform 0.2s;
+}
+.arrow-btn:hover { transform: scale(1.1); }
+
+/* 뒤로가기 (왼쪽) */
+.arrow-back { 
+    left: 5.02%; 
+    top: 26.93%; 
+}
+
+/* 다음가기 (오른쪽) */
+.arrow-next {
+    right: 4.54%;
+    bottom: 9.83%;
+}
+
+
+/* --- 중앙 입력 박스 컨테이너 --- */
+.input-container {
+    position: absolute;
+    /* 피그마: Top 313px / 1080px = 약 29% */
+    top: 29%;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* 너비: 1331px / 1920px = 69.32% */
+    width: 69.32%;
+    height: auto;
+    position: relative; /* 자식 요소 절대 위치 기준 */
+}
+
+/* 배경 이미지 */
+.input-bg-img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* [NEW] 박스 타이틀 스타일 */
+.box-title {
+    position: absolute;
+    top: 15%; /* 박스 상단 15% 지점 */
+    width: 100%;
+    text-align: center;
+    
+    font-family: 'Minecraft', 'Galmuri';
+    font-size: 2.5cqi; /* 글자 크기 */
+    color: #5A4A82; /* 보라색 텍스트 */
+    font-weight: bold;
+    letter-spacing: 0.2cqi;
+}
+
+/* 투명 입력창 (Textarea) */
+.transparent-textarea {
+    position: absolute;
+    /* 타이틀 아래쪽부터 시작 */
+    top: 50%; 
+    left: 60%;
+    transform: translateX(-50%);
+    
+    /* 좌우 여백 확보 */
+    width: 90%;
+    /* 하단 회색 선 위까지만 (높이 조절) */
+    height: 45%;
+    
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    
+    font-family: 'Minecraft', 'Galmuri';
+    font-size: 2.2cqi; /* 입력 글자 크기 */
+    color: #333;
+    line-height: 1.6;
+    text-align: left; /* 왼쪽 정렬 */
+    
+    /* 스크롤바 숨김 */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.transparent-textarea::-webkit-scrollbar { display: none; }
+
+/* placeholder 스타일 (연한 회색) */
+.transparent-textarea::placeholder {
+    color: #bababa;
+    font-size: 2cqi;
+}
+
+
+/* --- 설명 텍스트 --- */
+.info-text {
+    position: absolute;
+    width: 100%; /* 전체 너비 */
+    
+    /* 입력 박스 아래쪽 위치 */
+    top: 72%; /* 화면 높이 기준 72% 지점 */
+    
+    left: 0;
+    text-align: center;
+    
+    /* 피그마 Dev Mode 스타일 적용 */
+    color: rgba(0, 0, 0, 0.55);
+    font-family: 'Galmuri', sans-serif;
+    font-size: 1.2cqi; /* 약 30px */
+    font-weight: 800;
+    line-height: 1.5;
+    letter-spacing: 0.13cqi;
+    
+    /* 텍스트 줄바꿈 처리 */
+    padding: 0 10%;
+    word-break: keep-all; 
+}
+
+
+/* --- 중앙 하단 Next 버튼 --- */
+.next-btn-img {
+    position: absolute;
+    cursor: pointer;
+    z-index: 10;
+    
+    /* 피그마: Bottom 59.74px / 1080px = 약 5.5% */
+    bottom: 5.5%;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* 너비: 271px / 1920px = 약 14.1% */
+    width: 14.1%;
+    height: auto;
+    
+    transition: transform 0.1s;
+}
+.next-btn-img:hover { transform: translateX(-50%) scale(1.05); }
+.next-btn-img:active { transform: translateX(-50%) scale(0.95); }
