@@ -1,0 +1,184 @@
+/* frontend/css/profile.css */
+
+.pixel-label {
+    position: absolute;
+    text-align: center;
+    font-family: 'Minecraft';
+    font-style: normal;
+    font-weight: 500;
+    z-index: 5;
+}
+
+/* 1. Name 라벨 */
+.label-name {
+    top: 22%; 
+    left: 12.5%;
+    color: #808CE7;
+    font-size: 2.1cqi; 
+    -webkit-text-stroke-width: 0.6px;
+    -webkit-text-stroke-color: #808CE7;
+    letter-spacing: 0.2em;
+}
+
+/* 2. 이름 입력 (말풍선) */
+.input-wrapper {
+    position: absolute;
+    left: 12.4%;
+    top: 31.5%;
+    width: 30.067vw; /* 1920 기준 비율 */
+    /* 컨테이너 안에서는 %나 cqi를 쓰는게 더 정확하므로 수정 */
+    width: 30%; 
+    
+    aspect-ratio: 577.29 / 227.00;
+    height: auto;
+    z-index: 5;
+}
+
+.bubble-bg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* 입력창 및 커서 스타일 */
+.pixel-input {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-55%);
+    left: 0;
+    
+    width: 100%;
+    height: 60%;
+    background: transparent;
+    border: none;
+    outline: none;
+    
+    font-family: 'Minecraft', 'Galmuri';
+    color: #5A4A82;
+    text-align: left;
+    
+    padding-left: 11%; 
+    font-weight: 900; 
+    
+    font-size: 2.86cqi; 
+    caret-color: #8471E9;
+}
+
+/* 3. 성별 라벨 */
+.label-girl {
+    top: 55%; 
+    left: 12.5%;
+    color: #808CE7;
+    font-size: 1.78cqi;
+    -webkit-text-stroke-width: 0.5px;
+    -webkit-text-stroke-color: #808CE7;
+    letter-spacing: 0.2em;
+}
+
+.label-boy {
+    top: 55%;
+    left: 27.5%;
+    color: #808CE7;
+    font-size: 1.78cqi;
+    -webkit-text-stroke-width: 0.5px;
+    -webkit-text-stroke-color: #808CE7;
+    letter-spacing: 0.2em;
+}
+
+/* 4. 성별 이미지 */
+.gender-item {
+    position: absolute;
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: 11%;
+}
+
+#btn-girl { left: 12.57%; top: 60%; }
+#btn-boy { left: 27.47%; top: 60%; }
+
+.gender-img {
+    width: 100%;
+    height: auto;
+    opacity: 1; 
+    transition: all 0.2s ease;
+}
+
+/* 선택되었을 때: 눌린 느낌 (밝기 감소 + 투명도) */
+.gender-item.selected .gender-img {
+    transform: scale(0.99); 
+    filter: brightness(0.7) opacity(0.9);
+}
+
+.photo-wrapper {
+    position: absolute;
+    right: 9.8%;
+    bottom: 8%;
+    width: 30%;
+
+    /* 회전은 여기서만 */
+    transform: rotate(-10deg);
+    transform-origin: center;
+    cursor: pointer;
+}
+
+/* 프레임 */
+.frame-bg {
+    width: 100%;
+    display: block;
+    position: relative;
+    z-index: 1;
+}
+
+/* 사진 */
+.photo-preview {
+    position: absolute;
+
+    /* 🔥 프레임 안쪽으로 정확히 */
+    top: 14%;
+    left: 11%;
+    width: 78%;
+    height: 70%;
+
+    object-fit: cover;
+    border-radius: 4px;
+
+    z-index: 2;
+    display: none;
+}
+
+
+/* --- [NEW] 화살표 버튼 스타일 --- */
+.arrow-btn {
+    position: absolute;
+    cursor: pointer;
+    z-index: 20;
+    
+    /* 크기 반응형: 컨테이너 너비의 약 2.5% */
+    width: 2.5cqi; 
+    height: auto;
+    
+    transition: transform 0.2s ease, filter 0.2s;
+}
+
+.arrow-btn:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 4px rgba(128, 140, 231, 0.5));
+}
+
+/* 뒤로가기 화살표 위치 */
+.arrow-back {
+    /* 피그마: Left 96.4px -> 5.02% */
+    left: 5.02%;
+    /* 피그마: Top 290.88px -> 26.93% */
+    top: 26.93%;
+}
+
+/* 다음가기 화살표 위치 */
+.arrow-next {
+    /* 피그마: Right 87.19px -> 4.54% */
+    right: 4.54%;
+    /* 피그마: Bottom 106.21px -> 9.83% */
+    bottom: 9.83%;
+}

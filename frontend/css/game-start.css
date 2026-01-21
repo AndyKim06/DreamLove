@@ -1,0 +1,108 @@
+/* frontend/css/game-start.css */
+
+/* 1. 폰트 로드 */
+@font-face {
+    font-family: 'Galmuri14';
+    src: url('../assets/fonts/Galmuri14.ttf') format('truetype');
+    font-weight: normal; font-style: normal;
+}
+@font-face {
+    font-family: 'Minecraft';
+    src: url('../assets/fonts/minecraft.ttf') format('truetype');
+    font-weight: normal; font-style: normal;
+}
+
+/* 2. 헤더 */
+.header-title {
+    font-family: 'Minecraft', 'Galmuri14', sans-serif;
+    letter-spacing: 0.1em;
+}
+
+/* 3. [핵심] 비 내리는 효과 (Rain Animation) */
+.rain-container {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; /* 클릭 통과 */
+    z-index: 1; /* 텍스트보다 뒤에 */
+    
+    /* 이미지 설정 */
+    background-image: url('../assets/images/rain.png');
+    background-repeat: repeat-y; /* 세로로 반복 */
+    background-size: 100% auto; /* 가로는 꽉 채우고 세로는 비율 유지 */
+    
+    /* [중요] 이미지가 검은 배경일 경우 흰색 비만 남김 */
+    mix-blend-mode: screen; 
+    opacity: 0.8; /* 투명도 조절 */
+    
+    /* 애니메이션: 위에서 아래로 무한 이동 */
+    animation: rainFall 2s linear infinite;
+}
+
+@keyframes rainFall {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        /* Y축으로 이미지 높이만큼 이동 (수치 조절 가능) */
+        background-position: 0 100vh; 
+    }
+}
+
+
+/* 4. [핵심] Game Start 텍스트 스타일 (피그마 반영) */
+.start-text-wrapper {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+    z-index: 10; /* 비보다 앞에 */
+}
+
+.game-start-text {
+    /* [피그마 CSS 코드 적용] */
+    color: #5A63A5; /* 글자색 */
+    text-align: center;
+    font-family: 'Galmuri14';
+    
+    /* 폰트 크기: 98.484px -> 1920px 기준 약 5.1cqi */
+    font-size: 5.1cqi; 
+    
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    
+    /* 자간: 13.788px -> 약 0.7cqi */
+    letter-spacing: 0.7cqi;
+    
+    /* 텍스트 외곽선 (Stroke) */
+    -webkit-text-stroke-width: 1.74px;
+    -webkit-text-stroke-color: #5A63A5;
+    
+    /* 디자인 효과: 약간의 그림자로 입체감 추가 (선택사항) */
+    text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.5);
+    
+    /* 깜빡임 애니메이션 */
+    animation: blink 1.2s infinite step-end;
+}
+
+.click-guide {
+    margin-top: 2cqi;
+    font-family: 'Galmuri14';
+    font-size: 1.5cqi;
+    color: rgba(131, 139, 199, 0.9);
+    opacity: 0.8;
+    animation: fadeInOut 2s infinite ease-in-out;
+}
+
+/* 애니메이션 정의 */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}

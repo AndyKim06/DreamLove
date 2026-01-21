@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Love - Required Info</title>
+    
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/required.css">
+</head>
+<body>
+    
+    <header class="main-header">
+        <h1 class="header-title">Write your information...</h1>
+        <div class="heart-container">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+        </div>
+    </header>
+
+    <main class="design-container">
+        
+        <img src="assets/images/back_arrow.svg" class="arrow-btn arrow-back" onclick="goBack()" alt="Back">
+
+        <div class="input-container">
+            <img src="assets/images/required_input.png" class="input-bg-img" alt="Input Frame">
+            
+            <div class="box-title">&lt;&lt; 필수 입력창 &gt;&gt;</div>
+            
+            <textarea id="user-worry" class="transparent-textarea" 
+                placeholder="ex. 짝사랑 중인데 영화관에 가서 너무 떨려 도와주라"></textarea>
+        </div>
+
+        <p class="info-text">
+            고민상담 (본인에 대한 정보 - 이미지, (개인정보), 어떤 상황인지 (현재 본인이 모솔, 썸, 연애, 헤어진 상태인지, 시뮬장소설정)
+        </p>
+
+        <img src="assets/images/next_btn.png" class="next-btn-img" onclick="goNext()" alt="Next Button">
+
+        <img src="assets/images/next_arrow.svg" class="arrow-btn arrow-next" onclick="goNext()" alt="Next Arrow">
+
+    </main>
+
+    <script src="js/required.js"></script>
+</body>
+</html>

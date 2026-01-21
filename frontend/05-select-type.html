@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Love - DIY Ideal Type</title>
+    
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/select-type.css">
+</head>
+<body>
+    
+    <header class="main-header">
+        <h1 class="header-title">내가 좋아하는 외적 이상형은? ...</h1>
+        <div class="heart-container">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+        </div>
+    </header>
+
+    <main class="design-container">
+        
+        <img src="assets/images/back_arrow.svg" class="arrow-btn arrow-back" onclick="goBack()" alt="Back">
+
+        <div class="preview-area">
+            <div class="pixel-window preview-win" id="win-1">
+                <div class="window-header"><span class="win-title">Type 1</span><span class="win-x">X</span></div>
+                <div class="window-body"></div>
+            </div>
+            <div class="pixel-window preview-win" id="win-2">
+                <div class="window-header"><span class="win-title">Type 2</span><span class="win-x">X</span></div>
+                <div class="window-body"></div>
+            </div>
+            <div class="pixel-window preview-win" id="win-3">
+                <div class="window-header"><span class="win-title">Type 3</span><span class="win-x">X</span></div>
+                <div class="window-body"></div>
+            </div>
+            <div class="pixel-window preview-win" id="win-4">
+                <div class="window-header"><span class="win-title">Type 4</span><span class="win-x">X</span></div>
+                <div class="window-body"></div>
+            </div>
+        </div>
+
+        <div class="diy-panel">
+            <div class="diy-header">
+                <span class="diy-title">♥ D.I.Y ♥</span>
+                <button class="diy-close-btn">X</button>
+            </div>
+
+            <div class="diy-body">
+                
+                <div class="form-group row-group">
+                    <label class="radio-label">
+                        <input type="radio" name="eyelid" value="none" checked>
+                        <span class="radio-custom"></span> 무쌍
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="eyelid" value="inner">
+                        <span class="radio-custom"></span> 속쌍
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="eyelid" value="outer">
+                        <span class="radio-custom"></span> 겉쌍
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="input-label">코 모양</label>
+                    <div class="select-wrapper">
+                        <select id="nose-shape" class="pixel-select">
+                            <option value="high">오똑한 코</option>
+                            <option value="natural">자연스러운 코</option>
+                            <option value="round">둥근 코</option>
+                        </select>
+                        <span class="select-arrow">▼</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="input-label">얼굴형</label>
+                    <div class="select-wrapper">
+                        <select id="face-shape" class="pixel-select">
+                            <option value="oval">계란형</option>
+                            <option value="round">둥근형</option>
+                            <option value="angular">각진형</option>
+                        </select>
+                        <span class="select-arrow">▼</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="input-label">분위기</label>
+                    <div class="select-wrapper">
+                        <select id="atmosphere" class="pixel-select">
+                            <option value="innocent">청순한</option>
+                            <option value="chic">시크한</option>
+                            <option value="cheerful">발랄한</option>
+                        </select>
+                        <span class="select-arrow">▼</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="input-label">헤어스타일</label>
+                    <div class="select-wrapper">
+                        <select id="hair-style" class="pixel-select">
+                            <option value="long-straight">긴 생머리</option>
+                            <option value="short-cut">숏컷</option>
+                            <option value="wave">웨이브 펌</option>
+                            <option value="ponytail">포니테일</option>
+                        </select>
+                        <span class="select-arrow">▼</span>
+                    </div>
+                </div>
+
+                <div class="form-group last-group">
+                    <label class="input-label">피부톤</label>
+                    <div class="skin-control-wrapper">
+                        <input type="range" id="skin-slider" min="0" max="100" value="50" class="pixel-slider" oninput="updateSkinColor(this.value)">
+                        <div id="skin-preview-box" class="skin-color-display"></div>
+                    </div>
+                </div>
+
+            </div> <div class="diy-footer">
+                <button class="generate-btn" onclick="generateIdeal()">생 성 하 기</button>
+            </div>
+
+        </div>
+
+        <img src="assets/images/next_arrow.svg" class="arrow-btn arrow-next" onclick="goNext()" alt="Next">
+
+    </main>
+
+    <script src="js/select-type.js"></script>
+</body>
+</html>

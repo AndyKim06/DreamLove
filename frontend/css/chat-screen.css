@@ -1,0 +1,155 @@
+/* frontend/css/chat-screen.css */
+
+@font-face {
+    font-family: 'Galmuri14';
+    src: url('../assets/fonts/Galmuri14.ttf') format('truetype');
+}
+
+/* 1. 배경 이미지 설정 (jpg 적용) */
+.bg-image {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('../assets/images/chat_background.png');
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+}
+
+.design-container {
+    width: 100vw; height: 100vh;
+    display: flex; justify-content: center; align-items: center;
+    padding: 0;
+}
+
+/* [핵심] 16:9 비율 고정 래퍼 (피그마 비율 유지) */
+.game-wrapper {
+    width: 100%;
+    max-width: 1920px;
+    aspect-ratio: 16 / 9; /* 1920x1080 비율 고정 */
+    position: relative;
+    /* 화면이 작아져도 비율 유지하며 줄어듦 */
+    max-height: 100vh; 
+}
+
+.layer-box { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+.hidden { display: none !important; }
+.highlight { color: #5A4A82; font-weight: bold; }
+.highlight-pink { color: #FF69B4; font-weight: bold; text-decoration: underline; }
+
+/* UI 박스 공통 */
+.ui-box {
+    position: absolute;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%; /* 이미지를 박스 크기에 딱 맞춤 */
+    display: flex; justify-content: center; align-items: center;
+}
+
+
+/* --- [LAYER 1] 인트로 스타일 --- */
+
+/* 메인 박스 (인트로 중앙) */
+.intro-card {
+    /* 피그마 Main Box 좌표 기반 */
+    top: 9%; right: 6.7%; width: 65%; 
+    aspect-ratio: 1247 / 598; /* 비율 고정 */
+    background-image: url('../assets/images/chat_main_box.png');
+    flex-direction: column; text-align: center;
+}
+.mission-header { font-family: 'Galmuri14'; font-size: 2.5cqi; color: #5A4A82; margin-bottom: 2cqi; }
+.mission-content { font-family: 'Galmuri14'; font-size: 1.5cqi; color: #333; line-height: 1.8; animation: fadeIn 0.5s; }
+
+/* 하단 버튼 (채팅바 재활용) */
+.intro-bottom-bar {
+    bottom: 5%; left: 50%; transform: translateX(-50%);
+    width: 90%; 
+    aspect-ratio: 1728 / 150; /* 대략적인 하단바 비율 */
+    background-image: url('../assets/images/chat_bottom_bar.png');
+}
+.start-btn {
+    width: 100%; height: 100%; background: none; border: none;
+    font-family: 'Galmuri14'; font-size: 1.5cqi; color: #FF69B4; cursor: pointer;
+    animation: blink 1.5s infinite;
+}
+
+
+/* --- [LAYER 2] 게임 화면 스타일 (피그마 좌표 반영) --- */
+
+/* 1. 대사창 (Dialogue Box) */
+.dialogue-box {
+    /* 피그마: Top 114px, Left 114px, Width 349px */
+    top: 10.5%; 
+    left: 6%; 
+    width: 18.2%; /* 349 / 1920 */
+    aspect-ratio: 349 / 230; /* 원본 비율 고정 */
+    
+    background-image: url('../assets/images/chat_dialogue_box.png');
+    
+    padding: 2% 2%; box-sizing: border-box;
+    align-items: flex-start; 
+}
+.dialogue-content { 
+    display: flex; flex-direction: column; gap: 0.5cqi; 
+    width: 100%; height: 100%; padding: 8%; box-sizing: border-box;
+}
+.char-label { font-family: 'Galmuri14'; font-size: 1.1cqi; color: #333; font-weight: bold; }
+#char-msg { font-family: 'Galmuri14'; font-size: 1.1cqi; color: #333; line-height: 1.4; }
+
+
+/* 2. 스테이션 박스 (Station Box) */
+.station-box {
+    /* 피그마: Top 352px, Left 103px, Width 371px */
+    top: 32.6%;
+    left: 5.4%;
+    width: 19.3%; /* 371 / 1920 */
+    aspect-ratio: 371 / 73; /* 원본 비율 고정 */
+    
+    background-image: url('../assets/images/chat_station_box.png');
+}
+.station-text { font-family: 'Galmuri14'; font-size: 1.2cqi; color: #FF69B4; letter-spacing: 0.1em; }
+
+
+/* 3. 하트 게이지 (스테이션 바로 아래 위치) */
+.heart-area {
+    /* 스테이션 박스(32.6% + 높이 약 7%) 바로 아래 배치 */
+    top: 41%; 
+    left: 6%;
+    position: absolute;
+    display: flex; gap: 0.5cqi;
+}
+.heart-icon { width: 2cqi; opacity: 0.4; filter: grayscale(100%); }
+.heart-icon.active { opacity: 1; filter: none; }
+
+
+/* 4. 메인 비주얼 박스 (Main Visual) */
+.main-visual-box {
+    /* 피그마: Top 94px, Right 128px, Width 1247px */
+    top: 8.7%;
+    right: 6.7%;
+    width: 65%; /* 1247 / 1920 */
+    aspect-ratio: 1247 / 598; /* 원본 비율 고정 */
+    
+    background-image: url('../assets/images/chat_main_box.png');
+    padding: 1.6%; box-sizing: border-box; /* 프레임 두께만큼 안쪽 */
+}
+#main-photo { width: 100%; height: 100%; object-fit: cover; }
+
+
+/* 5. 하단 채팅바 (Bottom Bar) */
+.bottom-bar-box {
+    /* 피그마: 보통 하단에 위치 */
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    aspect-ratio: 100 / 14; /* 가로로 긴 비율 */
+    
+    background-image: url('../assets/images/chat_bottom_bar.png');
+    justify-content: space-between; padding: 0 4cqi; box-sizing: border-box;
+}
+.chat-content { display: flex; align-items: center; width: 90%; }
+.cursor { font-family: 'Galmuri14'; font-size: 1.3cqi; color: #FF69B4; margin-right: 0.5cqi; animation: blink 1s infinite; }
+#player-text { font-family: 'Galmuri14'; font-size: 1.3cqi; color: #FF69B4; }
+.next-btn { font-family: 'Galmuri14'; font-size: 1.5cqi; color: #5A4A82; cursor: pointer; }
+
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Love - Select Preset</title>
+    
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/preset.css">
+</head>
+<body>
+    
+    <header class="main-header">
+        <h1 class="header-title">내가 좋아하는 외적 이상형은? ...</h1>
+        <div class="heart-container">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+            <img src="assets/images/heart.svg" alt="heart" class="pixel-heart">
+        </div>
+    </header>
+
+    <main class="design-container">
+        
+        <img src="assets/images/back_arrow.svg" class="arrow-btn arrow-back" onclick="goBack()" alt="Back">
+
+        <img src="assets/images/purple_star.svg" class="star-deco star-p1" alt="star">
+        <img src="assets/images/white_star.svg" class="star-deco star-w1" alt="star">
+        <img src="assets/images/purple_star.svg" class="star-deco star-p2" alt="star">
+        <img src="assets/images/white_star.svg" class="star-deco star-w2" alt="star">
+
+        <div class="pixel-window window-1" onclick="selectType('type1')">
+            <div class="window-header">
+                <span class="window-title">Type 1</span>
+                <div class="window-controls">
+                    <span class="btn-minimize">_</span>
+                    <span class="btn-close">X</span>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="image-placeholder"></div>
+            </div>
+        </div>
+
+        <div class="pixel-window window-2" onclick="selectType('type2')">
+            <div class="window-header">
+                <span class="window-title">Type 2</span>
+                <div class="window-controls">
+                    <span class="btn-minimize">_</span>
+                    <span class="btn-close">X</span>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="image-placeholder"></div>
+            </div>
+        </div>
+
+        <div class="pixel-window window-3" onclick="selectType('type3')">
+            <div class="window-header">
+                <span class="window-title">Type 3</span>
+                <div class="window-controls">
+                    <span class="btn-minimize">_</span>
+                    <span class="btn-close">X</span>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="image-placeholder"></div>
+            </div>
+        </div>
+
+        <div class="pixel-window window-4" onclick="selectType('type4')">
+            <div class="window-header">
+                <span class="window-title">Type 4</span>
+                <div class="window-controls">
+                    <span class="btn-minimize">_</span>
+                    <span class="btn-close">X</span>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="image-placeholder"></div>
+            </div>
+        </div>
+
+        <img src="assets/images/next_arrow.svg" class="arrow-btn arrow-next" onclick="goNext()" alt="Next">
+
+    </main>
+
+    <script src="js/preset.js"></script>
+</body>
+</html>

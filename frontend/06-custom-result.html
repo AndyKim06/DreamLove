@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Love - Custom Result</title>
+    
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/custom-result.css">
+</head>
+<body>
+    
+    <header class="main-header">
+        <h1 class="header-title">나만의 이상형 생성 완료!</h1>
+        <div class="heart-container">
+            <img src="assets/images/heart.svg" class="pixel-heart">
+            <img src="assets/images/heart.svg" class="pixel-heart">
+            <img src="assets/images/heart.svg" class="pixel-heart">
+            <img src="assets/images/heart.svg" class="pixel-heart">
+        </div>
+    </header>
+
+    <main class="design-container">
+        
+        <img src="assets/images/back_arrow.svg" class="arrow-btn arrow-back" onclick="goBack()" alt="Back">
+
+        <img src="assets/images/purple_star.svg" class="star-deco star-p1" alt="star">
+        <img src="assets/images/white_star.svg" class="star-deco star-w1" alt="star">
+        <img src="assets/images/purple_star.svg" class="star-deco star-p2" alt="star">
+        <img src="assets/images/white_star.svg" class="star-deco star-w2" alt="star">
+
+        <div class="pixel-window window-1" onclick="selectFinal(1)">
+            <div class="window-header">
+                <span class="window-title">Result 1</span>
+                <div class="window-controls"><span class="btn-close">X</span></div>
+            </div>
+            <div class="window-body" id="res-1">
+                <div class="loading-overlay">
+                    <div class="pixel-spinner"></div>
+                    <div class="loading-text">Generating...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pixel-window window-2" onclick="selectFinal(2)">
+            <div class="window-header">
+                <span class="window-title">Result 2</span>
+                <div class="window-controls"><span class="btn-close">X</span></div>
+            </div>
+            <div class="window-body" id="res-2">
+                <div class="loading-overlay">
+                    <div class="pixel-spinner"></div>
+                    <div class="loading-text">Generating...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pixel-window window-3" onclick="selectFinal(3)">
+            <div class="window-header">
+                <span class="window-title">Result 3</span>
+                <div class="window-controls"><span class="btn-close">X</span></div>
+            </div>
+            <div class="window-body" id="res-3">
+                <div class="loading-overlay">
+                    <div class="pixel-spinner"></div>
+                    <div class="loading-text">Generating...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pixel-window window-4" onclick="selectFinal(4)">
+            <div class="window-header">
+                <span class="window-title">Result 4</span>
+                <div class="window-controls"><span class="btn-close">X</span></div>
+            </div>
+            <div class="window-body" id="res-4">
+                <div class="loading-overlay">
+                    <div class="pixel-spinner"></div>
+                    <div class="loading-text">Generating...</div>
+                </div>
+            </div>
+        </div>
+
+        <img src="assets/images/next_arrow.svg" class="arrow-btn arrow-next" onclick="goChat()" alt="Next">
+
+    </main>
+
+    <script src="js/custom-result.js"></script>
+</body>
+</html>
