@@ -8,5 +8,5 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def find_by_id(self, user_id: str) -> User | None:
+    def findById(self, user_id: str) -> User | None:
         pass

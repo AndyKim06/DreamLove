@@ -1,25 +1,34 @@
 import uuid
-from app.models.userSchemas import UserInfoRequest, ExternalIdealRequest, UserConcernRequest
+from models.userModel import User
+from app.schemas.userSchemas import UserInfoRequest, ExternalIdealRequest, UserConcernRequest
+from repositories.userRepo import UserRepository
 
-fake_user_db = {}
+class UserService:
+    def __init__(self, repo: UserRepository):
+        self.repo = repo
 
-async def saveUserInfoService(request: UserInfoRequest):
-    user_id = str(uuid.uuid4())
+    def create_user(self, req: UserInfoRequest) -> User:
+        user = User(
+            userId=str(uuid()),
+            name=req.name,
+            gender=req.gender,
+            image=req.image
+        )
+        return self.repo.save(user)
 
-    fake_user_db[user_id] = {
-        "name": request.name,
-        "gender": request.gender,
-        "image": request.image
-    }
+    def getUserIdService(self, userId: str) -> User:
+        user = self.repo.find_by_id(userId)
+        if not user:
+            raise ValueError("User not found")
+        return user
 
-    return user_id
+    def saveUserConcernService(self, request: UserConcernRequest, userId: str):
+        user = self.repo.findById(userId)
+        if not user:
+            raise ValueError("User not found")
 
-async def getUserIdService(userId: str):
-    return fake_user_db.get(userId)
-
-async def saveUserConcernService(request: UserConcernRequest, userId: str):
-    fake_user_db[userId]["concern"] = request.concern
-    return "ok"
+        user.concern = request.concern
+        return self.repo.save(user)
 
 
 

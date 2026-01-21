@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Response, Cookie
-from app.models.userSchemas import UserInfoRequest, ExternalIdealRequest, UserConcernRequest
-from app.services.user.userService import saveUserInfoService, getUserIdService, saveUserConcernService
+from fastapi import APIRouter, Response, Cookie, Depends
+from app.schemas.userSchemas import UserInfoRequest, ExternalIdealRequest, UserConcernRequest
+from dependency import get_user_service
+from services.user.userService import UserService
 router = APIRouter(
     prefix="/user",
     tags=["user"]
@@ -12,11 +13,13 @@ router = APIRouter(
     summary="사용자의 정보 입력",
     description="사용자에게 정보를 입력받고 저장, 클라이언트에게 쿠키 or 세션줘서 식별가능하게함"
 )
-async def saveUserInfo(request: UserInfoRequest, response: Response):
-    userId = await saveUserInfoService(request)
+def saveUserInfo(request: UserInfoRequest, 
+                       response : Response,
+                       service: UserService = Depends(get_user_service)):
+    user = service.create_user(request)
     response.set_cookie(
         key="userId",
-        value=userId,
+        value=user.userId,
         httponly=True,
         secure=False,
         samesite="lax",
@@ -25,24 +28,23 @@ async def saveUserInfo(request: UserInfoRequest, response: Response):
 
     return {
         "message": "사용자 정보 저장 완료",
-        "userId": userId
+        "userId": user.userId
     }
 
 @router.get(
     "/get",
     summary="정보 저장 테스트용"
 )
-async def getUserInfo(userId: str = Cookie(None)):
-    user = await getUserIdService(userId)
-    return user
+def getUserInfo(userId: str = Cookie(None), service: UserService = Depends(get_user_service)):
+    return service.getUserIdService(userId)
 
-@router.post(
+@router.patch(
     "/concern",
     summary="사용자의 고민 입력",
     description="사용자에게 고민을 입력받고 저장함."
 )
-async def saveUserConcern(request: UserConcernRequest, userId: str = Cookie(None)):
-    response = await saveUserConcernService(request, userId)
-    return {
-        "message": response,
-    }
+def saveUserConcern(request: UserConcernRequest,
+                            userId: str = Cookie(None),
+                            service: UserService = Depends(get_user_service)):
+    return service.saveUserConcernService(userId, request)
+    

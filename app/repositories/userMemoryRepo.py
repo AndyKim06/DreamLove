@@ -10,5 +10,5 @@ class UserMemoryRepository(UserRepository):
         self._store[user.userId] = user
         return user
 
-    def find_by_id(self, user_id: str) -> User | None:
+    def findById(self, user_id: str) -> User | None:
         return self._store.get(user_id)
