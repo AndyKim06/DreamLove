@@ -14,7 +14,6 @@ router = APIRouter(
 )
 async def saveUserInfo(request: UserInfoRequest, response: Response):
     userId = await saveUserInfoService(request)
-    
     response.set_cookie(
         key="userId",
         value=userId,
