@@ -1,20 +1,19 @@
 # DreamLove AI Chatbot Backend Dependencies
 
-# FastAPI 프레임워크
 fastapi==0.109.0
 uvicorn[standard]==0.27.0
 
-# Pydantic 및 설정 관리
 pydantic==2.5.3
 pydantic-settings==2.1.0
 
-# HTTP 클라이언트
 httpx==0.26.0
 
-# 환경변수 관리
 python-dotenv==1.0.0
 
-# 개발 도구 (선택사항)
 # pytest==7.4.4
 # pytest-asyncio==0.23.3
 
+qrcode
+aura_sr
+google-genai
+python-multipart

@@ -4,9 +4,9 @@ DreamLove 프로젝트 채팅 API 라우터
 """
 
 from fastapi import APIRouter, HTTPException, status
-from app.models.schemas import ChatRequest, ChatResponse
-from app.services.chat_flow import run_chat_flow
-from app.services.solar_client import SolarAPIError
+from app.schemas.chatSchemas import ChatRequest, ChatResponse
+from app.services.chat.chat_flow import run_chat_flow
+from app.services.chat.solar_client import SolarAPIError
 
 router = APIRouter(
     prefix="/chat",

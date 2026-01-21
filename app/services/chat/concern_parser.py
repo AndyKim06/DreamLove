@@ -7,8 +7,8 @@ DreamLove 프로젝트 연애고민 파서 모듈
 import json
 import random
 from typing import Optional
-from app.models.schemas import ParsedContext
-from app.services.solar_client import query_solar, SolarAPIError
+from app.schemas.chatSchemas import ParsedContext
+from app.services.chat.solar_client import query_solar, SolarAPIError
 
 
 # 랜덤 선택용 기본값

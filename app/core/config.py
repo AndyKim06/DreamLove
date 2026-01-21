@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     
     # CORS 설정
-    ALLOW_ORIGINS: list = ["*"]
+    ALLOW_ORIGINS: list = ["http://127.0.0.1:5500", "http://127.0.0.1:5500", "http://127.0.0.1:8000" ]
     
     class Config:
         env_file = ".env"
