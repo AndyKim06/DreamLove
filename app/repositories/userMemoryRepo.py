@@ -1,6 +1,6 @@
 from typing import Dict
-from models.userModel import User
-from repositories.userRepo import UserRepository
+from app.models.userModel import User
+from app.repositories.userRepo import UserRepository
 
 class UserMemoryRepository(UserRepository):
     def __init__(self):

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, Literal
-from schemas.userSchemas import FaceShape, Eyes, Eyelid, Hair
+from app.schemas.userSchemas import FaceShape, Eyes, Eyelid, Hair
 
 class User(BaseModel):
     userId: str # pk
@@ -9,3 +9,4 @@ class User(BaseModel):
     userImage: Optional[str] = None
     userConcern: Optional[str] = None
     userCustom : bool
+    userIdealType : int

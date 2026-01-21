@@ -1,5 +1,5 @@
-from repositories.userMemoryRepo import UserMemoryRepository
-from services.user.userService import UserService
+from app.repositories.userMemoryRepo import UserMemoryRepository
+from app.services.user.userService import UserService
 
 _repo = UserMemoryRepository()
 

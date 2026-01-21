@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response, Cookie, Depends
 from app.schemas.userSchemas import UserInfoRequest, ExternalIdealRequest, UserConcernRequest
-from dependency import get_user_service
-from services.user.userService import UserService
+from app.dependency import get_user_service
+from app.services.user.userService import UserService
 router = APIRouter(
     prefix="/user",
     tags=["user"]
@@ -44,7 +44,26 @@ def getUserInfo(userId: str = Cookie(None), service: UserService = Depends(get_u
     description="사용자에게 고민을 입력받고 저장함."
 )
 def saveUserConcern(request: UserConcernRequest,
-                            userId: str = Cookie(None),
-                            service: UserService = Depends(get_user_service)):
+                    userId: str = Cookie(None),
+                    service: UserService = Depends(get_user_service)):
     return service.saveUserConcernService(userId, request)
-    
+
+@router.patch(
+    "/customIdeal",
+    summary="사용자의 이상형 커스텀 여부 저장",
+    description="사용자에게 이상형 커스텀 여부를 저장함."
+)
+def saveUserConcern(customIdeal: bool,
+                    userId: str = Cookie(None),
+                    service: UserService = Depends(get_user_service)):
+    return service.chooseCustomIdealService(userId, customIdeal)
+
+@router.patch(
+    "/idealTpye",
+    summary="사용자의 이상형 선택 저장",
+    description="사용자가 선택한 이상형을 저장함."
+)
+def saveUserConcern(idealType: int,
+                    userId: str = Cookie(None),
+                    service: UserService = Depends(get_user_service)):
+    return service.chooseIdealTypeService(userId, idealType)

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from models.userModel import User
+from app.models.userModel import User
 
 class UserRepository(ABC):
 
