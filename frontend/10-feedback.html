@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Love - Ending</title>
+    
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/feedback.css">
+</head>
+<body>
+    
+    <main class="ending-scene">
+        
+        <!-- 배경 및 장식 요소 -->
+        <div class="background-texture"></div>
+        
+        <div class="decorations">
+            <!-- 왼쪽 상단 픽셀 윈도우들 -->
+            <div class="pixel-deco-window win-1">
+                <div class="win-header">Type 2 <span class="win-btn">x</span></div>
+                <div class="win-content">
+                    <img src="assets/images/heart.svg" class="deco-icon mail-icon">
+                    <span class="deco-dots">...</span>
+                </div>
+            </div>
+            
+            <div class="pixel-deco-window win-2">
+                <div class="win-header">Type 2 <span class="win-btn">x</span></div>
+                <div class="win-content">
+                    <span class="deco-text">L o v e</span>
+                    <div class="deco-hearts">
+                        <img src="assets/images/heart.svg">
+                        <img src="assets/images/heart.svg">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 오른쪽 상단 장식 -->
+            <div class="right-deco">
+                <div class="line-deco"></div>
+            </div>
+        </div>
+
+        <!-- 메인 엔벨롭 및 결과 카드 영역 -->
+        <div class="envelope-area">
+            <!-- 편지 봉투 뒷면 -->
+            <div class="envelope-back"></div>
+            
+            <!-- 타이틀 텍스트 (성공/실패에 따라 변경) -->
+            <h1 id="result-title" class="result-title-text">Why you are failed this game</h1>
+
+            <!-- 결과 콘텐츠 (종이) -->
+            <div class="paper-card">
+                
+                <!-- 1. 실패 시: 텍스트 피드백 -->
+                <div id="fail-content" class="content-view hidden">
+                    <div class="feedback-scroll-container">
+                        <p id="feedback-text" class="feedback-text">
+                            너무 딱딱한 말투와<br>
+                            섬세한 재와씨에게 차갑게<br>
+                            대한 이유로 그를 갖지<br>
+                            못하게 되었습니다...
+                        </p>
+                    </div>
+                    <div class="fail-footer-line">
+                        <span>도동컴퍼 올림</span>
+                    </div>
+                </div>
+
+                <!-- 2. 성공 시: 사진 -->
+                <div id="success-content" class="content-view hidden">
+                    <div class="photo-frame">
+                        <img id="couple-photo" src="" alt="Couple">
+                        <div class="photo-date" id="photo-date">2026.01.26</div>
+                        <div class="photo-overlay"></div>
+                    </div>
+                    <!-- 테이프 장식 -->
+                    <div class="tape-deco"></div>
+                </div>
+
+            </div>
+            
+            <!-- 편지 봉투 앞면 (시각적 레이어) -->
+            <div class="envelope-front"></div>
+        </div>
+
+        <!-- 하단 Ending 텍스트 -->
+        <div class="ending-label">
+            Ending ... <img src="assets/images/purple_star.svg" class="star-icon">
+        </div>
+
+        <!-- 버튼 그룹 (화면 하단 고정) -->
+        <div class="action-buttons">
+            <button id="btn-download" class="action-btn hidden" onclick="downloadPhoto()">
+                📸 SAVE
+            </button>
+            <button class="action-btn" onclick="shareResult()">
+                🔗 SHARE
+            </button>
+            <button class="action-btn restart-btn" onclick="restartGame()">
+                🔄 RESTART
+            </button>
+        </div>
+
+        <!-- QR 코드 모달 -->
+        <div id="qr-modal" class="modal hidden">
+            <div class="modal-overlay" onclick="closeQRModal()"></div>
+            <div class="pixel-window modal-window">
+                <div class="window-header">
+                    <span class="window-title">QR Code</span>
+                    <span class="btn-close" onclick="closeQRModal()">X</span>
+                </div>
+                <div class="window-body">
+                    <p class="qr-msg">Scan to Download!</p>
+                    <img id="qr-code-img" src="" alt="QR">
+                    <button class="pixel-btn btn-close-modal" onclick="closeQRModal()">CLOSE</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="js/feedback.js"></script>
+</body>
+</html>
