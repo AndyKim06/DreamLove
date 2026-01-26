@@ -1,0 +1,369 @@
+/* feedback.css */
+
+body {
+    background-color: #a8a0b0; /* 전체 배경색 (이미지 참고) */
+    overflow-x: hidden;
+}
+
+.ending-scene {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: url('../assets/images/pattern_bg.png'); /* 패턴 배경이 있다면 */
+    background-size: cover;
+    font-family: 'DungGeunMo', monospace;
+    color: #444;
+}
+
+/* --- 장식 요소 (Decorations) --- */
+.decorations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.pixel-deco-window {
+    position: absolute;
+    background: #fff;
+    border: 2px solid #ff9ebb; /* 핑크색 테두리 */
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+    width: 120px;
+    padding-bottom: 5px;
+}
+
+.win-header {
+    background: #ff9ebb;
+    color: white;
+    font-size: 12px;
+    padding: 2px 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.win-btn {
+    cursor: pointer;
+}
+
+.win-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 5px;
+}
+
+/* 위치 조정 */
+.win-1 {
+    top: 15%;
+    left: 10%;
+    transform: rotate(-5deg);
+}
+
+.win-2 {
+    top: 25%;
+    left: 8%;
+    transform: rotate(5deg);
+}
+
+.deco-icon { width: 20px; }
+.deco-dots { font-size: 20px; line-height: 10px; color: #666; }
+.deco-text { font-size: 14px; color: #333; font-weight: bold; }
+.deco-hearts img { width: 14px; }
+
+
+/* --- 메인 영역 (Envelope + Paper) --- */
+.envelope-area {
+    position: relative;
+    width: 90%;
+    max-width: 1000px; /* 더 크게 증가 */
+    height: 750px; /* 더 크게 증가 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.envelope-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #c8a68b; /* 갈색 봉투 색 */
+    /* transform: rotate(-2deg); 회전 제거 */
+    border-radius: 5px;
+    box-shadow: 10px 10px 20px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* 결과 타이틀 */
+.result-title-text {
+    position: absolute;
+    top: -40px;
+    width: 100%;
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace; /* 타자기 느낌 */
+    font-size: 24px;
+    color: #4a4a4a;
+    letter-spacing: 2px;
+    z-index: 5;
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+}
+
+/* 종이 카드 */
+.paper-card {
+    position: relative;
+    width: 90%; /* 종이 크기도 비율 증가 */
+    height: 95%; /* 종이 크기도 비율 증가 */
+    background: #fff;
+    /* transform: rotate(3deg); 회전 제거 */
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    z-index: 3;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- 실패 콘텐츠 (텍스트) --- */
+.feedback-scroll-container {
+    width: 100%;
+    max-height: 550px; /* 스크롤 높이 추가 증가 */
+    overflow-y: auto;
+    padding-right: 10px;
+    margin-bottom: 20px;
+}
+
+/* 스크롤바 커스텀 */
+.feedback-scroll-container::-webkit-scrollbar {
+    width: 8px;
+}
+.feedback-scroll-container::-webkit-scrollbar-thumb {
+    background: #ff9ebb;
+    border-radius: 4px;
+}
+.feedback-scroll-container::-webkit-scrollbar-track {
+    background: #eee;
+}
+
+.feedback-text {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #d64d4d; /* 붉은색 텍스트 */
+    font-weight: bold;
+    text-align: center;
+    word-break: keep-all;
+}
+
+.fail-footer-line {
+    position: absolute;
+    bottom: 30px;
+    right: 40px;
+    border-top: 2px solid #444;
+    padding-top: 5px;
+    font-size: 14px;
+    color: #444;
+    width: 150px;
+    text-align: right;
+}
+
+/* --- 성공 콘텐츠 (사진) --- */
+.photo-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000; /* 테두리 */
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+}
+
+.photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%); /* 흑백 사진 느낌 */
+}
+
+.photo-date {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: white;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.tape-deco {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 100px;
+    height: 25px;
+    background: rgba(255, 192, 203, 0.7); /* 반투명 핑크 테이프 */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* --- Ending 텍스트 --- */
+.ending-label {
+    position: absolute;
+    bottom: 80px;
+    right: 10%;
+    font-size: 48px;
+    color: #665c56;
+    font-family: 'Courier New', monospace;
+    font-weight: lighter;
+    letter-spacing: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0.7;
+    z-index: 5;
+}
+
+.star-icon {
+    width: 30px;
+    animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+/* --- 하단 버튼 --- */
+.action-buttons {
+    position: fixed;
+    bottom: 30px;
+    display: flex;
+    gap: 15px;
+    z-index: 100;
+}
+
+.action-btn {
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid #444;
+    padding: 10px 20px;
+    font-family: 'DungGeunMo', monospace;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 4px 4px 0 #444;
+}
+
+.action-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #444;
+    background: #fff;
+}
+
+.action-btn:active {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 0 #444;
+}
+
+.hidden { display: none !important; }
+
+
+/* --- QR 모달 --- */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+.modal-overlay {
+    position: absolute;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+}
+.modal-window {
+    position: relative;
+    background: #fff;
+    border: 3px solid #000;
+    width: 300px;
+    box-shadow: 10px 10px 0 #000;
+}
+.window-header {
+    background: #ff69b4;
+    color: white;
+    padding: 5px 10px;
+    display: flex; justify-content: space-between;
+}
+.window-body {
+    padding: 20px;
+    text-align: center;
+}
+.qr-msg { margin-bottom: 20px; color: #666; }
+#qr-code-img { width: 150px; height: 150px; margin-bottom: 20px; }
+.btn-close-modal {
+    background: white; border: 2px solid #000; padding: 5px 20px; cursor: pointer;
+}
+.qr-content {
+    text-align: center;
+    padding: 20px;
+}
+
+.qr-instruction {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.qr-code-box {
+    margin: 30px auto;
+    padding: 20px;
+    background: white;
+    border: 4px solid #333;
+    display: inline-block;
+}
+
+.qr-code-box img {
+    display: block;
+    width: 250px;
+    height: 250px;
+}
+
+.btn-close-modal {
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .main-window .window-body {
+        padding: 30px 20px;
+    }
+    
+    .success-title {
+        font-size: 24px;
+    }
+    
+    .success-message {
+        font-size: 16px;
+    }
+    
+    .photo-frame {
+        max-width: 300px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .pixel-btn {
+        width: 100%;
+    }
+}
