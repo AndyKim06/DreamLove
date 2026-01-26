@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Response, Cookie, Depends, UploadFile, File, Form
+from fastapi import APIRouter, Response, Cookie, Depends, UploadFile, File, Form, BackgroundTasks
 from app.schemas.userSchemas import UserConcernRequest
 from typing import Optional, Literal
-from app.dependency import getUserService
+from app.dependency import getUserService, getImageGenService
+from app.services.imageGen.imageGenService import ImageGenService
 from app.services.user.userService import UserService
 router = APIRouter(
     prefix="/user",
@@ -65,11 +66,32 @@ def saveUserConcern(customIdeal: bool,
     return service.chooseCustomIdealService(userId, customIdeal)
 
 @router.patch(
-    "/idealTpye",
+    "/idealType",
     summary="사용자의 이상형 선택 저장",
     description="사용자가 선택한 이상형을 저장함."
 )
-def saveUserConcern(idealType: int,
+def saveUserIdealType(idealType: int,
+                    location: str,
+                    background_tasks: BackgroundTasks,
                     userId: str = Cookie(None),
-                    service: UserService = Depends(getUserService)):
-    return service.chooseIdealTypeService(userId, idealType)
+                    user_service: UserService = Depends(getUserService),
+                    image_service: ImageGenService = Depends(getImageGenService),):
+    # 1️⃣ 이상형 저장
+    result = user_service.chooseIdealTypeService(userId, idealType)
+
+    # 2️⃣ 이미지 생성은 백그라운드로
+    background_tasks.add_task(
+        generate_expression_bg,
+        "park",
+        userId,
+        image_service
+    )
+
+    return result
+
+def generate_expression_bg(
+    location: str,
+    userId: str,
+    image_service: ImageGenService
+):
+    image_service.generateExpressionService(location, userId)
