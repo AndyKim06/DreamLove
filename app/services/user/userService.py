@@ -4,6 +4,8 @@ from app.models.userModel import User
 from app.schemas.userSchemas import UserConcernRequest
 from app.repositories.userRepo import UserRepository
 from PIL import Image
+import os
+from pathlib import Path
 
 class UserService:
     def __init__(self, repo: UserRepository):
@@ -11,7 +13,10 @@ class UserService:
 
     def create_user(self, name:str, gender:str, image: UploadFile) -> User:
         userId = str(uuid4())
-        image_path = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\user\\{userId}.png"
+        image_dir = Path("app/imageCloud/user")
+        image_dir.mkdir(parents=True, exist_ok=True)
+            
+        image_path = str(image_dir / f"{userId}.png")
         with open(image_path, "wb") as f:
             f.write(image.file.read())
 

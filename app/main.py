@@ -18,6 +18,11 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+# 별 의미 없음 404 로그 안보이게
+@app.get("/.well-known/appspecific/com.chrome.devtools.json")
+def chrome_devtools():
+    return {}
+
 # CORS 설정
 app.add_middleware(
     CORSMiddleware,

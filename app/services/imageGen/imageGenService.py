@@ -8,6 +8,8 @@ from aura_sr import AuraSR
 from app.models.userModel import User
 from app.repositories.userRepo import UserRepository
 from app.schemas.imageGenSchemas import ExternalIdealRequest
+from pathlib import Path
+import base64
 
 ROLE_INSTRUCTION = """
 You are a professional image generation model specialized in preserving human identity.
@@ -38,7 +40,7 @@ class ImageGenService:
         load_dotenv("gemini_api_key.env")
         self.GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-        self.client = genai.Client(self.GEMINI_API_KEY)
+        self.client = genai.Client(api_key=self.GEMINI_API_KEY)
         self.aura_sr = AuraSR.from_pretrained("fal/AuraSR-v2")
     
     def generateIdealImageService(self, request :ExternalIdealRequest):
@@ -46,13 +48,14 @@ class ImageGenService:
     
     def getUserIdealImagePath(self, userId):
         user = self.repo.findById(userId)
+        image_dir = Path("app/imageCloud")
         if user.userCustom:
-            idealImage = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\{userId}__{user.userIdealType}.png"
+            idealImage = str(image_dir / f"{userId}_{user.userIdealType}.png")
         else:
             if user.userGender == "남자":
-                idealImage = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\standard_female_{user.userIdealType}.png"
+                idealImage = str(image_dir / f"standard_female_{user.userIdealType}.png")
             else:
-                idealImage = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\standard_male_{user.userIdealType}.png"
+                idealImage = str(image_dir / f"standard_male_{user.userIdealType}.png")
         return idealImage
     
     def generateExpressionService(self, location:str, userId:str):
@@ -90,10 +93,10 @@ class ImageGenService:
                     candidate = response.candidates[0]
                     for part in candidate.content.parts:
                         if part.inline_data is not None:
-                            img_data = Image.open(BytesIO(part.inline_data.data))
-                            file_name = f"{image_path}_{exp_name}.jpg"
-                            img_data.save(file_name)
-                            print(f"Saved: {file_name}")
+                            file_name = f"{image_path}_{location}_{exp_name}.jpg"
+                            image_bytes = base64.b64decode(part.inline_data.data)
+                            with open(file_name, "wb") as f:
+                                f.write(image_bytes)
                         elif part.text is not None:
                             print(f"Model text: {part.text}")
 
@@ -132,7 +135,7 @@ class ImageGenService:
         try:
             response = self.client.models.generate_content(
                 model="gemini-3-pro-image-preview",
-                contents=[current_prompt, user.userImage, idealImage],
+                contents=[current_prompt, Image.open(user.userImage), Image.open(idealImage)],
                 config={
                     "system_instruction": ROLE_INSTRUCTION,
                     "temperature": 0.7
@@ -143,10 +146,11 @@ class ImageGenService:
                 candidate = response.candidates[0]
                 for part in candidate.content.parts:
                     if part.inline_data is not None:
-                        img_data = Image.open(BytesIO(part.inline_data.data))
-                        file_name = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\{user.userId}_success_result"
-                        img_data.save(file_name)
-                        print(f"Saved: {file_name}")
+                        image_dir = Path("app/imageCloud/user")
+                        file_name = str(image_dir / f"{userId}_success_result.png")
+                        image_bytes = base64.b64decode(part.inline_data.data)
+                        with open(file_name, "wb") as f:
+                            f.write(image_bytes)
                     elif part.text is not None:
                         print(f"Model text: {part.text}")
         except Exception as e:
