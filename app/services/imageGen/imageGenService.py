@@ -96,6 +96,7 @@ class ImageGenService:
     def generateExpressionService(self, location:str, userId:str):
         image_path = self.getUserIdealImagePath(userId)
         image = Image.open(image_path)
+        image_path = image_path.removesuffix(".png")
 
         expressions = ["Smiling", "Neutral", "Disappointed"]
         for i, exp_name in enumerate(expressions):
@@ -128,7 +129,7 @@ class ImageGenService:
                     candidate = response.candidates[0]
                     for part in candidate.content.parts:
                         if part.inline_data is not None:
-                            file_name = f"{image_path}_{location}_{exp_name}.jpg"
+                            file_name = f"{image_path}_{location}_{exp_name}.png"
                             image_bytes = base64.b64decode(part.inline_data.data)
                             with open(file_name, "wb") as f:
                                 f.write(image_bytes)
