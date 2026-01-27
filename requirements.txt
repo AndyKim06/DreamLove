@@ -17,3 +17,6 @@ qrcode
 aura_sr
 google-genai
 python-multipart
+
+huggingface_hub
+Pillow

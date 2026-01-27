@@ -58,3 +58,6 @@ htmlcov/
 .dmypy.json
 dmypy.json
 
+# Static Assets
+static/*
+!static/.gitkeep
