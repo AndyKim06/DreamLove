@@ -65,11 +65,11 @@ def saveUserConcern(customIdeal: bool,
     return service.chooseCustomIdealService(userId, customIdeal)
 
 @router.patch(
-    "/idealTpye",
+    "/idealType",
     summary="사용자의 이상형 선택 저장",
     description="사용자가 선택한 이상형을 저장함."
 )
-def saveUserConcern(idealType: int,
+def saveIdealType(idealType: int,
                     userId: str = Cookie(None),
                     service: UserService = Depends(getUserService)):
     return service.chooseIdealTypeService(userId, idealType)
