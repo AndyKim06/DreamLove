@@ -48,7 +48,7 @@
 /* [NEW] 박스 타이틀 스타일 */
 .box-title {
     position: absolute;
-    top: 15%; /* 박스 상단 15% 지점 */
+    top: 20%; /* 박스 상단 15% 지점 */
     width: 100%;
     text-align: center;
     
@@ -63,8 +63,8 @@
 .transparent-textarea {
     position: absolute;
     /* 타이틀 아래쪽부터 시작 */
-    top: 40%; 
-    left: 50%;
+    top: 48%; 
+    left: 55%;
     transform: translateX(-50%);
     
     /* 좌우 여백 확보 */

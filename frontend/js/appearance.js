@@ -6,23 +6,18 @@ function goBack() {
     window.history.back();
 }
 
+// [수정] 선택 시 바로 이동하게 변경
 function selectOption(type) {
     selectedAppearance = type;
-    
-    const defBtn = document.getElementById('opt-default');
-    const custBtn = document.getElementById('opt-custom');
-    
-    defBtn.classList.remove('selected');
-    custBtn.classList.remove('selected');
+    localStorage.setItem('appearance_type', type);
     
     if (type === 'default') {
-        defBtn.classList.add('selected');
+        location.href = '04-preset.html'; 
     } else {
-        custBtn.classList.add('selected');
+        location.href = '05-select-type.html'; 
     }
 }
 
-// 핵심 수정 부분: async 함수로 변경
 async function goNext() {
     if (!selectedAppearance) {
         alert("원하는 방식을 선택해주세요!");

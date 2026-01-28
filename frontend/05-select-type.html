@@ -59,45 +59,29 @@
                     </label>
                     <label class="radio-label">
                         <input type="radio" name="eyelid" value="inner">
-                        <span class="radio-custom"></span> 속쌍
+                        <span class="radio-custom"></span> 유쌍
                     </label>
-                    <label class="radio-label">
-                        <input type="radio" name="eyelid" value="outer">
-                        <span class="radio-custom"></span> 겉쌍
-                    </label>
-                </div>
-
-                <div class="form-group">
-                    <label class="input-label">코 모양</label>
-                    <div class="select-wrapper">
-                        <select id="nose-shape" class="pixel-select">
-                            <option value="high">오똑한 코</option>
-                            <option value="natural">자연스러운 코</option>
-                            <option value="round">둥근 코</option>
-                        </select>
-                        <span class="select-arrow">▼</span>
-                    </div>
+              
                 </div>
 
                 <div class="form-group">
                     <label class="input-label">얼굴형</label>
                     <div class="select-wrapper">
                         <select id="face-shape" class="pixel-select">
-                            <option value="oval">계란형</option>
-                            <option value="round">둥근형</option>
-                            <option value="angular">각진형</option>
+                            <option value="oval">둥근형</option>
+                            <option value="round">V라인</option>
+        
                         </select>
                         <span class="select-arrow">▼</span>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="input-label">분위기</label>
+                    <label class="input-label">메이크업 강도</label>
                     <div class="select-wrapper">
-                        <select id="atmosphere" class="pixel-select">
-                            <option value="innocent">청순한</option>
-                            <option value="chic">시크한</option>
-                            <option value="cheerful">발랄한</option>
+                        <select id="nose-shape" class="pixel-select">
+                            <option value="high">연하게</option>
+                            <option value="natural">진하게</option>
                         </select>
                         <span class="select-arrow">▼</span>
                     </div>
@@ -107,14 +91,29 @@
                     <label class="input-label">헤어스타일</label>
                     <div class="select-wrapper">
                         <select id="hair-style" class="pixel-select">
-                            <option value="long-straight">긴 생머리</option>
-                            <option value="short-cut">숏컷</option>
-                            <option value="wave">웨이브 펌</option>
-                            <option value="ponytail">포니테일</option>
+                            <option value="long-straight">장발</option>
+                            <option value="short-cut">단발</option>
+                            <option value="wave">숏컷</option>
+            
                         </select>
                         <span class="select-arrow">▼</span>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="input-label">옷 스타일</label>
+                    <div class="select-wrapper">
+                        <select id="face-shape" class="pixel-select">
+                            <option value="oval">셔츠</option>
+                            <option value="round">니트</option>
+                            <option value="round">후드티</option>
+        
+                        </select>
+                        <span class="select-arrow">▼</span>
+                    </div>
+                </div>
+
+
 
                 <div class="form-group last-group">
                     <label class="input-label">피부톤</label>
@@ -129,9 +128,6 @@
             </div>
 
         </div>
-
-        <img src="assets/images/next_arrow.svg" class="arrow-btn arrow-next" onclick="goNext()" alt="Next">
-
     </main>
 
     <script src="js/select-type.js"></script>
