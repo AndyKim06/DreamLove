@@ -13,17 +13,11 @@ class UserService:
 
     def create_user(self, name:str, gender:str, image: UploadFile) -> User:
         userId = str(uuid4())
-<<<<<<< HEAD
-        image_dir = Path("app/imageCloud/user")
-        image_dir.mkdir(parents=True, exist_ok=True)
-            
-=======
         
         # 상대 경로 사용 및 디렉토리 자동 생성
         image_dir = Path("app/imageCloud/user")
         image_dir.mkdir(parents=True, exist_ok=True)
         
->>>>>>> d0f566382d12a3836bc17e2743ab9a98f572ee53
         image_path = str(image_dir / f"{userId}.png")
         with open(image_path, "wb") as f:
             f.write(image.file.read())
