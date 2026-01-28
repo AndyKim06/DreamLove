@@ -87,7 +87,7 @@ async def run_interactive_chat():
             session["current_question"] = data["bot_message"]
             
             ctx = session["parsed_context"]
-            print(f"💡 [분석 완료] 장소: {ctx['dating_place']} | 관계: {ctx['relationship']}")
+            print(f"💡 [분석 완료] 장소: {ctx['location']} | 관계: {ctx['relationship']}")
             print(f"\n🌹 그(그녀): \"{data['bot_message']}\"\n")
             
         except httpx.ConnectError:

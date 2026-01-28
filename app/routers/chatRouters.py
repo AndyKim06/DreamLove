@@ -8,6 +8,7 @@ from app.schemas.chatSchemas import ChatRequest, ChatResponse
 from app.services.chat.chat_flow import run_chat_flow
 from app.services.chat.solar_client import SolarAPIError
 
+
 router = APIRouter(
     prefix="/chat",
     tags=["chat"]

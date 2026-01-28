@@ -46,13 +46,16 @@ class ImageGenService:
     
     def getUserIdealImagePath(self, userId):
         user = self.repo.findById(userId)
+        base_path = os.getcwd()
+        image_cloud_path = os.path.join(base_path, "app", "imageCloud")
+        
         if user.userCustom:
-            idealImage = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\{userId}__{user.userIdealType}.png"
+            idealImage = os.path.join(image_cloud_path, f"{userId}__{user.userIdealType}.png")
         else:
             if user.userGender == "남자":
-                idealImage = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\standard_female_{user.userIdealType}.png"
+                idealImage = os.path.join(image_cloud_path, f"standard_female_{user.userIdealType}.png")
             else:
-                idealImage = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\standard_male_{user.userIdealType}.png"
+                idealImage = os.path.join(image_cloud_path, f"standard_male_{user.userIdealType}.png")
         return idealImage
     
     def generateExpressionService(self, location:str, userId:str):
@@ -144,7 +147,8 @@ class ImageGenService:
                 for part in candidate.content.parts:
                     if part.inline_data is not None:
                         img_data = Image.open(BytesIO(part.inline_data.data))
-                        file_name = f"C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\{user.userId}_success_result"
+                        base_path = os.getcwd()
+                        file_name = os.path.join(base_path, "app", "imageCloud", f"{user.userId}_success_result.png")
                         img_data.save(file_name)
                         print(f"Saved: {file_name}")
                     elif part.text is not None:

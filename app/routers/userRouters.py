@@ -44,15 +44,28 @@ def getUserInfo(userId: str = Cookie(None),
                 service: UserService = Depends(getUserService)):
     return service.getUserIdService(userId)
 
+from app.services.chat.concern_parser import parse_concern
+
 @router.patch(
     "/concern",
     summary="사용자의 고민 입력",
-    description="사용자에게 고민을 입력받고 저장함."
+    description="사용자에게 고민을 입력받고 저장함. 동시에 고민을 분석하여 장소를 추출함."
 )
-def saveUserConcern(request: UserConcernRequest,
-                    userId: str = Cookie(None),
-                    service: UserService = Depends(getUserService)):
-    return service.saveUserConcernService(userId, request)
+async def saveUserConcern(
+    request: UserConcernRequest,
+    userId: str = Cookie(None),
+    service: UserService = Depends(getUserService)
+):
+    # 1. 사용자 고민 저장
+    updated_user = service.saveUserConcernService(userId, request)
+    
+    # 2. 고민 분석 (장소 추출)
+    parsed_context = await parse_concern(request.concern)
+    
+    return {
+        "message": "고민 저장 및 장소 분석 완료",
+        "parsed_context": parsed_context
+    }
 
 @router.patch(
     "/customIdeal",
