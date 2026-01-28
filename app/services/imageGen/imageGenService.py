@@ -60,7 +60,7 @@ class ImageGenService:
         prompt_eng, negative_prompt, tokens = self.promptBuilder.build_prompt(gender=ideal_gender, animal=ideal_animal, eyelid=ideal_eyelid, face_shape=ideal_faceShape,
                                         hairstyle=ideal_hair, clothing=ideal_clothe, makeup=ideal_makeup, skintone=ideal_skinTone)
         
-
+        image_list = []
         logging.info(f"Prompt token = {tokens}, Image Generating")
         logging.info(f"gender = {ideal_gender}, ideal_animal = {ideal_animal}, ideal_eyelid = {ideal_eyelid}, ideal_faceShape = {ideal_faceShape}")
         logging.info(f"ideal hair = {ideal_hair}, ideal_clothe = {ideal_clothe}, ideal_makeup = {ideal_makeup}, ideal_skinTone = {ideal_skinTone}")
@@ -68,6 +68,7 @@ class ImageGenService:
         for i in range(4):
             image_dir = Path("app/imageCloud")
             image_path = str(image_dir / f"{userId}_{i+1}.png")
+            image_list.append(image_path)
             image = self.hfClient.text_to_image(
                     prompt=prompt_eng,
                     model="black-forest-labs/FLUX.1-dev",
@@ -79,7 +80,7 @@ class ImageGenService:
                 )
             image.save(image_path)
             logging.info(f"{i+1}번째 사진 생성 완료")
-        return 
+        return image_list
     
     def getUserIdealImagePath(self, userId):
         user = self.repo.findById(userId)

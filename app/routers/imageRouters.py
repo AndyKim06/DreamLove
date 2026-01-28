@@ -19,8 +19,10 @@ def generateIdeal( request : ExternalIdealRequest,
                      userId: str = Cookie(None),
                      service: ImageGenService = Depends(getImageGenService),
                     ):
-    image = service.generateIdealImageService(request=request, userId=userId)
-    return "ok"
+    image_paths = service.generateIdealImageService(request=request, userId=userId)
+    return {
+        "images": image_paths
+    }
 
 @router.post(
     "/idealExpressChange",

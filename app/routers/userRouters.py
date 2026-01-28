@@ -78,7 +78,7 @@ def saveUserIdealType(idealType: int,
                     image_service: ImageGenService = Depends(getImageGenService),):
     # 1️⃣ 이상형 저장
     result = user_service.chooseIdealTypeService(userId, idealType)
-
+    
     # # 2️⃣ 이미지 생성은 백그라운드로
     # background_tasks.add_task(
     #     generate_expression_bg,
