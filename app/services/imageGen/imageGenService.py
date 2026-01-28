@@ -8,6 +8,8 @@ from aura_sr import AuraSR
 from app.models.userModel import User
 from app.repositories.userRepo import UserRepository
 from app.schemas.imageGenSchemas import ExternalIdealRequest
+from datetime import datetime
+from huggingface_hub import InferenceClient
 
 ROLE_INSTRUCTION = """
 You are a professional image generation model specialized in preserving human identity.
@@ -35,10 +37,12 @@ class ImageGenService:
     def __init__(self, repo: UserRepository):
         self.repo = repo
 
-        load_dotenv("gemini_api_key.env")
+        load_dotenv()
         self.GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+        self.HF_TOKEN = os.getenv("HF_TOKEN")
 
-        self.client = genai.Client(self.GEMINI_API_KEY)
+        self.geminiClient = genai.Client(self.GEMINI_API_KEY)
+        self.hfClient = InferenceClient(token=self.HF_TOKEN)
         self.aura_sr = AuraSR.from_pretrained("fal/AuraSR-v2")
     
     def generateIdealImageService(self, request :ExternalIdealRequest):
@@ -77,7 +81,7 @@ class ImageGenService:
             """
 
             try:
-                response = self.client.models.generate_content(
+                response = self.geminiClient.models.generate_content(
                     model="gemini-2.5-flash-image",
                     contents=[current_prompt, image],
                     config={
@@ -130,7 +134,7 @@ class ImageGenService:
         """
 
         try:
-            response = self.client.models.generate_content(
+            response = self.geminiClient.models.generate_content(
                 model="gemini-3-pro-image-preview",
                 contents=[current_prompt, user.userImage, idealImage],
                 config={
