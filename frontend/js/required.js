@@ -21,4 +21,4 @@ function goNext() {
     
     // 다음 페이지 이동
     location.href = '03-appearance.html'; 
-}
+}   

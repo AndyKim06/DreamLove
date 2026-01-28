@@ -47,7 +47,6 @@ def generateCoupleImage(location: str,
             media_type="image/png",
             filename="couple.png"
         )
-    return "ok"
 
 @router.get("/idealList", summary="이상형 리스트 반환")
 def download_test_image(userId: str = Cookie(None),
