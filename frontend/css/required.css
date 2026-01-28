@@ -63,12 +63,12 @@
 .transparent-textarea {
     position: absolute;
     /* 타이틀 아래쪽부터 시작 */
-    top: 50%; 
-    left: 60%;
+    top: 40%; 
+    left: 50%;
     transform: translateX(-50%);
     
     /* 좌우 여백 확보 */
-    width: 90%;
+    width: 80%;
     /* 하단 회색 선 위까지만 (높이 조절) */
     height: 45%;
     
