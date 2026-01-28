@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     # Solar API 설정
     SOLAR_API_KEY: str = ""
     SOLAR_API_URL: str = "https://api.upstage.ai/v1/solar/chat/completions"
+
+    GEMINI_API_KEY: str
+    HF_TOKEN: str
     
     # 애플리케이션 설정
     APP_NAME: str = "DreamLove AI Chatbot"
