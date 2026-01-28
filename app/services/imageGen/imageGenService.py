@@ -194,7 +194,11 @@ class ImageGenService:
         except Exception as e:
             print(f"Error during generation: {e}")
 
-
+    def getIdealList(self, userId):
+        image_path = [f"app/imageCloud/{userId}_1.png", f"app/imageCloud/{userId}_2.png", 
+                      f"app/imageCloud/{userId}_3.png", f"app/imageCloud/{userId}_4.png"]
+        return image_path
+    
     # def upScalingImage(self, image, userId):
     #     image_path = self.getUserIdealImagePath(userId)
     #     image = open(image_path).convert("RGB")

@@ -13,7 +13,7 @@ router = APIRouter(
 
 @router.post(
     "/idealGenerate",
-    summary="사용자가 선택한 이상형의 표정 변환 사진을 생성함",
+    summary="사용자가 선택한 요소로 이상형 생성하기",
 )
 def generateIdeal( request : ExternalIdealRequest,
                      userId: str = Cookie(None),
@@ -48,7 +48,15 @@ def generateCoupleImage(location: str,
             filename="couple.png"
         )
     return "ok"
-    
+
+@router.get("/idealList", summary="이상형 리스트 반환")
+def download_test_image(userId: str = Cookie(None),
+                        service: ImageGenService = Depends(getImageGenService)):
+    image_paths = service.getIdealList(userId)
+    return {
+        "images": image_paths
+    }
+
 @router.get("/download", summary="test.png 다운로드")
 def download_test_image():
     return FileResponse(
