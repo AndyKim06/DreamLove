@@ -71,7 +71,7 @@ def saveUserConcern(customIdeal: bool,
     description="사용자가 선택한 이상형을 저장함."
 )
 def saveUserIdealType(idealType: int,
-                    location: str,
+                   # location: str,
                     background_tasks: BackgroundTasks,
                     userId: str = Cookie(None),
                     user_service: UserService = Depends(getUserService),
@@ -79,13 +79,13 @@ def saveUserIdealType(idealType: int,
     # 1️⃣ 이상형 저장
     result = user_service.chooseIdealTypeService(userId, idealType)
 
-    # 2️⃣ 이미지 생성은 백그라운드로
-    background_tasks.add_task(
-        generate_expression_bg,
-        "park",
-        userId,
-        image_service
-    )
+    # # 2️⃣ 이미지 생성은 백그라운드로
+    # background_tasks.add_task(
+    #     generate_expression_bg,
+    #     "park",
+    #     userId,
+    #     image_service
+    # )
 
     return result
 
