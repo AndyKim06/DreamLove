@@ -9,10 +9,11 @@ from app.models.userModel import User
 from app.repositories.userRepo import UserRepository
 from app.schemas.imageGenSchemas import ExternalIdealRequest
 from huggingface_hub import InferenceClient
-from promptBuilder import PromptBuilder
+from app.services.imageGen.promptBuilder import PromptBuilder
 import logging
 from pathlib import Path
 import base64
+from app.core.config import settings
 
 ROLE_INSTRUCTION = """
 You are a professional image generation model specialized in preserving human identity.
@@ -40,14 +41,10 @@ class ImageGenService:
     def __init__(self, repo: UserRepository):
         self.repo = repo
 
-        load_dotenv()
-        self.GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-        self.HF_TOKEN = os.getenv("HF_TOKEN")
-
-        self.geminiClient = genai.Client(self.GEMINI_API_KEY)
-        self.hfClient = InferenceClient(token=self.HF_TOKEN)
+        self.geminiClient = genai.Client(api_key=settings.GEMINI_API_KEY)
+        self.hfClient = InferenceClient(token=settings.HF_TOKEN)
         self.promptBuilder = PromptBuilder()
-        self.aura_sr = AuraSR.from_pretrained("fal/AuraSR-v2")  
+        # self.aura_sr = AuraSR.from_pretrained("fal/AuraSR-v2")  
     
     def generateIdealImageService(self, request :ExternalIdealRequest, userId:str):
         user = self.repo.findById(userId)
@@ -195,8 +192,8 @@ class ImageGenService:
             print(f"Error during generation: {e}")
 
 
-    def upScalingImage(self, image, userId):
-        image_path = self.getUserIdealImagePath(userId)
-        image = open(image_path).convert("RGB")
-        out = self.aura_sr.upscale_4x_overlapped(image)
-        out.save(image_path)
+    # def upScalingImage(self, image, userId):
+    #     image_path = self.getUserIdealImagePath(userId)
+    #     image = open(image_path).convert("RGB")
+    #     out = self.aura_sr.upscale_4x_overlapped(image)
+    #     out.save(image_path)

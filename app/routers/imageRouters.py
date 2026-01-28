@@ -2,6 +2,7 @@ from fastapi import APIRouter, Response, Cookie, Depends
 from fastapi.responses import FileResponse
 from app.services.imageGen.imageGenService import ImageGenService
 from app.dependency import getImageGenService
+from app.schemas.imageGenSchemas import ExternalIdealRequest
 import qrcode
 import tempfile
 
@@ -9,6 +10,17 @@ router = APIRouter(
     prefix="/imageGen",
     tags=["imageGen"]
 )
+
+@router.post(
+    "/idealGenerate",
+    summary="사용자가 선택한 이상형의 표정 변환 사진을 생성함",
+)
+def generateIdeal( request : ExternalIdealRequest,
+                     userId: str = Cookie(None),
+                     service: ImageGenService = Depends(getImageGenService),
+                    ):
+    image = service.generateIdealImageService(request=request, userId=userId)
+    return "ok"
 
 @router.post(
     "/idealExpressChange",
