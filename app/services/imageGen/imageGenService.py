@@ -8,9 +8,9 @@ from aura_sr import AuraSR
 from app.models.userModel import User
 from app.repositories.userRepo import UserRepository
 from app.schemas.imageGenSchemas import ExternalIdealRequest
-from datetime import datetime
 from huggingface_hub import InferenceClient
-
+from promptBuilder import PromptBuilder
+import logging
 ROLE_INSTRUCTION = """
 You are a professional image generation model specialized in preserving human identity.
 
@@ -43,9 +43,41 @@ class ImageGenService:
 
         self.geminiClient = genai.Client(self.GEMINI_API_KEY)
         self.hfClient = InferenceClient(token=self.HF_TOKEN)
-        self.aura_sr = AuraSR.from_pretrained("fal/AuraSR-v2")
+        self.promptBuilder = PromptBuilder()
+        self.aura_sr = AuraSR.from_pretrained("fal/AuraSR-v2")  
     
-    def generateIdealImageService(self, request :ExternalIdealRequest):
+    def generateIdealImageService(self, request :ExternalIdealRequest, userId:str):
+        user = self.repo.findById(userId)
+        ideal_gender = "female" if user.userGender == "남자" else "male"
+        ideal_animal = request.animal_type
+        ideal_eyelid = request.eyelid
+        ideal_faceShape = request.faceShape
+        ideal_hair= request.hair
+        ideal_clothe = request.clothe
+        ideal_makeup = request.makeup
+        ideal_skinTone = request.skin
+
+        prompt_eng, negative_prompt, tokens = self.promptBuilder.build_prompt(gender=ideal_gender, animal=ideal_animal, eyelid=ideal_eyelid, face_shape=ideal_faceShape,
+                                        hairstyle=ideal_hair, clothing=ideal_clothe, makeup=ideal_makeup, skintone=ideal_skinTone)
+        
+
+        logging.info(f"Prompt token = {tokens}, Image Generating")
+        logging.info(f"gender = {ideal_gender}, ideal_animal = {ideal_animal}, ideal_eyelid = {ideal_eyelid}, ideal_faceShape = {ideal_faceShape}")
+        logging.info(f"ideal hair = {ideal_hair}, ideal_clothe = {ideal_clothe}, ideal_makeup = {ideal_makeup}, ideal_skinTone = {ideal_skinTone}")
+
+        for i in range(4):
+            image_path = ""
+            image = self.hfClient.text_to_image(
+                    prompt=prompt_eng,
+                    model="black-forest-labs/FLUX.1-dev",
+                    negative_prompt=negative_prompt,
+                    guidance_scale=7.5,
+                    num_inference_steps=50,
+                    height=1024,
+                    width=1024
+                )
+            image.save(image_path)
+            logging.info(f"{i+1}번째 사진 생성 완료")
         return 
     
     def getUserIdealImagePath(self, userId):
