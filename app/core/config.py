@@ -16,7 +16,11 @@ class Settings(BaseSettings):
     # Solar API 설정
     SOLAR_API_KEY: str = ""
     SOLAR_API_URL: str = "https://api.upstage.ai/v1/solar/chat/completions"
+<<<<<<< Updated upstream
 
+=======
+    
+>>>>>>> Stashed changes
     GEMINI_API_KEY: str
     HF_TOKEN: str
     
@@ -26,7 +30,7 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     
     # CORS 설정
-    ALLOW_ORIGINS: list = ["http://127.0.0.1:5500", "http://127.0.0.1:5500", "http://127.0.0.1:8000" ]
+    ALLOW_ORIGINS: list = ["http://127.0.0.1:8000", "http://localhost:8000"]
     
     class Config:
         env_file = ".env"
