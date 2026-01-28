@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 @router.post(
-    "/idealGenerate",
+    "/idealImage",
     summary="사용자가 선택한 이상형의 표정 변환 사진을 생성함",
 )
 def generateIdeal( request : ExternalIdealRequest,

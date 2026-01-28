@@ -87,6 +87,10 @@ async function goNext() {
             throw new Error("Server error");
         }
 
+        // localStorage에도 저장 (챗봇에서 사용)
+        localStorage.setItem('user_name', name);
+        localStorage.setItem('user_gender', userProfile.gender === "girl" ? "여자" : "남자");
+
         location.href = "02-required-info.html";
 
     } catch (err) {

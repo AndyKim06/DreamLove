@@ -15,7 +15,8 @@ function goNext() {
         return;
     }
     
-    // 데이터 저장
+    // 데이터 저장 (챗봇에서 concern으로 사용)
+    localStorage.setItem('user_concern', worryText);
     localStorage.setItem('user_worry', worryText);
     
     // 다음 페이지 이동

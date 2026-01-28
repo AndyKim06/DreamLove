@@ -6,7 +6,7 @@ FastAPI 메인 애플리케이션
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.routers import chatRouters, userRouters, imageRouters
+from app.routers import chatRouters, userRouters, imageRouters, idealRouter
 from fastapi.staticfiles import StaticFiles
 
 # FastAPI 앱 생성
@@ -36,6 +36,7 @@ app.add_middleware(
 app.include_router(userRouters.router)
 app.include_router(chatRouters.router)
 app.include_router(imageRouters.router)
+app.include_router(idealRouter.router)
 
 @app.get("/")
 async def root():

@@ -33,7 +33,6 @@ function goNext() {
     // 데이터 저장
     localStorage.setItem('ideal_type_code', selectedType);
     
-    // 다음 페이지 이동 (예시)
-    alert(`"${selectedType}" 스타일 선택 완료!`);
-    // location.href = '05-loading.html'; 
+    // 다음 페이지로 이동 (내적 이상형 선택 페이지)
+    location.href = '07-ideal-personality.html';
 }
