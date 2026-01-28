@@ -187,8 +187,10 @@ class ImageGenService:
                         image_bytes = base64.b64decode(part.inline_data.data)
                         with open(file_name, "wb") as f:
                             f.write(image_bytes)
+                        return file_name
                     elif part.text is not None:
                         print(f"Model text: {part.text}")
+                
         except Exception as e:
             print(f"Error during generation: {e}")
 

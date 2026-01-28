@@ -37,11 +37,16 @@ def changeExpression(location: str,
     "/resultImage",
     summary="성공시 이상형과의 셀카사진을 생성함",
 )
-def changeExpression(location: str,
+def generateCoupleImage(location: str,
                      userId: str = Cookie(None),
                      service: ImageGenService = Depends(getImageGenService)
                     ):
-    image = service.generateCoupleImageService(location, userId)
+    image_path = service.generateCoupleImageService(location, userId)
+    return FileResponse(
+            path=image_path,
+            media_type="image/png",
+            filename="couple.png"
+        )
     return "ok"
     
 @router.get("/download", summary="test.png 다운로드")
