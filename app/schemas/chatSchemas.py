@@ -21,7 +21,7 @@ class ParsedContext(BaseModel):
     """
     연애고민에서 추출된 컨텍스트 정보
     """
-    dating_place: str = Field(..., description="추출 또는 자동 생성된 데이트 장소")
+    location: str = Field(..., description="추출 또는 자동 생성된 데이트 장소")
     relationship: str = Field(..., description="추출 또는 자동 생성된 상대방과의 관계")
     concern_summary: str = Field(..., description="정리된 연애 고민")
 

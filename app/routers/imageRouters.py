@@ -5,6 +5,7 @@ from app.dependency import getImageGenService
 from app.schemas.imageGenSchemas import ExternalIdealRequest
 import qrcode
 import tempfile
+import os
 
 router = APIRouter(
     prefix="/imageGen",
@@ -60,8 +61,10 @@ def download_test_image(userId: str,
 
 @router.get("/download", summary="test.png 다운로드")
 def download_test_image():
+    base_path = os.getcwd()
+    file_path = os.path.join(base_path, "app", "imageCloud", "test.png")
     return FileResponse(
-        path="C:\\Users\\Gamzadole\\Desktop\\DreamLove\\app\\imageCloud\\test.png",
+        path=file_path,
         media_type="image/png",
         filename="test.png"
     )

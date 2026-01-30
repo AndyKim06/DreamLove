@@ -35,8 +35,16 @@ async function goNext() {
             }
         );
 
-        if (!response.ok) {
-            throw new Error("고민 저장 실패");
+        if (response.ok) {
+            const data = await response.json();
+            // 서버에서 분석한 결과(장소 등)가 있으면 저장해둠 (선택사항)
+            if (data.parsed_context) {
+                console.log('분석된 정보:', data.parsed_context);
+                localStorage.setItem('parsed_context', JSON.stringify(data.parsed_context));
+            }
+        }
+        } catch (e) {
+            console.error("서버 통신 오류 (백그라운드 처리하므로 진행은 계속함):", e);
         }
 
         // 성공 시 다음 페이지 이동
@@ -47,3 +55,4 @@ async function goNext() {
         alert("서버에 고민을 저장하는데 실패했어요 😥");
     }
 }
+
