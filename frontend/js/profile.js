@@ -95,6 +95,6 @@ async function goNext() {
 
     } catch (err) {
         console.error(err);
-        alert("Failed to save profile 😢");
+        alert(err);
     }
 }

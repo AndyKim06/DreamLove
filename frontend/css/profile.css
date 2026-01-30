@@ -87,7 +87,6 @@
     letter-spacing: 0.2em;
 }
 
-/* 4. 성별 이미지 */
 .gender-item {
     position: absolute;
     cursor: pointer;
@@ -111,19 +110,32 @@
     filter: brightness(0.7) opacity(0.9);
 }
 
-.photo-wrapper {
-    position: absolute;
-    right: 9.8%;
-    bottom: 8%;
-    width: 30%;
 
-    /* 회전은 여기서만 */
-    transform: rotate(-10deg);
-    transform-origin: center;
-    cursor: pointer;
+@keyframes shake {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(-1deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(1deg); }
+    100% { transform: rotate(0deg); }
 }
 
-/* 프레임 */
+
+.photo-wrapper {
+    position: absolute;
+    right: 13%;
+    bottom: 10%;
+    width: 30%;
+    cursor: pointer;
+
+    transition: transform 0.3s ease;
+}
+
+.photo-wrapper:hover {
+    
+    animation: shake 0.5s infinite linear;
+
+}
+
 .frame-bg {
     width: 100%;
     display: block;
@@ -131,23 +143,22 @@
     z-index: 1;
 }
 
-/* 사진 */
 .photo-preview {
     position: absolute;
 
-    /* 🔥 프레임 안쪽으로 정확히 */
-    top: 14%;
-    left: 11%;
-    width: 78%;
-    height: 70%;
+    top: 18%;      
+    left: 12%;     
+    width: 75%;    
+    height: 72%;   
 
-    object-fit: cover;
-    border-radius: 4px;
+    transform: rotate(12deg); 
+    transform-origin: center;
 
+    object-fit: cover; 
+    
     z-index: 2;
-    display: none;
+    display: none; 
 }
-
 
 /* --- [NEW] 화살표 버튼 스타일 --- */
 .arrow-btn {

@@ -19,6 +19,16 @@ def generateIdeal( request : ExternalIdealRequest,
                      userId: str = Cookie(None),
                      service: ImageGenService = Depends(getImageGenService),
                     ):
+    print("🍪 userId =", userId)
+
+    print("📦 request.animal_type =", request.animal_type)
+    print("📦 request.eyelid =", request.eyelid)
+    print("📦 request.faceShape =", request.faceShape)
+    print("📦 request.hair =", request.hair)
+    print("📦 request.clothe =", request.clothe)
+    print("📦 request.makeup =", request.makeup)
+    print("📦 request.skin =", request.skin)
+
     image_paths = service.generateIdealImageService(request=request, userId=userId)
     return {
         "images": image_paths

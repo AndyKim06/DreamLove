@@ -28,7 +28,7 @@ def saveUserInfo(
         value=user.userId,
         httponly=True,
         secure=False,
-        samesite="lax",
+        samesite="none",
         max_age=60 * 60 * 24
     )
 
