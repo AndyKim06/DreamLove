@@ -61,3 +61,6 @@ dmypy.json
 # Static Assets
 static/*
 !static/.gitkeep
+
+imageCloud/
+**/imageCloud/

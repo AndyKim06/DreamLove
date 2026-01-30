@@ -31,7 +31,8 @@ class UserService:
             userCustom=False,
             userConcern="",
             userIdealType=0,
-            userLocation=""
+            userLocation="",
+            userIdealImagePath=[]
         )
         return self.repo.save(user)
 
@@ -41,6 +42,12 @@ class UserService:
             raise ValueError("User not found")
         return user
 
+    def getUserIdealImagePath(self, userId: str):
+        user = self.repo.findById(userId)
+        if not user:
+            raise ValueError("User not found")
+        return user.userIdealImagePath
+    
     def saveUserConcernService(self, userId: str, request: UserConcernRequest):
         user = self.repo.findById(userId)
         if not user:

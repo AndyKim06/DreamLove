@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional, Literal
+from typing import Optional, Literal, List
 
 class User(BaseModel):
     userId: str # pk
@@ -10,3 +10,4 @@ class User(BaseModel):
     userCustom : bool
     userIdealType : int
     userLocation : str
+    userIdealImagePath : List[str]

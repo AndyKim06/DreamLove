@@ -95,7 +95,8 @@ class ImageGenService:
         return idealImage
     
     def generateExpressionService(self, userId:str):
-        location = self.repo.findById(userId).userLocation
+        user = self.repo.findById(userId)
+        location = user.userLocation
         image_path = self.getUserIdealImagePath(userId)
         image = Image.open(image_path)
         image_path = image_path.removesuffix(".png")
@@ -132,6 +133,7 @@ class ImageGenService:
                     for part in candidate.content.parts:
                         if part.inline_data is not None:
                             file_name = f"{image_path}_{location}_{exp_name}.png"
+                            user.userIdealImagePath.append(file_name)
                             image_bytes = base64.b64decode(part.inline_data.data)
                             with open(file_name, "wb") as f:
                                 f.write(image_bytes)
@@ -142,6 +144,8 @@ class ImageGenService:
 
             except Exception as e:
                 print(f"Error during {exp_name} generation: {e}")
+                
+        self.repo.save(user)
 
 
     def generateCoupleImageService(self, userId):
