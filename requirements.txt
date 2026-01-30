@@ -19,9 +19,6 @@ google-genai
 python-multipart
 
 huggingface_hub
-<<<<<<< HEAD
 transformers
 pillow
-=======
-Pillow
->>>>>>> d0f566382d12a3836bc17e2743ab9a98f572ee53
+deep-translator

@@ -6,6 +6,7 @@ from app.repositories.userRepo import UserRepository
 from PIL import Image
 import os
 from pathlib import Path
+from deep_translator import GoogleTranslator
 
 class UserService:
     def __init__(self, repo: UserRepository):
@@ -29,7 +30,8 @@ class UserService:
             userImage=image_path,
             userCustom=False,
             userConcern="",
-            userIdealType=0
+            userIdealType=0,
+            userLocation=""
         )
         return self.repo.save(user)
 
@@ -47,6 +49,21 @@ class UserService:
         user.userConcern = request.concern
         return self.repo.save(user)
 
+    def saveUserLocation(self, userId: str, parsed_context: any):
+        user = self.repo.findById(userId)
+        if not user:
+            raise ValueError("User not found")
+
+        korean_location = parsed_context.location
+
+        try:
+            translated_location = GoogleTranslator(source='ko', target='en').translate(korean_location)
+            user.userLocation = translated_location
+        except Exception as e:
+            user.userLocation = korean_location 
+
+        return self.repo.save(user)
+    
     def chooseCustomIdealService(self, userId: str, customIdeal: bool):
         user = self.repo.findById(userId)
         if not user:

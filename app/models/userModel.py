@@ -9,3 +9,4 @@ class User(BaseModel):
     userConcern: Optional[str] = None
     userCustom : bool
     userIdealType : int
+    userLocation : str

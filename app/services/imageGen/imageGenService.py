@@ -94,7 +94,8 @@ class ImageGenService:
                 idealImage = str(image_dir / f"standard_male_{user.userIdealType}.png")
         return idealImage
     
-    def generateExpressionService(self, location:str, userId:str):
+    def generateExpressionService(self, userId:str):
+        location = self.repo.findById(userId).userLocation
         image_path = self.getUserIdealImagePath(userId)
         image = Image.open(image_path)
         image_path = image_path.removesuffix(".png")
@@ -143,7 +144,8 @@ class ImageGenService:
                 print(f"Error during {exp_name} generation: {e}")
 
 
-    def generateCoupleImageService(self, location, userId):
+    def generateCoupleImageService(self, userId):
+        location = self.repo.findById(userId).userLocation
         user = self.repo.findById(userId)
         idealImage = self.getUserIdealImagePath(userId)
         current_prompt = f"""

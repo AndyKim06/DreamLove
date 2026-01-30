@@ -64,6 +64,7 @@ async def saveUserConcern(
     # 2. 고민 분석 (장소 추출)
     parsed_context = await parse_concern(request.concern)
     
+    service.saveUserLocation(userId, parsed_context)
     return {
         "message": "고민 저장 및 장소 분석 완료",
         "parsed_context": parsed_context
@@ -85,7 +86,6 @@ def saveUserConcern(customIdeal: bool,
     description="사용자가 선택한 이상형을 저장함."
 )
 def saveUserIdealType(idealType: int,
-                   # location: str,
                     background_tasks: BackgroundTasks,
                     userId: str,
                     user_service: UserService = Depends(getUserService),
@@ -93,19 +93,17 @@ def saveUserIdealType(idealType: int,
     # 1️⃣ 이상형 저장
     result = user_service.chooseIdealTypeService(userId, idealType)
     
-    # # 2️⃣ 이미지 생성은 백그라운드로
-    # background_tasks.add_task(
-    #     generate_expression_bg,
-    #     "park",
-    #     userId,
-    #     image_service
-    # )
+    # 2️⃣ 이미지 생성은 백그라운드로
+    background_tasks.add_task(
+        generate_expression_bg,
+        userId,
+        image_service
+    )
 
     return result
 
 def generate_expression_bg(
-    location: str,
     userId: str,
     image_service: ImageGenService
 ):
-    image_service.generateExpressionService(location, userId)
+    image_service.generateExpressionService(userId)

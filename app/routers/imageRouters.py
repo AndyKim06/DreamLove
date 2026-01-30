@@ -29,22 +29,20 @@ def generateIdeal( request : ExternalIdealRequest,
     "/idealExpressChange",
     summary="사용자가 선택한 이상형의 표정 변환 사진을 생성함",
 )
-def changeExpression(location: str,
-                     userId: str,
+def changeExpression(userId: str,
                      service: ImageGenService = Depends(getImageGenService)
                     ):
-    image = service.generateExpressionService(location, userId)
+    image = service.generateExpressionService(userId)
     return "ok"
 
 @router.post(
     "/resultImage",
     summary="성공시 이상형과의 셀카사진을 생성함",
 )
-def generateCoupleImage(location: str,
-                     userId: str,
+def generateCoupleImage(userId: str,
                      service: ImageGenService = Depends(getImageGenService)
                     ):
-    image_path = service.generateCoupleImageService(location, userId)
+    image_path = service.generateCoupleImageService(userId)
     return FileResponse(
             path=image_path,
             media_type="image/png",
