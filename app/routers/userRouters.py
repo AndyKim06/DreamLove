@@ -4,6 +4,8 @@ from typing import Optional, Literal
 from app.dependency import getUserService, getImageGenService
 from app.services.imageGen.imageGenService import ImageGenService
 from app.services.user.userService import UserService
+import logging
+
 router = APIRouter(
     prefix="/user",
     tags=["user"]
@@ -33,7 +35,6 @@ def saveUserInfo(
     )
 
     return {
-        "message": "사용자 정보 저장 완료",
         "userId": user.userId
     }
 
@@ -41,7 +42,7 @@ def saveUserInfo(
     "/get",
     summary="정보 저장 테스트용"
 )
-def getUserInfo(userId: str = Cookie(None), 
+def getUserInfo(userId: str, 
                 service: UserService = Depends(getUserService)):
     return service.getUserIdService(userId)
 
@@ -51,7 +52,7 @@ def getUserInfo(userId: str = Cookie(None),
     description="사용자에게 고민을 입력받고 저장함."
 )
 def saveUserConcern(request: UserConcernRequest,
-                    userId: str = Cookie(None),
+                    userId: str,
                     service: UserService = Depends(getUserService)):
     return service.saveUserConcernService(userId, request)
 
@@ -61,7 +62,7 @@ def saveUserConcern(request: UserConcernRequest,
     description="사용자에게 이상형 커스텀 여부를 저장함."
 )
 def saveUserConcern(customIdeal: bool,
-                    userId: str = Cookie(None),
+                    userId: str,
                     service: UserService = Depends(getUserService)):
     return service.chooseCustomIdealService(userId, customIdeal)
 
@@ -73,7 +74,7 @@ def saveUserConcern(customIdeal: bool,
 def saveUserIdealType(idealType: int,
                    # location: str,
                     background_tasks: BackgroundTasks,
-                    userId: str = Cookie(None),
+                    userId: str,
                     user_service: UserService = Depends(getUserService),
                     image_service: ImageGenService = Depends(getImageGenService),):
     # 1️⃣ 이상형 저장

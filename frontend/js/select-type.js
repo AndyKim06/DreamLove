@@ -1,24 +1,22 @@
 console.log("✅ select-type.js loaded");
 
 let selectedRefId = null;
-let currentGender = "girl";
+let myGender = "girl";
+let idealGender = "boy";
 
 /* ===============================
    초기화
 ================================ */
 window.onload = function () {
-    // 성별 정규화 ⭐⭐⭐ 핵심
     const rawGender = localStorage.getItem("user_gender");
-    currentGender =
-        rawGender === "male" ? "boy" :
-        rawGender === "female" ? "girl" :
-        rawGender || "girl";
 
-    console.log("gender =", currentGender);
+    myGender = rawGender === "여자" ? "girl" : "boy";
+    idealGender = myGender === "girl" ? "boy" : "girl";
 
-    // 피부톤 미리보기
+    console.log("🙋 내 성별 =", myGender);
+    console.log("💖 이상형 성별 =", idealGender);
+
     updateSkinColor(document.getElementById("skin-slider").value);
-
     loadReferenceImages();
 };
 
@@ -33,12 +31,11 @@ function goBack() {
    레퍼런스
 ================================ */
 function loadReferenceImages() {
-    const targetGender = currentGender === "girl" ? "boy" : "girl";
     const windows = document.querySelectorAll(".preview-win");
 
     windows.forEach((win, i) => {
         win.querySelector(".window-body").innerHTML = `
-            <img src="assets/images/ref_${targetGender}_${i + 1}.png"
+            <img src="assets/images/ref_${idealGender}_${i + 1}.png"
                  style="width:100%;height:100%;object-fit:cover;">
         `;
         win.onclick = () => selectReference(i + 1);
@@ -57,15 +54,13 @@ function selectReference(id) {
 ================================ */
 function updateSkinColor(val) {
     document.getElementById("skin-preview-box").style.background =
-        `hsl(28,70%,${95 - val * 0.5}%)`;
+        `hsl(28, 70%, ${95 - val * 0.5}%)`;
 }
 
 /* ===============================
-   생성
+   생성 (비동기 트리거)
 ================================ */
 function generateIdeal() {
-    console.log("🔥 generateIdeal called");
-
     if (!selectedRefId) {
         alert("레퍼런스를 선택해주세요");
         return;
@@ -76,35 +71,31 @@ function generateIdeal() {
         boy:  { 1: "puppy", 2: "fox", 3: "dinosaur", 4: "bear" }
     };
 
-    const animal = animalMap[currentGender]?.[selectedRefId];
-    if (!animal) {
-        alert("성별 정보 오류");
-        return;
-    }
+    const animal = animalMap[idealGender][selectedRefId];
 
     const body = {
         animal_type: animal,
         eyelid: document.querySelector("input[name=eyelid]:checked").value,
         faceShape: document.getElementById("face-shape").value,
         hair: document.getElementById("hair-style").value,
-        clothe: document.getElementById("clothe-style").value,
-        makeup: document.getElementById("makeup-style").value,
+        clothe: document.getElementById("clothe").value,
+        makeup: document.getElementById("makeup").value,
         skin: Number(document.getElementById("skin-slider").value)
     };
-    
-    console.log("📦 request body", body);
 
-    fetch("http://localhost:8000/imageGen/idealImage", {
+    const userId = localStorage.getItem("userId");
+
+    console.log("📦 imageGen request =", body);
+
+    // 🔥 결과 기다리지 않고 요청만 보냄
+    fetch(`http://localhost:8000/imageGen/idealImage?userId=${userId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify(body)
-    })
-    .then(res => {
-        console.log("📡 status", res.status);
-    })
-    .catch(err => console.error(err));
+    }).catch(err => {
+        console.error("❌ imageGen request error", err);
+    });
 
-    // 바로 이동
+    // ✅ 즉시 다음 페이지로 이동
     location.href = "06-custom-result.html";
 }

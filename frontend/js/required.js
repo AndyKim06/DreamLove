@@ -20,15 +20,20 @@ async function goNext() {
     localStorage.setItem('user_worry', worryText);
 
     try {
-        const response = await fetch("http://localhost:8000/user/concern", {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                concern: worryText
-            })
-        });
+        const userId = localStorage.getItem("userId");
+
+        const response = await fetch(
+            `http://localhost:8000/user/concern?userId=${userId}`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    concern: worryText
+                })
+            }
+        );
 
         if (!response.ok) {
             throw new Error("고민 저장 실패");

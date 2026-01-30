@@ -13,22 +13,12 @@ router = APIRouter(
 
 @router.post(
     "/idealImage",
-    summary="사용자가 선택한 이상형의 표정 변환 사진을 생성함",
+    summary="사용자가 선택한 요소를 가지고 이상형을 생성함",
 )
 def generateIdeal( request : ExternalIdealRequest,
-                     userId: str = Cookie(None),
+                     userId: str,
                      service: ImageGenService = Depends(getImageGenService),
                     ):
-    print("🍪 userId =", userId)
-
-    print("📦 request.animal_type =", request.animal_type)
-    print("📦 request.eyelid =", request.eyelid)
-    print("📦 request.faceShape =", request.faceShape)
-    print("📦 request.hair =", request.hair)
-    print("📦 request.clothe =", request.clothe)
-    print("📦 request.makeup =", request.makeup)
-    print("📦 request.skin =", request.skin)
-
     image_paths = service.generateIdealImageService(request=request, userId=userId)
     return {
         "images": image_paths
@@ -39,7 +29,7 @@ def generateIdeal( request : ExternalIdealRequest,
     summary="사용자가 선택한 이상형의 표정 변환 사진을 생성함",
 )
 def changeExpression(location: str,
-                     userId: str = Cookie(None),
+                     userId: str,
                      service: ImageGenService = Depends(getImageGenService)
                     ):
     image = service.generateExpressionService(location, userId)
@@ -50,7 +40,7 @@ def changeExpression(location: str,
     summary="성공시 이상형과의 셀카사진을 생성함",
 )
 def generateCoupleImage(location: str,
-                     userId: str = Cookie(None),
+                     userId: str,
                      service: ImageGenService = Depends(getImageGenService)
                     ):
     image_path = service.generateCoupleImageService(location, userId)
@@ -61,9 +51,9 @@ def generateCoupleImage(location: str,
         )
 
 @router.get("/idealList", summary="이상형 리스트 반환")
-def download_test_image(userId: str = Cookie(None),
+def download_test_image(userId: str,
                         service: ImageGenService = Depends(getImageGenService)):
-    image_paths = service.getIdealList(userId)
+    image_paths = service.getIdealImageList(userId)
     return {
         "images": image_paths
     }

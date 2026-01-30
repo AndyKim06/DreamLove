@@ -66,7 +66,7 @@ class ImageGenService:
         logging.info(f"ideal hair = {ideal_hair}, ideal_clothe = {ideal_clothe}, ideal_makeup = {ideal_makeup}, ideal_skinTone = {ideal_skinTone}")
 
         for i in range(4):
-            image_dir = Path("app/imageCloud")
+            image_dir = Path("frontend/imageCloud")
             image_path = str(image_dir / f"{userId}_{i+1}.png")
             image_list.append(image_path)
             image = self.hfClient.text_to_image(
@@ -84,7 +84,7 @@ class ImageGenService:
     
     def getUserIdealImagePath(self, userId):
         user = self.repo.findById(userId)
-        image_dir = Path("app/imageCloud")
+        image_dir = Path("frontend/imageCloud")
         if user.userCustom:
             idealImage = str(image_dir / f"{userId}_{user.userIdealType}.png")
         else:
@@ -183,7 +183,7 @@ class ImageGenService:
                 candidate = response.candidates[0]
                 for part in candidate.content.parts:
                     if part.inline_data is not None:
-                        image_dir = Path("app/imageCloud/user")
+                        image_dir = Path("frontend/imageCloud/user")
                         file_name = str(image_dir / f"{userId}_success_result.png")
                         image_bytes = base64.b64decode(part.inline_data.data)
                         with open(file_name, "wb") as f:
@@ -195,9 +195,16 @@ class ImageGenService:
         except Exception as e:
             print(f"Error during generation: {e}")
 
-    def getIdealList(self, userId):
-        image_path = [f"app/imageCloud/{userId}_1.png", f"app/imageCloud/{userId}_2.png", 
-                      f"app/imageCloud/{userId}_3.png", f"app/imageCloud/{userId}_4.png"]
+    def getIdealImageList(self, userId):
+        potential_paths = [
+            f"frontend/imageCloud/{userId}_1.png",
+            f"frontend/imageCloud/{userId}_2.png",
+            f"frontend/imageCloud/{userId}_3.png",
+            f"frontend/imageCloud/{userId}_4.png"
+        ]
+
+        image_path = [path for path in potential_paths if os.path.exists(path)]
+        
         return image_path
     
     # def upScalingImage(self, image, userId):

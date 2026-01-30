@@ -31,7 +31,9 @@ async function goNext() {
 
     // 1. 값 결정 (default -> false, custom -> true)
     const isCustom = (selectedAppearance === 'custom');
-    const url = `http://localhost:8000/user/customIdeal?customIdeal=${isCustom}`;
+    const userId = localStorage.getItem("userId");
+
+    const url = `http://localhost:8000/user/customIdeal?customIdeal=${isCustom}&userId=${userId}`;
 
     try {
         // 2. 서버에 PATCH 요청 전송
