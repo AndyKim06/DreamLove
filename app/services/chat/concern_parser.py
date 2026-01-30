@@ -12,7 +12,7 @@ from app.services.chat.solar_client import query_solar, SolarAPIError
 
 
 # 랜덤 선택용 기본값
-DEFAULT_DATING_PLACES = [
+DEFAULT_LOCATIONS = [
     "카페", "레스토랑", "영화관", "한강", 
     "놀이공원", "미술관", "맛집", "와인바"
 ]
@@ -38,7 +38,7 @@ async def parse_concern(concern: str) -> ParsedContext:
 너는 연애 상담 전문가입니다. 사용자의 연애 고민에서 정보를 추출해야 합니다.
 
 **추출해야 할 정보:**
-1. dating_place: 데이트 장소 (언급된 경우)
+1. location: 데이트 장소 (언급된 경우)
 2. relationship: 상대방과의 관계 (언급된 경우)
 3. concern_summary: 핵심 고민 요약 (1~2문장)
 
@@ -49,7 +49,7 @@ async def parse_concern(concern: str) -> ParsedContext:
 - 고민 요약은 핵심만 간결하게
 
 **출력 형식 (JSON만 출력):**
-{"dating_place": "장소 또는 null", "relationship": "관계 또는 null", "concern_summary": "핵심 고민 요약"}
+{"location": "장소 또는 null", "relationship": "관계 또는 null", "concern_summary": "핵심 고민 요약"}
 """
 
     user_prompt = f"""
@@ -78,9 +78,9 @@ JSON 형식으로만 응답하세요.
         result = json.loads(response)
         
         # null이거나 비어있는 값은 랜덤으로 채움
-        dating_place = result.get("dating_place")
-        if not dating_place or dating_place == "null" or dating_place.lower() == "null":
-            dating_place = random.choice(DEFAULT_DATING_PLACES)
+        location = result.get("location")
+        if not location or location == "null" or location.lower() == "null":
+            location = random.choice(DEFAULT_LOCATIONS)
             
         relationship = result.get("relationship")
         if not relationship or relationship == "null" or relationship.lower() == "null":
@@ -91,7 +91,7 @@ JSON 형식으로만 응답하세요.
             concern_summary = concern
         
         return ParsedContext(
-            dating_place=dating_place,
+            location=location,
             relationship=relationship,
             concern_summary=concern_summary
         )
@@ -99,7 +99,7 @@ JSON 형식으로만 응답하세요.
     except (json.JSONDecodeError, ValueError, KeyError, SolarAPIError) as e:
         # 파싱 실패 시 기본값 + 원본 고민 사용
         return ParsedContext(
-            dating_place=random.choice(DEFAULT_DATING_PLACES),
+            location=random.choice(DEFAULT_LOCATIONS),
             relationship=random.choice(DEFAULT_RELATIONSHIPS),
             concern_summary=concern
         )
@@ -116,7 +116,7 @@ def get_random_context(concern: str) -> ParsedContext:
         ParsedContext: 랜덤 생성된 컨텍스트
     """
     return ParsedContext(
-        dating_place=random.choice(DEFAULT_DATING_PLACES),
+        location=random.choice(DEFAULT_LOCATIONS),
         relationship=random.choice(DEFAULT_RELATIONSHIPS),
         concern_summary=concern
     )

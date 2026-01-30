@@ -6,6 +6,7 @@ from app.repositories.userRepo import UserRepository
 from PIL import Image
 import os
 from pathlib import Path
+from deep_translator import GoogleTranslator
 
 class UserService:
     def __init__(self, repo: UserRepository):
@@ -15,7 +16,7 @@ class UserService:
         userId = str(uuid4())
         
         # 상대 경로 사용 및 디렉토리 자동 생성
-        image_dir = Path("app/imageCloud/user")
+        image_dir = Path("frontend/imageCloud/user")
         image_dir.mkdir(parents=True, exist_ok=True)
         
         image_path = str(image_dir / f"{userId}.png")
@@ -29,7 +30,9 @@ class UserService:
             userImage=image_path,
             userCustom=False,
             userConcern="",
-            userIdealType=0
+            userIdealType=0,
+            userLocation="",
+            userIdealImagePath=[]
         )
         return self.repo.save(user)
 
@@ -39,6 +42,12 @@ class UserService:
             raise ValueError("User not found")
         return user
 
+    def getUserIdealImagePath(self, userId: str):
+        user = self.repo.findById(userId)
+        if not user:
+            raise ValueError("User not found")
+        return user.userIdealImagePath
+    
     def saveUserConcernService(self, userId: str, request: UserConcernRequest):
         user = self.repo.findById(userId)
         if not user:
@@ -47,6 +56,21 @@ class UserService:
         user.userConcern = request.concern
         return self.repo.save(user)
 
+    def saveUserLocation(self, userId: str, parsed_context: any):
+        user = self.repo.findById(userId)
+        if not user:
+            raise ValueError("User not found")
+
+        korean_location = parsed_context.location
+
+        try:
+            translated_location = GoogleTranslator(source='ko', target='en').translate(korean_location)
+            user.userLocation = translated_location
+        except Exception as e:
+            user.userLocation = korean_location 
+
+        return self.repo.save(user)
+    
     def chooseCustomIdealService(self, userId: str, customIdeal: bool):
         user = self.repo.findById(userId)
         if not user:

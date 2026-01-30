@@ -11,22 +11,31 @@ function selectOption(type) {
     selectedAppearance = type;
     localStorage.setItem('appearance_type', type);
     
+    const defBtn = document.getElementById('opt-default');
+    const custBtn = document.getElementById('opt-custom');
+    
+    defBtn.classList.remove('selected');
+    custBtn.classList.remove('selected');
+    
     if (type === 'default') {
-        location.href = '04-preset.html'; 
+        defBtn.classList.add('selected');
     } else {
-        location.href = '05-select-type.html'; 
+        custBtn.classList.add('selected');
     }
 }
 
+// 핵심 수정 부분: async 함수로 변경
 async function goNext() {
     if (!selectedAppearance) {
         alert("원하는 방식을 선택해주세요!");
         return;
     }
 
-    // 1. 값 결정 (default -> false, custom -> true)
+   // 1. 값 결정 (default -> false, custom -> true)
     const isCustom = (selectedAppearance === 'custom');
-    const url = `http://localhost:8000/user/customIdeal?customIdeal=${isCustom}`;
+    const userId = localStorage.getItem("userId");
+
+    const url = `http://localhost:8000/user/customIdeal?customIdeal=${isCustom}&userId=${userId}`;
 
     try {
         // 2. 서버에 PATCH 요청 전송
@@ -42,7 +51,7 @@ async function goNext() {
         if (response.ok) {
             // 3. 성공 시 로컬 스토리지 저장 및 페이지 이동
             localStorage.setItem('appearance_type', selectedAppearance);
-            
+
             if (selectedAppearance === 'default') {
                 location.href = '04-preset.html'; 
             } else {

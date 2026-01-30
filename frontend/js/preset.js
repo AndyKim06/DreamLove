@@ -31,7 +31,9 @@ async function goNext() {
     
     // [수정] 'type4'에서 '4'만 추출하여 숫자로 변환
     const idealTypeNumber = parseInt(selectedType.replace('type', ''));
-    const url = `http://localhost:8000/user/idealType?idealType=${idealTypeNumber}`;
+    const userId = localStorage.getItem("userId");
+    
+    const url = `http://localhost:8000/user/idealType?idealType=${idealTypeNumber}&userId=${userId}`;
 
     try {
         const response = await fetch(url, {

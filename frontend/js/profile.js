@@ -80,13 +80,16 @@ async function goNext() {
         const res = await fetch("http://localhost:8000/user/info", {
             method: "POST",
             body: formData,
-            credentials: "include" // ⭐ 쿠키 받기
+            credentials: "include"
         });
 
         if (!res.ok) {
             throw new Error("Server error");
         }
 
+        const data = await res.json();
+        localStorage.setItem("userId", data.userId);
+        
         // localStorage에도 저장 (챗봇에서 사용)
         localStorage.setItem('user_name', name);
         localStorage.setItem('user_gender', userProfile.gender === "girl" ? "여자" : "남자");
@@ -95,6 +98,6 @@ async function goNext() {
 
     } catch (err) {
         console.error(err);
-        alert("Failed to save profile 😢");
+        alert(err);
     }
 }

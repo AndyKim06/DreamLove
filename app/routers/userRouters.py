@@ -1,8 +1,11 @@
-from fastapi import APIRouter, Response, Cookie, Depends, UploadFile, File, Form
+from fastapi import APIRouter, Response, Cookie, Depends, UploadFile, File, Form, BackgroundTasks
 from app.schemas.userSchemas import UserConcernRequest
 from typing import Optional, Literal
-from app.dependency import getUserService
+from app.dependency import getUserService, getImageGenService
+from app.services.imageGen.imageGenService import ImageGenService
 from app.services.user.userService import UserService
+import logging
+
 router = APIRouter(
     prefix="/user",
     tags=["user"]
@@ -27,12 +30,11 @@ def saveUserInfo(
         value=user.userId,
         httponly=True,
         secure=False,
-        samesite="lax",
+        samesite="none",
         max_age=60 * 60 * 24
     )
 
     return {
-        "message": "사용자 정보 저장 완료",
         "userId": user.userId
     }
 
@@ -40,19 +42,33 @@ def saveUserInfo(
     "/get",
     summary="정보 저장 테스트용"
 )
-def getUserInfo(userId: str = Cookie(None), 
+def getUserInfo(userId: str, 
                 service: UserService = Depends(getUserService)):
     return service.getUserIdService(userId)
+
+from app.services.chat.concern_parser import parse_concern
 
 @router.patch(
     "/concern",
     summary="사용자의 고민 입력",
-    description="사용자에게 고민을 입력받고 저장함."
+    description="사용자에게 고민을 입력받고 저장함. 동시에 고민을 분석하여 장소를 추출함."
 )
-def saveUserConcern(request: UserConcernRequest,
-                    userId: str = Cookie(None),
-                    service: UserService = Depends(getUserService)):
-    return service.saveUserConcernService(userId, request)
+async def saveUserConcern(
+    request: UserConcernRequest,
+    userId: str,
+    service: UserService = Depends(getUserService)
+):
+    # 1. 사용자 고민 저장
+    updated_user = service.saveUserConcernService(userId, request)
+    
+    # 2. 고민 분석 (장소 추출)
+    parsed_context = await parse_concern(request.concern)
+    
+    service.saveUserLocation(userId, parsed_context)
+    return {
+        "message": "고민 저장 및 장소 분석 완료",
+        "parsed_context": parsed_context
+    }
 
 @router.patch(
     "/customIdeal",
@@ -60,7 +76,7 @@ def saveUserConcern(request: UserConcernRequest,
     description="사용자에게 이상형 커스텀 여부를 저장함."
 )
 def saveUserConcern(customIdeal: bool,
-                    userId: str = Cookie(None),
+                    userId: str,
                     service: UserService = Depends(getUserService)):
     return service.chooseCustomIdealService(userId, customIdeal)
 
@@ -69,7 +85,25 @@ def saveUserConcern(customIdeal: bool,
     summary="사용자의 이상형 선택 저장",
     description="사용자가 선택한 이상형을 저장함."
 )
-def saveIdealType(idealType: int,
-                    userId: str = Cookie(None),
-                    service: UserService = Depends(getUserService)):
-    return service.chooseIdealTypeService(userId, idealType)
+def saveUserIdealType(idealType: int,
+                    background_tasks: BackgroundTasks,
+                    userId: str,
+                    user_service: UserService = Depends(getUserService),
+                    image_service: ImageGenService = Depends(getImageGenService),):
+    # 1️⃣ 이상형 저장
+    result = user_service.chooseIdealTypeService(userId, idealType)
+    
+    # 2️⃣ 이미지 생성은 백그라운드로
+    background_tasks.add_task(
+        generate_expression_bg,
+        userId,
+        image_service
+    )
+
+    return result
+
+def generate_expression_bg(
+    userId: str,
+    image_service: ImageGenService
+):
+    image_service.generateExpressionService(userId)

@@ -1,105 +1,101 @@
-/* frontend/js/select-type.js */
+console.log("✅ select-type.js loaded");
 
-let selectedRefId = null; // 선택된 레퍼런스 번호 (1~4)
-let currentGender = 'girl'; 
+let selectedRefId = null;
+let myGender = "girl";
+let idealGender = "boy";
 
-window.onload = function() {
-    // 1. 피부톤 초기화
-    const slider = document.getElementById('skin-slider');
-    if(slider) updateSkinColor(slider.value);
+/* ===============================
+   초기화
+================================ */
+window.onload = function () {
+    const rawGender = localStorage.getItem("user_gender");
 
-    // 2. 성별 정보 가져오기 (01페이지에서 저장됨)
-    currentGender = localStorage.getItem('user_gender') || 'girl';
+    myGender = rawGender === "여자" ? "girl" : "boy";
+    idealGender = myGender === "girl" ? "boy" : "girl";
 
-    // 3. 레퍼런스 이미지 로드
+    console.log("🙋 내 성별 =", myGender);
+    console.log("💖 이상형 성별 =", idealGender);
+
+    updateSkinColor(document.getElementById("skin-slider").value);
     loadReferenceImages();
 };
 
+/* ===============================
+   네비
+================================ */
 function goBack() {
-    window.history.back();
+    history.back();
 }
 
-// [핵심] 성별에 맞는 레퍼런스 이미지 표시
+/* ===============================
+   레퍼런스
+================================ */
 function loadReferenceImages() {
-    // 내가 여자면 -> 남자 사진, 남자면 -> 여자 사진
-    const targetGender = currentGender === 'girl' ? 'boy' : 'girl';
-    
-    // 미리보기 윈도우 4개
-    const windows = document.querySelectorAll('.preview-win');
-    
-    windows.forEach((win, index) => {
-        const imgNum = index + 1; // 1 ~ 4
-        const winBody = win.querySelector('.window-body');
-        
-        // 이미지 태그 삽입
-        winBody.innerHTML = `
-            <img src="assets/images/ref_${targetGender}_${imgNum}.png" 
-                 class="ref-img" 
-                 alt="Reference ${imgNum}"
-                 style="width:100%; height:100%; object-fit:cover; pointer-events:none;">
-        `;
+    const windows = document.querySelectorAll(".preview-win");
 
-        // 클릭 시 선택 처리
-        win.onclick = function() {
-            selectReference(imgNum);
-        };
+    windows.forEach((win, i) => {
+        win.querySelector(".window-body").innerHTML = `
+            <img src="assets/images/ref_${idealGender}_${i + 1}.png"
+                 style="width:100%;height:100%;object-fit:cover;">
+        `;
+        win.onclick = () => selectReference(i + 1);
     });
 }
 
-// 레퍼런스 선택 (UI 업데이트)
 function selectReference(id) {
     selectedRefId = id;
-
-    // 모든 윈도우 선택 해제
-    const allWindows = document.querySelectorAll('.preview-win');
-    allWindows.forEach(win => win.classList.remove('selected'));
-
-    // 클릭한 윈도우 강조
-    // ID는 1부터 시작하므로 배열 인덱스는 id-1
-    if(allWindows[id - 1]) {
-        allWindows[id - 1].classList.add('selected');
-    }
+    document.querySelectorAll(".preview-win")
+        .forEach(w => w.classList.remove("selected"));
+    document.getElementById(`win-${id}`).classList.add("selected");
 }
 
-// 피부톤 색상 변경
-function updateSkinColor(value) {
-    const previewBox = document.getElementById('skin-preview-box');
-    const lightness = 95 - (value * 0.5); 
-    const color = `hsl(28, 70%, ${lightness}%)`;
-    previewBox.style.backgroundColor = color;
+/* ===============================
+   피부톤
+================================ */
+function updateSkinColor(val) {
+    document.getElementById("skin-preview-box").style.background =
+        `hsl(28, 70%, ${95 - val * 0.5}%)`;
 }
 
-// [수정됨] 생성하기 버튼 -> 데이터 저장 후 바로 페이지 이동
+/* ===============================
+   생성 (비동기 트리거)
+================================ */
 function generateIdeal() {
-    // 1. 레퍼런스 선택 여부 확인
     if (!selectedRefId) {
-        alert("왼쪽 창에서 원하는 스타일의 레퍼런스를 선택해주세요!");
+        alert("레퍼런스를 선택해주세요");
         return;
     }
 
-    // 2. DIY 데이터 수집
-    const eyelids = document.querySelector('input[name="eyelid"]:checked').value;
-    const nose = document.getElementById('nose-shape').value;
-    const face = document.getElementById('face-shape').value;
-    const atmosphere = document.getElementById('atmosphere').value;
-    const hair = document.getElementById('hair-style').value;
-    const skinValue = document.getElementById('skin-slider').value;
-    
-    // 3. 데이터 객체 생성
-    const diyData = {
-        targetGender: currentGender === 'girl' ? 'boy' : 'girl',
-        referenceId: selectedRefId,
-        features: { eyelids, nose, face, atmosphere, hair, skinTone: skinValue }
+    const animalMap = {
+        girl: { 1: "puppy", 2: "cat", 3: "rabbit", 4: "deer" },
+        boy:  { 1: "puppy", 2: "fox", 3: "dinosaur", 4: "bear" }
     };
-    
-    // 4. 로컬 스토리지에 저장 (다음 페이지나 API 전송용)
-    localStorage.setItem('final_creation_data', JSON.stringify(diyData));
-    
-    // 5. [수정됨] 로딩 없이 바로 다음 페이지(06-custom-result.html)로 이동
-    // 로딩과 결과 표시는 06페이지에서 진행됨
-    location.href = '06-custom-result.html';
-}
 
-function goNext() {
-    generateIdeal();
+    const animal = animalMap[idealGender][selectedRefId];
+
+    const body = {
+        animal_type: animal,
+        eyelid: document.querySelector("input[name=eyelid]:checked").value,
+        faceShape: document.getElementById("face-shape").value,
+        hair: document.getElementById("hair-style").value,
+        clothe: document.getElementById("clothe").value,
+        makeup: document.getElementById("makeup").value,
+        skin: Number(document.getElementById("skin-slider").value)
+    };
+
+    const userId = localStorage.getItem("userId");
+
+    console.log("📦 imageGen request =", body);
+
+    // 🔥 결과 기다리지 않고 요청만 보냄
+    fetch(`http://localhost:8000/imageGen/idealImage?userId=${userId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+    }).catch(err => {
+        console.error("❌ imageGen request error", err);
+    });
+
+    // ✅ 즉시 다음 페이지로 이동
+    location.href = "06-custom-result.html";
 }

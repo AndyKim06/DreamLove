@@ -17,3 +17,8 @@ qrcode
 aura_sr
 google-genai
 python-multipart
+
+huggingface_hub
+transformers
+pillow
+deep-translator

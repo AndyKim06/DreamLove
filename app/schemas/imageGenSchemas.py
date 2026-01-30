@@ -27,9 +27,10 @@ class Hair(str, Enum):
     SHORT_CUT = "숏컷"
 
 class ExternalIdealRequest(BaseModel):
-    reference: int = Field(..., description="외적 이상형 레퍼런스")
-    faceShape: FaceShape = Field(..., description="얼굴형")
-    eyes: Eyes = Field(..., description="눈 형태")
-    eyelid: Eyelid = Field(..., description="쌍꺼풀 유형")
-    hair: Hair = Field(..., description="헤어 스타일")
-    bangs: bool = Field(..., description="앞머리 유무")
+    animal_type : str
+    eyelid : str
+    faceShape : str
+    hair : str
+    clothe : str
+    makeup : str
+    skin : int

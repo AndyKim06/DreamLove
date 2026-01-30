@@ -129,7 +129,7 @@ async function sendChatRequest(userMessage) {
             // 장소 정보 업데이트
             const introText = document.getElementById('intro-text');
             if (introText) {
-                introText.innerHTML = `당신은 <span class="highlight">이상형</span>과 <span class="highlight">${data.parsed_context.dating_place}</span>에 왔습니다.`;
+                introText.innerHTML = `당신은 <span class="highlight">이상형</span>과 <span class="highlight">${data.parsed_context.location}</span>에 왔습니다.`;
             }
         }
         

@@ -38,7 +38,7 @@ async def generate_greeting(user_info: UserInfo, ideal_type: IdealType, parsed_c
 - 성격 설명: {personality_description}
 
 **상황:**
-- 데이트 장소: {parsed_context.dating_place}
+- 데이트 장소: {parsed_context.location}
 - 상대방 이름: {user_info.name}
 - 상대방 성별: {user_info.gender}
 - 관계: {parsed_context.relationship}
@@ -61,7 +61,7 @@ async def generate_greeting(user_info: UserInfo, ideal_type: IdealType, parsed_c
 """
 
     user_prompt = f"""
-{parsed_context.dating_place}에서 처음 만난 상황입니다.
+{parsed_context.location}에서 처음 만난 상황입니다.
 상대방({user_info.name})에게 첫 인사를 건네주세요.
 
 다시 한 번 강조: 괄호, 별표, 메타 설명 없이 순수한 대화 내용만 작성하세요.
@@ -77,7 +77,7 @@ async def generate_greeting(user_info: UserInfo, ideal_type: IdealType, parsed_c
         return greeting
     except SolarAPIError as e:
         # API 오류 시 기본 인사말 반환
-        return f"안녕하세요! {parsed_context.dating_place}에서 만나뵙게 되어 반가워요. 여기 분위기 좋네요. 자주 오시는 편인가요?"
+        return f"안녕하세요! {parsed_context.location}에서 만나뵙게 되어 반가워요. 여기 분위기 좋네요. 자주 오시는 편인가요?"
 
 
 async def generate_question(
@@ -115,7 +115,7 @@ async def generate_question(
 - 성격 설명: {personality_description}
 
 **상황:**
-- 데이트 장소: {parsed_context.dating_place}
+- 데이트 장소: {parsed_context.location}
 - 상대방: {user_info.name} ({user_info.gender})
 - 관계: {parsed_context.relationship}
 - 현재 대화 단계: {stage}/5
@@ -213,7 +213,7 @@ async def evaluate_user_answer(
   * 부적절한 성적 표현이나 혐오 발언
 
 **상황 정보:**
-- 데이트 장소: {parsed_context.dating_place}
+- 데이트 장소: {parsed_context.location}
 - 상대방과의 관계: {parsed_context.relationship}
 - 이상형의 성격 유형: {ideal_type.personality}
 - 사용자 연애 고민: {parsed_context.concern_summary}
