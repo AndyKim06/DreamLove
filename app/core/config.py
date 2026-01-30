@@ -31,6 +31,7 @@ class Settings(BaseSettings):
     
     # CORS 설정
     ALLOW_ORIGINS: list = ["http://127.0.0.1:8000", "http://localhost:8000", "http://localhost:5501", "http://127.0.0.1:5501"]
+
     
     class Config:
         env_file = ".env"
