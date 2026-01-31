@@ -1,127 +1,235 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
     <title>Dream Love - Ending</title>
-    
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/common.css">
-    <link rel="stylesheet" href="css/feedback.css">
-</head>
-<body>
-    
-    <main class="ending-scene">
-        
-        <!-- 배경 및 장식 요소 -->
-        <div class="background-texture"></div>
-        
-        <div class="decorations">
-            <!-- 왼쪽 상단 픽셀 윈도우들 -->
-            <div class="pixel-deco-window win-1">
-                <div class="win-header">Type 2 <span class="win-btn">x</span></div>
-                <div class="win-content">
-                    <img src="assets/images/heart.svg" class="deco-icon mail-icon">
-                    <span class="deco-dots">...</span>
-                </div>
-            </div>
-            
-            <div class="pixel-deco-window win-2">
-                <div class="win-header">Type 2 <span class="win-btn">x</span></div>
-                <div class="win-content">
-                    <span class="deco-text">L o v e</span>
-                    <div class="deco-hearts">
-                        <img src="assets/images/heart.svg">
-                        <img src="assets/images/heart.svg">
-                    </div>
-                </div>
-            </div>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/feedback-style.css" />
+  </head>
+  <body>
+    <!-- ==================== 성공 UI ==================== -->
+    <main id="success-view" class="element success hidden">
+      <img class="bright-squares" src="assets/images/feedback/bright-squares-1.png" alt="" />
+      <img class="image" src="assets/images/feedback/image-59532.png" alt="" />
+      <img class="smooth-stucco-wall" src="assets/images/feedback/smooth-stucco-wall-1.png" alt="" />
+      <img class="group" src="assets/images/feedback/group-2085667639.png" alt="" />
+      <h1 class="text-wrapper">Ending</h1>
+      
+      <!-- 성공 타이틀 -->
+      <h2 id="success-title" class="why-you-are-failed success-title">Love Ya !!<br />I like you .....</h2>
+      
+      <!-- 성공 시 이미지 (편지지 위치에 표시) -->
+      <div class="success-image-container">
+        <img id="couple-photo" class="success-couple-photo" src="assets/images/feedback/mask-group-7.png" alt="커플 사진" />
+      </div>
+      
+      
 
-            <!-- 오른쪽 상단 장식 -->
-            <div class="right-deco">
-                <div class="line-deco"></div>
-            </div>
-        </div>
 
-        <!-- 메인 엔벨롭 및 결과 카드 영역 -->
-        <div class="envelope-area">
-            <!-- 편지 봉투 뒷면 -->
-            <div class="envelope-back"></div>
-            
-            <!-- 타이틀 텍스트 (성공/실패에 따라 변경) -->
-            <h1 id="result-title" class="result-title-text">Why you are failed this game</h1>
-
-            <!-- 결과 콘텐츠 (종이) -->
-            <div class="paper-card">
-                
-                <!-- 1. 실패 시: 텍스트 피드백 -->
-                <div id="fail-content" class="content-view hidden">
-                    <div class="feedback-scroll-container">
-                        <p id="feedback-text" class="feedback-text">
-                            너무 딱딱한 말투와<br>
-                            섬세한 재와씨에게 차갑게<br>
-                            대한 이유로 그를 갖지<br>
-                            못하게 되었습니다...
-                        </p>
-                    </div>
-                    <div class="fail-footer-line">
-                        <span>도동컴퍼 올림</span>
-                    </div>
-                </div>
-
-                <!-- 2. 성공 시: 사진 -->
-                <div id="success-content" class="content-view hidden">
-                    <div class="photo-frame">
-                        <img id="couple-photo" src="" alt="Couple">
-                        <div class="photo-date" id="photo-date">2026.01.26</div>
-                        <div class="photo-overlay"></div>
-                    </div>
-                    <!-- 테이프 장식 -->
-                    <div class="tape-deco"></div>
-                </div>
-
-            </div>
-            
-            <!-- 편지 봉투 앞면 (시각적 레이어) -->
-            <div class="envelope-front"></div>
-        </div>
-
-        <!-- 하단 Ending 텍스트 -->
-        <div class="ending-label">
-            Ending ... <img src="assets/images/purple_star.svg" class="star-icon">
-        </div>
-
-        <!-- 버튼 그룹 (화면 하단 고정) -->
-        <div class="action-buttons">
-            <button id="btn-download" class="action-btn hidden" onclick="downloadPhoto()">
-                📸 SAVE
-            </button>
-            <button class="action-btn" onclick="shareResult()">
-                🔗 SHARE
-            </button>
-            <button class="action-btn restart-btn" onclick="restartGame()">
-                🔄 RESTART
-            </button>
-        </div>
-
-        <!-- QR 코드 모달 -->
-        <div id="qr-modal" class="modal hidden">
-            <div class="modal-overlay" onclick="closeQRModal()"></div>
-            <div class="pixel-window modal-window">
-                <div class="window-header">
-                    <span class="window-title">QR Code</span>
-                    <span class="btn-close" onclick="closeQRModal()">X</span>
-                </div>
-                <div class="window-body">
-                    <p class="qr-msg">Scan to Download!</p>
-                    <img id="qr-code-img" src="" alt="QR">
-                    <button class="pixel-btn btn-close-modal" onclick="closeQRModal()">CLOSE</button>
-                </div>
-            </div>
-        </div>
-
+      <div class="rectangle-9" aria-hidden="true"></div>
+      
+      <!-- 장식 윈도우 1 -->
+      <article class="group-2">
+        <div class="rectangle-10"></div>
+        <div class="rectangle-11"></div>
+        <div class="rectangle-12"></div>
+        <div class="rectangle-13"></div>
+        <div class="rectangle-14"></div>
+        <div class="text-wrapper-3">x</div>
+        <div class="text-wrapper-4">Type 2</div>
+      </article>
+      
+      <!-- 장식 윈도우 2 -->
+      <article class="group-3">
+        <div class="rectangle-10"></div>
+        <div class="rectangle-11"></div>
+        <div class="rectangle-12"></div>
+        <div class="rectangle-13"></div>
+        <div class="rectangle-14"></div>
+        <div class="text-wrapper-3">x</div>
+        <div class="text-wrapper-4">Type 2</div>
+      </article>
+      
+      <img class="mask-group-3" src="assets/images/feedback/mask-group-2.png" alt="" />
+      <div class="text-wrapper-5">L o v e</div>
+      <img class="line-2" src="assets/images/feedback/line-13.png" alt="" />
+      <div class="rectangle-15" aria-hidden="true"></div>
+      <div class="rectangle-16" aria-hidden="true"></div>
+      
+      <!-- 캐릭터 프레임 -->
+      <figure class="group-4">
+        <img class="exclude" src="assets/images/feedback/exclude.png" alt="" />
+        <img class="mask-group-4" src="assets/images/feedback/mask-group-3.png" alt="" />
+      </figure>
+      
+      <div class="ellipse" aria-hidden="true"></div>
+      <div class="ellipse-2" aria-hidden="true"></div>
+      <div class="ellipse-3" aria-hidden="true"></div>
+      <div class="rectangle-17" aria-hidden="true"></div>
+      <div class="rectangle-18" aria-hidden="true"></div>
+      <div class="ellipse-4" aria-hidden="true"></div>
+      
+      <article class="group-5">
+        <div class="rectangle-19"></div>
+        <div class="ellipse-5"></div>
+        <div class="ellipse-6"></div>
+        <div class="ellipse-7"></div>
+      </article>
+      
+      <div class="text-wrapper-6">prometheus</div>
+      <div class="text-wrapper-7">prometheus</div>
+      <img class="mask-group-5" src="assets/images/feedback/mask-group-4.png" alt="" />
+      <div class="ellipse-8" aria-hidden="true"></div>
+      <div class="ellipse-9" aria-hidden="true"></div>
+      <div class="ellipse-10" aria-hidden="true"></div>
+      <div class="ellipse-11" aria-hidden="true"></div>
+      <div class="ellipse-12" aria-hidden="true"></div>
+      <div class="ellipse-13" aria-hidden="true"></div>
+      <img class="mask-group-6" src="assets/images/feedback/mask-group.png" alt="" />
+      <img class="mask-group-7" src="assets/images/feedback/mask-group-6.png" alt="" />
+      <img class="group-6" src="assets/images/feedback/group-2085667647.png" alt="" />
+      <img class="group-7" src="assets/images/feedback/group-2085667648.png" alt="" />
+      <img class="group-8" src="assets/images/feedback/group-2085667649.png" alt="" />
+      <img class="group-9" src="assets/images/feedback/group-2085667650.png" alt="" />
+      <img class="group-10" src="assets/images/feedback/group-2085667651.png" alt="" />
+      <img class="vector" src="assets/images/feedback/vector-43.png" alt="" />
+      
+      <!-- 성공 시 액션 버튼 -->
+      <div class="action-buttons success-buttons">
+        <button class="action-btn" onclick="downloadPhoto()">📸 SAVE</button>
+        <button class="action-btn" onclick="shareResult()">🔗 SHARE</button>
+        <button class="action-btn" onclick="restartGame()">🔄 RESTART</button>
+      </div>
     </main>
 
+    <!-- ==================== 실패 UI ==================== -->
+    <main id="fail-view" class="element fail hidden">
+      <img class="bright-squares" src="assets/images/feedback/bright-squares-1.png" alt="" />
+      <img class="image" src="assets/images/feedback/image-59532.png" alt="" />
+      <img class="mask-group" src="assets/images/feedback/mask-group-2.png" alt="" />
+      <img class="smooth-stucco-wall" src="assets/images/feedback/smooth-stucco-wall-1.png" alt="" />
+      <img class="group" src="assets/images/feedback/group-2085667639.png" alt="" />
+      <h1 class="text-wrapper">Ending</h1>
+      
+      <!-- 실패 타이틀 -->
+      <h2 id="fail-title" class="why-you-are-failed">Why you <br />are&nbsp;&nbsp;failed&nbsp;&nbsp;this game</h2>
+      
+      <!-- 간단한 피드백 텍스트 -->
+      <p id="feedback-text" class="p">
+        너무 딱딱한 말투와<br />섬세한 제와삐에게 차갑게<br />대한 이유로 그를 갖지 <br />못하게 되었습니다..
+      </p>
+      
+      <!-- 상세 피드백 보기 버튼 -->
+      <button id="show-detail-btn" class="detail-btn" onclick="toggleDetailFeedback()">📝 상세 피드백 보기</button>
+      
+      <!-- 상세 피드백 영역 (기본적으로 숨김) -->
+      <div id="detail-feedback" class="detail-feedback-box hidden">
+        <div class="detail-feedback-content" id="detail-feedback-content">
+          <!-- 대화별 상세 피드백이 여기에 표시됨 -->
+        </div>
+        <button class="close-detail-btn" onclick="toggleDetailFeedback()">닫기</button>
+      </div>
+      
+      <!-- 서명 -->
+      <div id="signature-text" class="text-wrapper-2">드림러브 올림</div>
+      
+      <img class="line" src="assets/images/feedback/line-11.png" alt="" />
+      <img class="img" src="assets/images/feedback/line-12.png" alt="" />
+      <!-- <img class="mask-group-2" src="assets/images/feedback/mask-group-1.png" alt="" /> -->
+      <img class="image-2" src="assets/images/feedback/image-59517.png" alt="" />
+      <div class="rectangle-9" aria-hidden="true"></div>
+      
+      <!-- 장식 윈도우 1 -->
+      <article class="group-2">
+        <div class="rectangle-10"></div>
+        <div class="rectangle-11"></div>
+        <div class="rectangle-12"></div>
+        <div class="rectangle-13"></div>
+        <div class="rectangle-14"></div>
+        <div class="text-wrapper-3">x</div>
+        <div class="text-wrapper-4">Type 2</div>
+      </article>
+      
+      <!-- 장식 윈도우 2 -->
+      <article class="group-3">
+        <div class="rectangle-10"></div>
+        <div class="rectangle-11"></div>
+        <div class="rectangle-12"></div>
+        <div class="rectangle-13"></div>
+        <div class="rectangle-14"></div>
+        <div class="text-wrapper-3">x</div>
+        <div class="text-wrapper-4">Type 2</div>
+      </article>
+      
+      <img class="mask-group-3" src="assets/images/feedback/mask-group-2.png" alt="" />
+      <div class="text-wrapper-5">L o v e</div>
+      <img class="line-2" src="assets/images/feedback/line-13.png" alt="" />
+      <div class="rectangle-15" aria-hidden="true"></div>
+      <div class="rectangle-16" aria-hidden="true"></div>
+      
+      <!-- 캐릭터 프레임 -->
+      <figure class="group-4">
+        <img class="exclude" src="assets/images/feedback/exclude.png" alt="" />
+        <img class="mask-group-4" src="assets/images/feedback/mask-group-3.png" alt="" />
+      </figure>
+      
+      <div class="ellipse" aria-hidden="true"></div>
+      <div class="ellipse-2" aria-hidden="true"></div>
+      <div class="ellipse-3" aria-hidden="true"></div>
+      <div class="rectangle-17" aria-hidden="true"></div>
+      <div class="rectangle-18" aria-hidden="true"></div>
+      <div class="ellipse-4" aria-hidden="true"></div>
+      
+      <article class="group-5">
+        <div class="rectangle-19"></div>
+        <div class="ellipse-5"></div>
+        <div class="ellipse-6"></div>
+        <div class="ellipse-7"></div>
+      </article>
+      
+      <div class="text-wrapper-6">prometheus</div>
+      <div class="text-wrapper-7">prometheus</div>
+      <img class="mask-group-5" src="assets/images/feedback/mask-group-4.png" alt="" />
+      <div class="ellipse-8" aria-hidden="true"></div>
+      <div class="ellipse-9" aria-hidden="true"></div>
+      <div class="ellipse-10" aria-hidden="true"></div>
+      <div class="ellipse-11" aria-hidden="true"></div>
+      <div class="ellipse-12" aria-hidden="true"></div>
+      <div class="ellipse-13" aria-hidden="true"></div>
+      <img class="mask-group-6" src="assets/images/feedback/mask-group.png" alt="" />
+      <img class="mask-group-7" src="assets/images/feedback/mask-group-6.png" alt="" />
+      <img class="group-6" src="assets/images/feedback/group-2085667647.png" alt="" />
+      <img class="group-7" src="assets/images/feedback/group-2085667648.png" alt="" />
+      <img class="group-8" src="assets/images/feedback/group-2085667649.png" alt="" />
+      <img class="group-9" src="assets/images/feedback/group-2085667650.png" alt="" />
+      <img class="group-10" src="assets/images/feedback/group-2085667651.png" alt="" />
+      <img class="vector" src="assets/images/feedback/vector-43.png" alt="" />
+      
+      <!-- 실패 시 액션 버튼 -->
+      <div class="action-buttons fail-buttons">
+        <button class="action-btn" onclick="shareResult()">🔗 SHARE</button>
+        <button class="action-btn" onclick="restartGame()">🔄 RESTART</button>
+      </div>
+    </main>
+
+    <!-- QR 코드 모달 -->
+    <div id="qr-modal" class="modal hidden">
+      <div class="modal-overlay" onclick="closeQRModal()"></div>
+      <div class="modal-window">
+        <div class="window-header">
+          <span class="window-title">QR Code</span>
+          <span class="btn-close" onclick="closeQRModal()">X</span>
+        </div>
+        <div class="window-body">
+          <p class="qr-msg">Scan to Download!</p>
+          <img id="qr-code-img" src="" alt="QR Code" />
+          <button class="pixel-btn btn-close-modal" onclick="closeQRModal()">CLOSE</button>
+        </div>
+      </div>
+    </div>
+
     <script src="js/feedback.js"></script>
-</body>
+  </body>
 </html>
