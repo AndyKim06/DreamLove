@@ -302,22 +302,18 @@ async def generate_final_feedback(
     if total_score >= 0:
         if total_score >= 30:
             grade = "매우 성공적"
-            emoji = "🌟"
             msg = "완벽해요! 상대방의 마음을 완전히 사로잡으셨군요!"
         elif total_score >= 10:
             grade = "성공적"
-            emoji = "😊"
             msg = "좋아요! 매력적인 대화로 좋은 관계를 만들어가고 계시네요."
         else:
             grade = "무난함"
-            emoji = "🙂"
             msg = "나쁘지 않아요! 조금 더 자신감을 가져도 좋겠어요."
             
-        return f"{emoji} **데이트 시뮬레이션 결과: {grade}** (점수: {total_score}점)\n\n{msg}\n축하합니다! 성공적인 데이트였어요. 실제 연애에서도 이 감각을 잃지 마세요! 💕"
+        return f"**데이트 시뮬레이션 결과: {grade}** (점수: {total_score}점)\n\n{msg}\n축하합니다! 성공적인 데이트였어요. 실제 연애에서도 이 감각을 잃지 마세요!"
 
     # 2. 최종 점수가 음수인 경우: 개선 피드백 생성
     grade = "개선 필요"
-    emoji = "💪"
     
     # 부정적 피드백 내역 포맷팅
     feedback_context = ""
@@ -329,6 +325,8 @@ async def generate_final_feedback(
 사용자의 데이트 시뮬레이션 점수가 낮게 나왔습니다. 
 특히 점수가 깎였던 대화 내용을 분석하여 구체적이고 현실적인 개선 피드백을 주어야 합니다.
 
+**중요: 이모티콘을 절대 사용하지 마세요!**
+
 **사용자 정보:**
 - 이름: {user_info.name}
 - 성별: {user_info.gender}
@@ -338,29 +336,34 @@ async def generate_final_feedback(
 **점수가 깎인 대화 내역:**
 {feedback_context}
 
-**피드백 작성 지침:**
-1. 위로와 격려 (1문장)
-   - "너무 실망하지 마세요" 같은 톤으로 시작
+**피드백 작성 형식 (반드시 아래 형식을 정확히 따르세요):**
 
-2. 문제점 상세 분석 (필수)
-   - **반드시** 아래 형식을 지켜서 점수가 깎인 대화를 먼저 인용하고 피드백을 주세요.
-   - 형식:
-     "Q. (질문 내용)
-      A. (사용자 답변) [점수: -5점/-10점]
-      👉 (피드백 내용: 이 답변이 왜 아쉬운지, 어떻게 고치면 좋을지 구체적으로 조언)"
+1. 간단한 요약 피드백 (2~3문장)
+   - 위로와 격려로 시작
+   - 전반적인 문제점을 간략히 언급
+
+---
+
+### **대화별 상세 피드백**
+
+2. 각 대화에 대한 상세 분석 (각 대화마다):
+   Q. (질문 내용)
+   A. (사용자 답변) [점수: -5점/-10점]
+   -> (이 답변이 왜 아쉬운지, 어떻게 고치면 좋을지 구체적으로 조언)
 
 3. 실전 종합 팁 (2~3문장)
-   - 사용자의 고민({parsed_context.concern_summary})과 연결하여 종합적인 조언
+   - 사용자의 고민과 연결하여 종합적인 조언
 
 **주의사항:**
-- 각 부정적 피드백 항목마다 질문, 답변, 점수를 정확하게 명시하세요.
+- 이모티콘은 절대 사용하지 마세요
+- "---" 구분자로 간단한 피드백과 상세 피드백을 명확히 구분하세요
 - 상처주지 않도록 부드럽고 건설적인 톤으로 작성하세요
-- 총 길이 제한 없음 (상세하게 작성)
 """
 
     user_prompt = f"""
 {user_info.name}님의 최종 점수는 {total_score}점입니다.
 점수가 깎였던 대화들을 분석하여, 다음번에는 더 나은 대화를 할 수 있도록 따뜻하고 구체적인 피드백을 주세요.
+이모티콘 없이 작성해주세요.
 """
 
     try:
@@ -368,13 +371,13 @@ async def generate_final_feedback(
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             temperature=0.7,
-            max_tokens=800
+            max_tokens=1000
         )
         
-        return f"{emoji} **데이트 시뮬레이션 결과: {grade}** (점수: {total_score}점)\n\n{feedback}"
+        return f"**데이트 시뮬레이션 결과: {grade}** (점수: {total_score}점)\n\n{feedback}"
         
     except SolarAPIError:
-        return f"{emoji} **데이트 시뮬레이션 결과: {grade}** (점수: {total_score}점)\n\n아쉬운 결과지만 괜찮아요! 상대방의 입장에서 조금 더 생각하고 배려하는 대화를 시도해보세요. 특히 상대방의 질문에 성의 있게 대답하고, 맞장구를 쳐주는 것만으로도 호감도를 높일 수 있답니다. 다시 도전해보세요!"
+        return f"**데이트 시뮬레이션 결과: {grade}** (점수: {total_score}점)\n\n아쉬운 결과지만 괜찮아요! 상대방의 입장에서 조금 더 생각하고 배려하는 대화를 시도해보세요. 특히 상대방의 질문에 성의 있게 대답하고, 맞장구를 쳐주는 것만으로도 호감도를 높일 수 있답니다. 다시 도전해보세요!"
 
 
 async def run_chat_flow(request: ChatRequest) -> ChatResponse:
