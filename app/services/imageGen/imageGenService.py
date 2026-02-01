@@ -112,6 +112,7 @@ class ImageGenService:
             The person must wear the same clothing and have the same hairstyle as in the reference.
             The background, lighting, and composition must remain consistent.
 
+            The image must be in a cinematic landscape orientation (approx. 16:10 aspect ratio).
             The facial expression should be: {exp_name}
             
             Do NOT exaggerate facial expressions.
@@ -124,7 +125,9 @@ class ImageGenService:
                     contents=[current_prompt, image],
                     config={
                         "system_instruction": ROLE_INSTRUCTION,
-                        "temperature": 0.7
+                        "temperature": 0.7,
+                        "aspect_ratio": "16:10"
+
                     }
                 )
 
@@ -181,7 +184,8 @@ class ImageGenService:
                 contents=[current_prompt, Image.open(user.userImage), Image.open(idealImage)],
                 config={
                     "system_instruction": ROLE_INSTRUCTION,
-                    "temperature": 0.7
+                    "temperature": 0.7,
+                    "aspect_ratio": "16:10",
                 }
             )
 
