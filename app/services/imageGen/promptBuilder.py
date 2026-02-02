@@ -112,23 +112,28 @@ class PromptBuilder:
         
         parts = []
         
+        # 1. Base
         if animal == "bear":
             parts.append(PromptBuilder.COMMON_BASE_BEAR)
         else:
             parts.append(PromptBuilder.COMMON_BASE)
         
+        # 2. Gender Core
         parts.append(PromptBuilder.GENDER_CORE[gender])
         if gender == "male" and hairstyle == "long":
             parts.append("MAN WITH LONG HAIR, MASCULINE FACIAL STRUCTURE, THIS IS A MAN, NOT A WOMAN")
 
+        # 3. Facial Details
         if animal == "bear":
             parts.append(PromptBuilder.GENDER_FACIAL_DETAILS_BEAR[gender])
         else:
             parts.append(PromptBuilder.GENDER_FACIAL_DETAILS[gender])
 
+        # 4. Core Features
         parts.append(PromptBuilder.EYELIDS[eyelid])
         parts.append(PromptBuilder.ANIMAL_FACES[gender][animal])
 
+        # 5. Styling
         parts.append(PromptBuilder.HAIRSTYLE_LENGTHS[hairstyle])
         parts.append(PromptBuilder.HAIRSTYLE_STYLES.get(f"{animal}_{gender}", "natural hair"))
         parts.append(PromptBuilder.FACE_SHAPES[face_shape])
@@ -141,6 +146,7 @@ class PromptBuilder:
 
         final_prompt = ", ".join(parts)
         
+        # 6. Negative
         neg_parts = [
             "profile view, side view, looking away, illustration, anime, cartoon, CGI, 3D render",
             "over-smoothed skin, beauty filter, western facial features, extra fingers",
@@ -151,9 +157,5 @@ class PromptBuilder:
             
         final_negative = ", ".join(neg_parts)
 
-        animal_kor = {"puppy": "강아지상", "cat": "고양이상", "deer": "사슴상", "rabbit": "토끼상", "dinosaur": "공룡상", "fox": "여우상", "bear": "곰상"}
-        gender_kor = {"male": "남성", "female": "여성"}
-        eyelid_kor = {"monolid": "무쌍", "double": "쌍커풀"}
-        korean_summary = f"{gender_kor[gender]}_{animal_kor[animal]}_{eyelid_kor[eyelid]}"
-
-        return final_prompt, final_negative, korean_summary, len(final_prompt.split())
+        # 리턴값을 3개로 조정 (tokens를 마지막에 배치)
+        return final_prompt, final_negative, len(final_prompt.split())
