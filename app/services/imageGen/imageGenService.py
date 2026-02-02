@@ -215,6 +215,10 @@ class ImageGenService:
         
         return image_path
     
+    def getSuccessResultImagePath(self, userId):
+        image_dir = Path("frontend/imageCloud/user")
+        return str(image_dir / f"{userId}_success_result.png")
+    
     # def upScalingImage(self, image, userId):
     #     image_path = self.getUserIdealImagePath(userId)
     #     image = open(image_path).convert("RGB")
