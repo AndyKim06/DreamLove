@@ -9,7 +9,6 @@ from app.schemas.chatSchemas import UserInfo, IdealType, ChatRequest, ChatRespon
 from app.services.chat.solar_client import query_solar, SolarAPIError
 from app.services.chat.concern_parser import parse_concern
 
-
 async def generate_greeting(user_info: UserInfo, ideal_type: IdealType, parsed_context: ParsedContext) -> str:
     """
     첫 만남에서의 인사말 생성
@@ -379,8 +378,7 @@ async def generate_final_feedback(
     except SolarAPIError:
         return f"**데이트 시뮬레이션 결과: {grade}** (점수: {total_score}점)\n\n아쉬운 결과지만 괜찮아요! 상대방의 입장에서 조금 더 생각하고 배려하는 대화를 시도해보세요. 특히 상대방의 질문에 성의 있게 대답하고, 맞장구를 쳐주는 것만으로도 호감도를 높일 수 있답니다. 다시 도전해보세요!"
 
-
-async def run_chat_flow(request: ChatRequest) -> ChatResponse:
+async def run_chat_flow(userId, request: ChatRequest) -> ChatResponse:
     """
     전체 채팅 흐름 실행
     
@@ -394,8 +392,14 @@ async def run_chat_flow(request: ChatRequest) -> ChatResponse:
     # Stage 0: 연애고민에서 컨텍스트 추출 + 첫 인사말 생성
     if request.stage == 0:
         # 1) 연애고민 자연어에서 장소/관계 추출 (없으면 랜덤 생성)
-        parsed_context = await parse_concern(request.user_info.concern)
         
+        # 아래 코드 실행하면 이상형의 표정변환 사진 3가지 얻을수 있음
+        # 프론트엔드에 맞춰서 이미지 경로 보내주고 프론트엔드에서 가져온 경로로 이미지 띄우게 만들어야함
+        from app.dependency import getUserService
+        parsed_context = await parse_concern(request.user_info.concern)
+        idealImagePath = getUserService().getUserIdealImagePath(userId)
+        idealImagePath = ["~.location_Netural.png", "~.location_Disappointed.png", "~.location_Smiling.png"]
+
         # 2) 첫 인사말 생성
         greeting = await generate_greeting(
             user_info=request.user_info,

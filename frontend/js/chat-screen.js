@@ -137,8 +137,8 @@ async function sendChatRequest(userMessage) {
         }
         
         console.log('📤 요청:', requestData);
-        
-        const response = await fetch(`${API_BASE}/chat/simulate`, {
+        const userId = localStorage.getItem("userId");
+        const response = await fetch(`${API_BASE}/chat/simulate?userId=${userId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -211,7 +211,6 @@ function updateUI(data) {
     if (data.ideal_image_base_path && data.parsed_context) {
         const location = data.parsed_context.location; // 예: cinema
         const basePath = data.ideal_image_base_path;    // 예: standard_female_1
-        
         // 최종 파일명 조립
         const fileName = `${basePath}_${location}_${emotion}.png`;
         mainPhoto.src = `./imageCloud/${fileName}`;
