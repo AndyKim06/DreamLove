@@ -262,9 +262,13 @@ function sendMessage() {
 
 // 최종 결과 표시
 function showFinalResult(data) {
-    const feedback = data.final_feedback || '수고하셨습니다!';
+    // final_feedback이 없으면 bot_message 사용
+    const feedback = data.final_feedback || data.bot_message || '수고하셨습니다!';
     const finalScore = data.updated_score;
     const negativeFeedbacks = data.negative_feedbacks || [];
+    
+    console.log('🏁 최종 피드백:', feedback);
+    console.log('📊 최종 점수:', finalScore);
     
     // 결과 데이터를 localStorage에 저장
     const resultData = {

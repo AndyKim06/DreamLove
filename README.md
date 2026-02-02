@@ -73,6 +73,8 @@ python -m uvicorn app.main:app --reload
 python interactive_cli.py
 ```
 
+[http://localhost:8000/static/01-profile.html]
+
 ### 6. API 문서 확인 (Swagger UI)
 서버가 실행 중일 때 브라우저에서 아래 주소로 접속하면 API 문서를 볼 수 있습니다.
 - [http://localhost:8000/docs](http://localhost:8000/docs)
