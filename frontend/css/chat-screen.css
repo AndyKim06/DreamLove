@@ -148,7 +148,17 @@
 }
 
 
-.send-btn, .start-btn {
+.start-btn {
+    background: none;
+    width: auto;
+    height: 100%;
+    border: none; 
+    font-family: 'Galmuri14'; 
+    font-size: 2.3cqi; color: #FF69B4; cursor: pointer;
+    white-space: nowrap; padding-right: 10px;
+}
+
+.send-btn {
     background: #FF69B4; 
     width: auto;
     height: 100%;
