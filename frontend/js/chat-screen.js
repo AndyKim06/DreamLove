@@ -207,20 +207,23 @@ function updateUI(data) {
         else if (gameState.score_change < 0) emotion = 'Disappointed';
     }
 
-    // 백엔드 코드 규칙: {userId_번호}_{장소}_{감정}.png
+    // 2. [핵심 수정] 파일명 조립 로직
     if (data.ideal_image_base_path && data.parsed_context) {
-        const location = data.parsed_context.location; // 예: cinema
-        const basePath = data.ideal_image_base_path;    // 예: standard_female_1
+        // 백엔드에서 준 base_path에서 .png 확장자 제거
+        let basePath = data.ideal_image_base_path.replace(/\.png$/i, ''); 
         
+        // 장소명 결정: 
+        // 백엔드 응답에 'location_eng'가 있다면 그것을 쓰고, 없다면 한글 'location'을 씁니다.
+        // (단, 파일명이 영문이라면 백엔드에서 영문 장소명을 보내주도록 수정이 필요할 수 있습니다.)
+        const location = data.parsed_context.location_eng || data.parsed_context.location;
+
         // 최종 파일명 조립
         const fileName = `${basePath}_${location}_${emotion}.png`;
+        
+        // 경로 설정 (./imageCloud/ 또는 ../imageCloud/ 확인 필요)
         mainPhoto.src = `./imageCloud/${fileName}`;
         
-        mainPhoto.onerror = () => {
-            console.error("이미지 로드 실패:", mainPhoto.src);
-            // 로드 실패 시 기본 Neutral 이미지 시도
-            mainPhoto.src = `./imageCloud/${basePath}_${location}_Neutral.png`;
-        };
+        console.log("📸 실제 요청 경로:", mainPhoto.src); // 디버깅용
     }
     
     // 3. 나머지 상태 업데이트
