@@ -398,7 +398,7 @@ async def run_chat_flow(userId, request: ChatRequest) -> ChatResponse:
         from app.dependency import getUserService
         parsed_context = await parse_concern(request.user_info.concern)
         idealImagePath = getUserService().getUserIdealImagePath(userId)
-        idealImagePath = ["~.location_Netural.png", "~.location_Disappointed.png", "~.location_Smiling.png"]
+        # idealImagePath = ["~.location_Netural.png", "~.location_Disappointed.png", "~.location_Smiling.png"]
 
         # 2) 첫 인사말 생성
         greeting = await generate_greeting(
