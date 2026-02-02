@@ -4,77 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dream Love - Chat</title>
-    
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/chat-screen.css">
 </head>
 <body>
-
     <div class="bg-image"></div>
 
     <main class="design-container">
-        
         <div class="game-wrapper">
-
-            <div id="intro-layer" class="layer-box">
-                <div class="ui-box intro-card">
-                    <div class="mission-header">To. MISSION...</div>
-                    
-                    <div id="step-1" class="mission-content">
-                        <p id="intro-text">로딩중...</p>
-                    </div>
-
-                    <div id="step-2" class="mission-content hidden">
-                        <p><span id="target-gender-text" class="highlight-pink">그(그녀)</span>의 마음을 공략해서</p>
-                        <p>점수를 얻어보세요!</p>
-                    </div>
-                </div>
-
-                <div class="ui-box intro-bottom-bar">
-                    <button id="start-btn" class="start-btn hidden" onclick="startGame()">
-                        데이트 시작하기
-                    </button>
+            
+            <div class="ui-box dialogue-box">
+                <div class="dialogue-content">
+                    <span id="char-name" class="char-label"></span>
+                    <p id="char-msg"></p>
                 </div>
             </div>
 
+            <div class="ui-box station-box">
+                <span id="station-text" class="station-text">Game start</span>
+            </div>
 
-            <div id="game-layer" class="layer-box hidden">
-                
-                <div class="ui-box dialogue-box" style="padding: 0; overflow: hidden;">
-                    <img id="main-photo" src="" alt="Partner Face" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
+            <div class="heart-area">
+                <img src="assets/images/heart.svg" class="heart-icon active">
+                <img src="assets/images/heart.svg" class="heart-icon active">
+                <img src="assets/images/heart.svg" class="heart-icon active">
+                <img src="assets/images/heart.svg" class="heart-icon">
+            </div>
 
-                <div class="ui-box station-box">
-                    <span class="station-text">STAGE 1</span>
-                </div>
-
-                <div class="heart-area">
-                    <img src="assets/images/heart.svg" class="heart-icon active">
-                    <img src="assets/images/heart.svg" class="heart-icon active">
-                    <img src="assets/images/heart.svg" class="heart-icon active">
-                    <img src="assets/images/heart.svg" class="heart-icon">
-                </div>
-
-                <div class="ui-box main-visual-box" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                    <div class="dialogue-content" style="width: 80%; text-align: center;">
-                        <span id="char-name" class="char-label" style="display: none;">도현 :</span>
-                        <p id="char-msg" style="font-size: 1.7cqi; line-height: 1.8;">여기까지 오는데<br>안힘들었어?</p>
+            <div class="ui-box main-visual-box">
+                <div id="intro-layer" class="mission-container">
+                    <div class="mission-header">. . . MISSION . . .</div>
+                    <div class="mission-body">
+                        <p id="intro-text">로딩중...</p>
                     </div>
                 </div>
+                <img id="main-photo" src="" alt="Partner Face" class="hidden">
+            </div>
 
-                <div class="ui-box bottom-bar-box">
-                    <!-- 사용자 입력 모드 (항상 표시) -->
-                    <div id="user-input-mode" class="chat-content" style="flex: 1; display: flex; gap: 10px;">
-                        <input type="text" id="user-input" placeholder="답변을 입력하세요..." 
-                               style="flex: 1; padding: 10px; font-family: 'Galmuri14', monospace; font-size: 1.7cqi; border: 2px solid #666; background: #fff;"
-                               onkeypress="if(event.key==='Enter') sendMessage()">
-                        <button onclick="sendMessage()" style="padding: 10px 20px; font-family: 'Galmuri14', monospace; font-size: 1.5cqi; background: #ff69b4; color: white; border: 2px solid #666; cursor: pointer;">전송</button>
-                    </div>
+            <div class="ui-box bottom-bar-box">
+                <button id="start-btn" class="start-btn hidden" onclick="startGame()">
+                    데이트 시작하기
+                </button>
+                <div id="user-input-mode" class="chat-content hidden">
+                    <input type="text" id="user-input" placeholder="답변을 입력하세요..." onkeypress="if(event.key==='Enter') sendMessage()">
+                    <button onclick="sendMessage()" class="send-btn">전송</button>
                 </div>
+            </div>
 
-            </div> </div> </main>
-
+        </div>
+    </main>
     <script src="js/chat-screen.js"></script>
 </body>
 </html>

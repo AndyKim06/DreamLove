@@ -87,10 +87,12 @@
     box-shadow: 5px 5px 0 rgba(0,0,0,0.2);
     display: flex; flex-direction: column;
 }
-
+.diy-title{
+    margin-left: 40%;
+}
 .diy-header {
     background-color: #6D6D75; color: #FFFFFF;
-    padding: 1.5% 3%; display: flex; justify-content: space-between; align-items: center;
+    padding: 2% 3%; display: flex; justify-content: space-between; align-items: center;
     font-family: 'Galmuri14', sans-serif; font-size: 1.5cqi;
 }
 .diy-close-btn {
@@ -104,7 +106,11 @@
     font-family: 'Galmuri14', sans-serif; color: #5A4A82;
 }
 
-.input-label { display: block; font-size: 1cqi; margin-bottom: 0.5cqi; color: #666; }
+.input-label { display: block; 
+    font-size: 1.1cqi; margin-bottom: 0.5cqi; 
+    color: #666; 
+    padding: 0.2cqi;
+}
 
 /* 폼 요소 스타일 (라디오, 셀렉트, 슬라이더) */
 .row-group { display: flex; gap: 10%; margin-bottom: 1cqi; }
@@ -119,15 +125,45 @@
     width: 0.5cqi; height: 0.5cqi; background: #5A4A82; border-radius: 50%;
 }
 
-.select-wrapper { position: relative; width: 100%; margin-bottom: 1cqi; }
-.pixel-select {
-    width: 100%; padding: 0.8cqi; font-family: 'Galmuri14', sans-serif;
-    font-size: 1cqi; color: #333; border: 2px solid #CCC; border-bottom: 2px solid #888;
-    background: #FFF; appearance: none; cursor: pointer;
+/* --- [RIGHT] DIY 패널 내부 셀렉트 박스 수정 --- */
+
+.select-wrapper { 
+    position: relative; 
+    width: 100%; 
+    margin-bottom: 0.5cqi;
+    display: flex; /* 추가: 내부 요소 정렬 안정화 */
+    align-items: center;
 }
+
+.pixel-select {
+    width: 100%; 
+    /* 상하 패딩을 약간 줄이고 좌우 여백을 확보하여 텍스트가 잘리지 않게 함 */
+    padding: 0.5cqi 0.8cqi; 
+    font-family: 'Galmuri14', sans-serif;
+    font-size: 1.05cqi; 
+    color: #333; 
+    border: 2px solid #CCC; 
+    border-bottom: 2px solid #888;
+    background: #FFF; 
+    appearance: none; 
+    cursor: pointer;
+    
+    /* 추가 핵심 설정 */
+    height: auto;           /* 높이를 콘텐츠에 맞춤 */
+    line-height: 1.5;       /* 텍스트 높이 확보 */
+    display: block;
+    box-sizing: border-box; /* 패딩이 전체 크기에 포함되도록 함 */
+}
+
+/* 화살표 위치가 텍스트와 겹치지 않게 미세 조정 */
 .select-arrow {
-    position: absolute; right: 1cqi; top: 50%; transform: translateY(-50%);
-    pointer-events: none; color: #5A4A82; font-size: 0.8cqi;
+    position: absolute; 
+    right: 1cqi; 
+    top: 50%; 
+    transform: translateY(-50%);
+    pointer-events: none; 
+    color: #5A4A82; 
+    font-size: 0.7cqi; /* 화살표 크기를 살짝 줄여 텍스트 공간 확보 */
 }
 
 .pixel-slider {

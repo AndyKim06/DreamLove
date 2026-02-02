@@ -14,6 +14,7 @@ import logging
 from pathlib import Path
 import base64
 from app.core.config import settings
+from google.genai import types
 
 ROLE_INSTRUCTION = """
 You are a professional image generation model specialized in preserving human identity.
@@ -28,6 +29,7 @@ You MUST strictly follow these rules:
    No side view, no angled face, no looking away.
 5. Only the facial expression is allowed to change.
 6. Generate images of the same person.
+7. The image should be wide, cinematic, 16:10 ratio.
 
 Negative Prompt:
 face change, identity change, different person, face swap,
@@ -104,39 +106,33 @@ class ImageGenService:
         expressions = ["Smiling", "Neutral", "Disappointed"]
         for i, exp_name in enumerate(expressions):
             current_prompt = f"""
-            Using the provided reference image of a person, place the SAME person naturally in the following location:
-
-            Location: {location}
-
-            Generate a photorealistic image of the same person in the SAME location.
-            The person must wear the same clothing and have the same hairstyle as in the reference.
-            The background, lighting, and composition must remain consistent.
-
-            The facial expression should be: {exp_name}
-            
-            Do NOT exaggerate facial expressions.
-            Do NOT change identity, clothing, or background.
+            Generate a {exp_name} expression of the person in the reference image at {location}. 16:9 aspect ratio.
             """
 
             try:
                 response = self.geminiClient.models.generate_content(
                     model="gemini-2.5-flash-image",
                     contents=[current_prompt, image],
-                    config={
-                        "system_instruction": ROLE_INSTRUCTION,
-                        "temperature": 0.7
-                    }
+                    config=types.GenerateContentConfig(
+                        system_instruction=ROLE_INSTRUCTION,
+                        temperature=0.7,
+                        response_modalities=["IMAGE"],
+                        image_config=types.ImageConfig(
+                            aspect_ratio="16:9",
+                        )
+                    )
                 )
 
                 if response.candidates:
-                    candidate = response.candidates[0]
-                    for part in candidate.content.parts:
-                        if part.inline_data is not None:
+                    for part in response.candidates[0].content.parts:
+                        if part.inline_data:
                             file_name = f"{image_path}_{location}_{exp_name}.png"
                             user.userIdealImagePath.append(file_name)
-                            image_bytes = base64.b64decode(part.inline_data.data)
+                            img_data = part.inline_data.data
+                            if isinstance(img_data, str):
+                                img_data = base64.b64decode(img_data)
                             with open(file_name, "wb") as f:
-                                f.write(image_bytes)
+                                f.write(img_data)
                         elif part.text is not None:
                             print(f"Model text: {part.text}")
 
@@ -156,6 +152,7 @@ class ImageGenService:
         Using the provided TWO reference images of two different people, place the SAME two people together naturally in the following location:
 
         Location: {location}
+        Image Aspect Ratio : 16:9
 
         Generate a photorealistic image of the SAME two people taking a selfie together in the SAME location.
 
@@ -177,23 +174,28 @@ class ImageGenService:
 
         try:
             response = self.geminiClient.models.generate_content(
-                model="gemini-3-pro-image-preview",
+                model="gemini-2.5-flash-image",
                 contents=[current_prompt, Image.open(user.userImage), Image.open(idealImage)],
-                config={
-                    "system_instruction": ROLE_INSTRUCTION,
-                    "temperature": 0.7
-                }
+                config=types.GenerateContentConfig(
+                        system_instruction=ROLE_INSTRUCTION,
+                        temperature=0.7,
+                        response_modalities=["IMAGE"],
+                        image_config=types.ImageConfig(
+                            aspect_ratio="16:9",
+                        )
+                    )
             )
 
             if response.candidates:
-                candidate = response.candidates[0]
-                for part in candidate.content.parts:
-                    if part.inline_data is not None:
+                for part in response.candidates[0].content.parts:
+                    if part.inline_data:
                         image_dir = Path("frontend/imageCloud/user")
                         file_name = str(image_dir / f"{userId}_success_result.png")
-                        image_bytes = base64.b64decode(part.inline_data.data)
+                        img_data = part.inline_data.data
+                        if isinstance(img_data, str):
+                                img_data = base64.b64decode(img_data)
                         with open(file_name, "wb") as f:
-                            f.write(image_bytes)
+                                f.write(img_data)
                         return file_name
                     elif part.text is not None:
                         print(f"Model text: {part.text}")

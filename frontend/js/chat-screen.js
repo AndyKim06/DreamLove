@@ -2,8 +2,10 @@
 
 const API_BASE = 'http://localhost:8000';
 
+
 // 게임 상태
 let gameState = {
+    userId: localStorage.getItem('userId') || 'test_user_1', 
     partnerName: '이상형',
     userName: '',
     userGender: '',
@@ -11,7 +13,9 @@ let gameState = {
     idealPersonality: '',
     stage: 0,
     score: 0,
+    score_change: 0, 
     parsedContext: null,
+    ideal_image_base_path: '',
     negativeFeedbacks: [],
     currentQuestion: '',
     isWaiting: false
@@ -40,32 +44,64 @@ window.onload = function() {
         // 내가 남자면 상대는 여자(그녀), 내가 여자면 상대는 남자(그)
         targetGenderText.innerText = gameState.userGender === '남자' ? '그녀' : '그';
     }
-
-    // [New] 페이지 로드와 동시에 백엔드 요청 시작 (장소 정보 획득을 위해)
-    // 화면에는 아직 intro-layer가 떠 있음
     sendChatRequest('');
 
     // 3. 인트로 애니메이션 (텍스트 변경 없이 버튼만 표시)
     setTimeout(() => {
-        // 기존 텍스트(step-1) 유지, step-2는 사용 안 함
-        // document.getElementById('step-1').classList.add('hidden');
-        // document.getElementById('step-2').classList.remove('hidden');
-        
         document.getElementById('start-btn').classList.remove('hidden');
     }, 3000);
 };
 
-// [공략하기] 클릭 - 첫 인사 받기
+
+// 타이핑 애니메이션 함수
+function typeWriter(element, text, speed = 50) {
+    element.innerHTML = ""; // 기존 내용 초기화
+    let i = 0;
+    
+    function type() {
+        if (i < text.length) {
+            // 줄바꿈 문자(\n)를 <br>로 변환
+            if (text.charAt(i) === '\n') {
+                element.innerHTML += '<br>';
+            } else {
+                element.innerHTML += text.charAt(i);
+            }
+            i++;
+            setTimeout(type, speed); // 지정된 속도로 다음 글자 출력
+        }
+    }
+    type();
+}
+
 async function startGame() {
+    // 1. 인트로 레이어 숨기고 메인 레이어 노출
     document.getElementById('intro-layer').classList.add('hidden');
-    document.getElementById('game-layer').classList.remove('hidden');
     
-    // 이미 window.onload에서 요청을 보냈으므로, 여기서는 UI 전환만 하면 됨
-    // 만약 아직 응답이 안 왔다면(isWaiting=true), 로딩 상태 유지됨
-    // 응답이 오면 updateUI가 실행되면서 화면이 갱신됨
+    const mainPhoto = document.getElementById('main-photo');
+    mainPhoto.classList.remove('hidden');
     
-    // 혹시 요청이 실패했거나 해서 다시 보내야 할 경우를 대비해 체크 가능하지만
-    // 현재 구조에서는 onload 요청 결과를 기다리는 것이 자연스러움
+    // 2. 초기 이미지 설정 (Neutral 표정)
+    if (gameState.parsedContext && gameState.parsedContext.location) {
+        const basePath = gameState.ideal_image_base_path || "standard_female_1"; 
+        const location = gameState.parsedContext.location;
+        mainPhoto.src = `./imageCloud/${basePath}_${location}_Neutral.png`;
+    }
+
+    // 3. UI 모드 전환 (입력창 활성화, 시작버튼 숨김)
+    document.getElementById('user-input-mode').classList.remove('hidden');
+    document.getElementById('start-btn').classList.add('hidden');
+
+    // 4. 첫 대사 출력 (타이핑 애니메이션 적용)
+    if (gameState.currentQuestion) {
+        const charName = document.getElementById('char-name');
+        const charMsg = document.getElementById('char-msg');
+        
+        // 이름 라벨은 즉시 표시
+        charName.innerText = gameState.partnerName + " :";
+        
+        // 대사 텍스트에만 타이핑 효과 적용
+        typeWriter(charMsg, gameState.currentQuestion, 50);
+    }
 }
 
 // 백엔드 API 호출
@@ -149,47 +185,58 @@ async function sendChatRequest(userMessage) {
     }
 }
 
-// UI 업데이트
+
 function updateUI(data) {
-    // 1. 이름 설정
-    document.getElementById('char-name').innerText = gameState.partnerName + " :";
+    const charName = document.getElementById('char-name');
+    const charMsg = document.getElementById('char-msg');
+    const mainPhoto = document.getElementById('main-photo');
+
+    // 1. 이름 및 메시지 설정
+    if (!document.getElementById('intro-layer').classList.contains('hidden')) {
+        charName.innerText = "";
+        charMsg.innerHTML = "";
+    } else {
+        charName.innerText = gameState.partnerName + " :";
+        charMsg.innerHTML = data.bot_message.replace(/\n/g, '<br>');
+    }
     
-    // 2. 메시지 표시
-    document.getElementById('char-msg').innerHTML = data.bot_message.replace(/\n/g, '<br>');
+    // 초기 상태(대답 전)나 점수 변화가 없을 때는 Neutral
+    let emotion = 'Neutral'; 
+    if (gameState.stage > 1) { // 게임이 진행된 상태라면 점수 변화 체크
+        if (gameState.score_change > 0) emotion = 'Smiling';
+        else if (gameState.score_change < 0) emotion = 'Disappointed';
+    }
+
+    // 백엔드 코드 규칙: {userId_번호}_{장소}_{감정}.png
+    if (data.ideal_image_base_path && data.parsed_context) {
+        const location = data.parsed_context.location; // 예: cinema
+        const basePath = data.ideal_image_base_path;    // 예: standard_female_1
+        
+        // 최종 파일명 조립
+        const fileName = `${basePath}_${location}_${emotion}.png`;
+        mainPhoto.src = `./imageCloud/${fileName}`;
+        
+        mainPhoto.onerror = () => {
+            console.error("이미지 로드 실패:", mainPhoto.src);
+            // 로드 실패 시 기본 Neutral 이미지 시도
+            mainPhoto.src = `./imageCloud/${basePath}_${location}_Neutral.png`;
+        };
+    }
     
-    // 3. 다음 질문 저장 (사용자가 답변할 질문)
+    // 3. 나머지 상태 업데이트
     gameState.currentQuestion = data.bot_message;
-    
-    // 4. Stage 표시
     document.querySelector('.station-text').innerText = `STAGE ${gameState.stage}`;
     
-    // 5. 하트 업데이트 (점수에 따라)
-    updateHearts();
-    
-    // 6. 이미지 로드
-    const mainPhoto = document.getElementById('main-photo');
-    mainPhoto.src = `https://picsum.photos/800/600?random=${gameState.stage}`;
-    
-    // 7. 입력창 초기화 및 포커스
+    // 4. 입력창 설정
     const input = document.getElementById('user-input');
     input.value = '';
     input.disabled = false;
-    input.focus();
+    if (document.getElementById('intro-layer').classList.contains('hidden')) {
+        input.focus();
+    }
 }
 
-// 하트 업데이트 (점수 기반)
-function updateHearts() {
-    const hearts = document.querySelectorAll('.heart-icon');
-    const heartCount = Math.max(0, Math.min(4, Math.floor(gameState.score / 10)));
-    
-    hearts.forEach((heart, index) => {
-        if (index < heartCount) {
-            heart.classList.add('active');
-        } else {
-            heart.classList.remove('active');
-        }
-    });
-}
+
 
 // 메시지 전송
 function sendMessage() {
