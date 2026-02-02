@@ -75,7 +75,7 @@ class ImageGenService:
                     prompt=prompt_eng,
                     model="black-forest-labs/FLUX.1-dev",
                     negative_prompt=negative_prompt,
-                    guidance_scale=7.5,
+                    guidance_scale=3.5,
                     num_inference_steps=50,
                     height=1024,
                     width=1024
