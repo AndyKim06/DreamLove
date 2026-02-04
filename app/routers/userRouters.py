@@ -128,3 +128,13 @@ def saveUserIdealType(idealType: int,
         image_service
     )
     return result
+
+@router.get(
+    "/checkImage",
+    summary="이미지 생성을 체크함",
+    description="사용자의 맞춤형 이상형이 생성되기를 기다림"
+)
+def checkImageGen(userId: str,
+                    user_service: UserService = Depends(getUserService),):
+
+    return user_service.checkImageGenService(userId)
