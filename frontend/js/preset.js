@@ -51,7 +51,7 @@ function renderPresetImages() {
 }
 
 /**
- * 타입을 선택하는 즉시 다음으로 이동하는 함수
+ * 타입을 선택하는 함수 (선택만 하고 이동은 하지 않음)
  */
 function selectType(type) {
     selectedType = type;
@@ -66,18 +66,16 @@ function selectType(type) {
     if (targetWindow) {
         targetWindow.classList.add('selected');
     }
-
-    // 2. 0.2초의 지연 후 서버 저장 및 이동 실행
-    setTimeout(() => {
-        goNext();
-    }, 200);
 }
 
 /**
  * 선택된 이상형 타입을 서버에 저장하고 페이지를 이동하는 함수
  */
 async function goNext() {
-    if (!selectedType) return; // 선택 안된 상태면 무시
+    if (!selectedType) {
+        alert("이상형 타입을 선택해주세요.");
+        return;
+    }
     
     const idealTypeNumber = parseInt(selectedType.replace('type', ''));
     const userId = localStorage.getItem("userId");
