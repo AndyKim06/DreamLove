@@ -80,15 +80,20 @@ function displayResult() {
     const failContent = document.getElementById('fail-content');
     const couplePhoto = document.getElementById('couple-photo');
     const detailBtn = document.getElementById('detail-btn');
+    const userId = localStorage.getItem('userId');
+    const generatedCouplePhotoUrl = userId ? `imageCloud/user/${userId}_success_result.png` : '';
 
     if (score > 0) {
         // [성공 시]
         titleEl.innerHTML = "Love Ya !!<br>I like you .....";
         successContent.classList.remove('hidden');
         failContent.classList.add('hidden');
+        if (detailBtn) {
+            detailBtn.style.display = 'none';
+        }
 
         if (couplePhoto) {
-            couplePhoto.src = resultData.couplePhotoUrl || 'assets/images/feedback/mask-group-7.png';
+            couplePhoto.src = resultData.couplePhotoUrl || generatedCouplePhotoUrl;
             couplePhoto.style.display = 'block';
         }
     } else {
@@ -97,6 +102,9 @@ function displayResult() {
         
         successContent.classList.add('hidden');
         failContent.classList.remove('hidden');
+        if (detailBtn) {
+            detailBtn.style.display = 'inline-flex';
+        }
 
         if (couplePhoto) {
             couplePhoto.src = ""; 

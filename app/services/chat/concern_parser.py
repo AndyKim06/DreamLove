@@ -11,6 +11,22 @@ from app.schemas.chatSchemas import ParsedContext
 from app.services.chat.solar_client import query_solar, SolarAPIError
 
 
+EXPLICIT_LOCATION_KEYWORDS = [
+    "길거리", "거리", "카페", "영화관", "미술관", "한강", "공원", "바다",
+    "학교", "회사", "집", "집앞", "동네", "공연장", "술집", "와인바",
+    "놀이공원", "맛집", "레스토랑", "식당", "도서관", "서점", "쇼핑몰",
+    "백화점", "전시장", "공항", "기차역", "버스정류장", "지하철역",
+    "지하철", "버스", "택시"
+]
+
+def extract_explicit_location(concern: str) -> Optional[str]:
+    if not concern:
+        return None
+    for keyword in EXPLICIT_LOCATION_KEYWORDS:
+        if keyword in concern:
+            return keyword
+    return None
+
 # 랜덤 선택용 기본값
 DEFAULT_LOCATIONS = [
     "카페", "레스토랑", "영화관", "한강", 
@@ -60,6 +76,8 @@ async def parse_concern(concern: str) -> ParsedContext:
 JSON 형식으로만 응답하세요.
 """
 
+    explicit_location = extract_explicit_location(concern)
+
     try:
         response = await query_solar(
             system_prompt=system_prompt,
@@ -80,6 +98,10 @@ JSON 형식으로만 응답하세요.
         # null이거나 비어있는 값은 랜덤으로 채움
         location = result.get("location")
         if not location or location == "null" or location.lower() == "null":
+            location = None
+        if explicit_location:
+            location = explicit_location
+        if not location:
             location = random.choice(DEFAULT_LOCATIONS)
             
         relationship = result.get("relationship")
@@ -99,7 +121,7 @@ JSON 형식으로만 응답하세요.
     except (json.JSONDecodeError, ValueError, KeyError, SolarAPIError) as e:
         # 파싱 실패 시 기본값 + 원본 고민 사용
         return ParsedContext(
-            location=random.choice(DEFAULT_LOCATIONS),
+            location=explicit_location or random.choice(DEFAULT_LOCATIONS),
             relationship=random.choice(DEFAULT_RELATIONSHIPS),
             concern_summary=concern
         )

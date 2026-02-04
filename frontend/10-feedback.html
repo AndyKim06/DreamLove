@@ -16,13 +16,15 @@
               <div class="letter-content">
                   <div id="success-content" class="content-box hidden">
                       <img id="couple-photo" src="" alt="커플 셀카" class="couple-photo" />
+                      <div class="result-btn-group">
+                          <button id="restart-btn" class="restart-btn" onclick="restartGame()">Restart</button>
+                      </div>
                   </div>
                   
                   <div id="fail-content" class="content-box hidden">
                       <p id="feedback-text" class="feedback-text"></p>
                       <div class="result-btn-group">
                           <button id="detail-btn" class="detail-btn" onclick="showDetailFeedback()">상세 피드백 보기</button>
-                          <button id="restart-btn" class="restart-btn" onclick="restartGame()">Restart</button>
                       </div>
                   </div>
               </div>

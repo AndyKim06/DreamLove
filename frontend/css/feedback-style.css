@@ -64,11 +64,12 @@
 
 /* 성공 셀카 이미지 스타일 */
 .couple-photo {
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 60%;
+    max-height: 60%;
     object-fit: contain;
     border: 0.5vw solid #fff;
     box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+    margin-left: 20%;
 }
 
 /* 하단 버튼 */

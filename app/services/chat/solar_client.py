@@ -41,7 +41,7 @@ async def query_solar(
     }
     
     payload = {
-        "model": "solar-pro",
+        "model": "solar-pro3",
         "messages": [
             {
                 "role": "system",
@@ -53,7 +53,9 @@ async def query_solar(
             }
         ],
         "temperature": temperature,
-        "max_tokens": max_tokens
+        "max_tokens": max_tokens,
+        "reasoning_effort": "high", 
+        "stream": True,
     }
     
     try:
@@ -109,7 +111,7 @@ async def query_solar_with_history(
     messages.extend(conversation_history)
     
     payload = {
-        "model": "solar-pro",
+        "model": "solar-pro3",
         "messages": messages,
         "temperature": temperature,
         "max_tokens": max_tokens

@@ -131,7 +131,7 @@
 .mission-container { text-align: center; font-family: 'Galmuri14'; }
 .mission-header { font-size: 2.8cqi; margin-bottom: 20%; font-weight: bold; color: #5A4A82;  letter-spacing: 0.1em; }
 .mission-body { font-size: 1.8cqi; color: #333;  }
-#main-photo { width: 96%; height: 93%; object-fit: cover; border-radius: 4px; }
+#main-photo { width: 76%; height: 95%; object-fit: cover; border-radius: 4px; }
 
 /* 5. 하단 채팅바: 입력창 짤림 방지 */
 .bottom-bar-box {

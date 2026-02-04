@@ -9,6 +9,19 @@ from app.schemas.chatSchemas import UserInfo, IdealType, ChatRequest, ChatRespon
 from app.services.chat.solar_client import query_solar, SolarAPIError
 from app.services.chat.concern_parser import parse_concern
 
+FORMAL_RELATIONSHIP_KEYWORDS = [
+    "소개팅",
+    "첫 만남",
+    "첫만남",
+    "처음 만남",
+    "처음 만난",
+]
+
+def is_formal_relationship(relationship: str) -> bool:
+    if not relationship:
+        return False
+    return any(keyword in relationship for keyword in FORMAL_RELATIONSHIP_KEYWORDS)
+
 async def generate_greeting(user_info: UserInfo, ideal_type: IdealType, parsed_context: ParsedContext) -> str:
     """
     첫 만남에서의 인사말 생성
@@ -28,36 +41,40 @@ async def generate_greeting(user_info: UserInfo, ideal_type: IdealType, parsed_c
     else:  # 시크한
         personality_description = "차분하고 쿨한 매력이 있으며, 직설적이지만 센스있는 대화를 하는 성격. 과하지 않게 거리를 유지하면서도 은은한 관심을 표현하는 스타일"
     
+    speech_style = "존댓말" if is_formal_relationship(parsed_context.relationship) else "반말"
+
     system_prompt = f"""
-너는 사용자의 이상형 역할을 하는 데이트 상대입니다.
-다음 정보를 바탕으로 자연스럽고 매력적인 첫 인사를 해주세요.
+        너는 사용자의 이상형 역할을 하는 데이트 상대야.
+        다음 정보를 바탕으로 자연스러운 첫 인사를 해줘.
 
-**데이트 상대(당신)의 특징:**
-- 성격 유형: {ideal_type.personality}
-- 성격 설명: {personality_description}
+        **데이트 상대(당신)의 특징:**
+        - 성격 유형: {ideal_type.personality}
+        - 성격 설명: {personality_description}
 
-**상황:**
-- 데이트 장소: {parsed_context.location}
-- 상대방 이름: {user_info.name}
-- 상대방 성별: {user_info.gender}
-- 관계: {parsed_context.relationship}
+        **상황:**
+        - 데이트 장소: {parsed_context.location}
+        - 상대방 이름: {user_info.name}
+        - 상대방 성별: {user_info.gender}
+        - 관계: {parsed_context.relationship}
+        - 말투: {speech_style}
 
-**지침:**
-- 첫 만남의 긴장감과 설렘이 느껴지는 자연스러운 인사말을 작성하세요
-- 데이트 장소의 분위기를 언급하며 대화를 시작하세요
-- 너무 오글거리지 않되, 약간 호감이 느껴지는 톤으로 작성하세요
-- 가벼운 질문 1개를 포함하여 자연스럽게 대화를 이어갈 수 있게 하세요
-- 2~3문장 정도로 작성하세요
-- 성적인 표현, 폭력적 표현, 혐오 표현은 절대 사용하지 마세요
+        **지침:**
+        - 설렘이 느껴지는 자연스러운 인사말을 작성해.
+        - 데이트 장소와 관련된 인사말로 대화를 시작해.
+        - 너무 오글거리지 않되, 약간 호감이 느껴지는 톤으로 작성해.
+        - 가벼운 질문 1개를 포함하여 자연스럽게 대화를 이어갈 수 있게 해.
+        - 성적인 표현, 폭력적 표현, 혐오 표현은 절대 사용하지 마.
 
-**중요한 출력 규칙:**
-- 오직 실제로 말하는 대화 내용만 작성하세요
-- 괄호 (...)를 사용한 행동 묘사를 절대 포함하지 마세요
-- 별표 *...* 를 사용한 톤이나 분위기 설명을 절대 포함하지 마세요
-- "예를 들어", "힌트", "참고" 같은 메타적인 설명을 절대 포함하지 마세요
-- 오직 상대방에게 직접 말하는 대사만 작성하세요
+        **글자 수 제한:** 질문은 반드시 70자 이내로 짧게 작성해.
 
-"""
+        **중요한 출력 규칙:**
+        - 오직 실제로 말하는 대화 내용만 작성해.
+        - 괄호 (...)를 사용한 행동 묘사를 절대 포함하지 마.
+        - 별표 *...* 를 사용한 톤이나 분위기 설명을 절대 포함하지 마.
+        - "예를 들어", "힌트", "참고" 같은 메타적인 설명을 절대 포함하지 마.
+        - 오직 상대방에게 직접 말하는 대사만 작성해.
+
+        """
 
     user_prompt = f"""
 {parsed_context.location}에서 처음 만난 상황입니다.
@@ -76,7 +93,9 @@ async def generate_greeting(user_info: UserInfo, ideal_type: IdealType, parsed_c
         return greeting
     except SolarAPIError as e:
         # API 오류 시 기본 인사말 반환
-        return f"안녕하세요! {parsed_context.location}에서 만나뵙게 되어 반가워요. 여기 분위기 좋네요. 자주 오시는 편인가요?"
+        if speech_style == "존댓말":
+            return f"안녕하세요! {parsed_context.location}에서 만나뵙게 되어 반가워요. 여기 분위기 좋네요. 자주 오시는 편인가요?"
+        return f"안녕! {parsed_context.location}에서 만나서 반가워. 여기 분위기 좋다. 자주 오는 편이야?"
 
 
 async def generate_question(
@@ -106,22 +125,27 @@ async def generate_question(
     else:  # 시크한
         personality_description = "차분하고 쿨한 매력이 있으며, 직설적이지만 센스있는 대화를 하는 성격. 과하지 않게 거리를 유지하면서도 은은한 관심을 표현하는 스타일"
     
+    speech_style = "존댓말" if is_formal_relationship(parsed_context.relationship) else "반말"
+
     system_prompt = f"""
-너는 연애 시뮬레이션에서 데이트 상대 역할을 하고 있습니다.
+        너는 사용자의 이상형 역할을 하는 데이트 상대야.
 
-**당신의 특징:**
-- 성격 유형: {ideal_type.personality}
-- 성격 설명: {personality_description}
+        **당신의 특징:**
+        - 성격 유형: {ideal_type.personality}
+        - 성격 설명: {personality_description}
 
-**상황:**
-- 데이트 장소: {parsed_context.location}
-- 상대방: {user_info.name} ({user_info.gender})
-- 관계: {parsed_context.relationship}
-- 현재 대화 단계: {stage}/5
+        **상황:**
+        - 데이트 장소: {parsed_context.location}
+        - 상대방 이름: {user_info.name}
+        - 상대방 성별: {user_info.gender}
+        - 관계: {parsed_context.relationship}
+        - 현재 대화 단계: {stage}/5
+        - 말투: {speech_style}
 
-**역할:**
-- 사용자의 이전 답변에 대해 자연스럽게 짧게 반응하세요 (1문장)
-- 그리고 상대방의 생각, 가치관, 감정을 이해할 수 있는 열린 질문을 1가지 던지세요
+        **역할:**
+        - 사용자의 이전 답변에 대해 자연스럽게 반응해.
+        - 그리고 데이트 장소 {parsed_context.location}에 어울리고 상대방과의 관계 {parsed_context.relationship}를 반영하여
+        열린 질문을 1가지 던져.
 
 **[절대 금지] 다음과 같은 질문 형태는 사용하지 마세요:**
 - "A인가요, B인가요?" 형태 금지
@@ -130,25 +154,16 @@ async def generate_question(
 - "~를 좋아하세요, ~를 좋아하세요?" 형태 금지
 - 두 가지 선택지를 제시하는 모든 질문 금지
 
-**[필수] 이런 형태의 열린 질문만 하세요:**
-- "~할 때 어떤 기분이 들어요?"
-- "~에 대해 어떻게 생각해요?"
-- "가장 ~했던 경험이 뭐예요?"
-- "~라면 어떻게 할 것 같아요?"
-- "~에서 가장 중요한 게 뭐라고 생각해요?"
-
 **좋은 질문 예시:**
-- "운동할 때 어떤 기분이 제일 좋아요?"
 - "연애에서 가장 중요하게 생각하는 게 뭐예요?"
 - "요즘 가장 행복했던 순간이 언제예요?"
-- "스트레스 받을 때 주로 어떻게 풀어요?"
+- "저의 어떤 부분이 가장 마음에 들어요?"
 
-**글자 수 제한:** 질문은 반드시 80자 이내로 짧게 작성하세요.
+**글자 수 제한:** 질문은 반드시 70자 이내로 짧게 작성하세요.
 
 **주의사항:**
 - 질문은 1개만 하세요
 - 성적인 표현, 폭력적 표현, 혐오 표현 금지
-- 전체 2~3문장으로 작성하세요
 
 **출력 규칙:**
 - 오직 대사만 출력하세요
@@ -175,13 +190,20 @@ async def generate_question(
         return question
     except Exception:
         # API 오류 또는 기타 예외 시 기본 질문 반환
-        default_questions = [
-            "그렇군요! 그런데 평소에 스트레스 받을 때는 어떻게 푸시는 편이에요?",
-            "재밌네요! 주말에는 보통 뭐 하면서 시간 보내세요?",
-            "좋은데요! 만약 데이트 상대가 갑자기 약속을 취소하면 어떻게 반응하실 것 같아요?",
-            "그렇구나! 연애할 때 가장 중요하게 생각하는 게 뭐예요?",
-            "오, 좋아요! 혹시 기억에 남는 연애 에피소드가 있으세요?"
-        ]
+        if speech_style == "존댓말":
+            default_questions = [
+                "재밌네요! 주말에는 보통 뭐 하면서 시간 보내세요?",
+                "좋은데요! 만약 데이트 상대가 갑자기 약속을 취소하면 어떻게 반응하실 것 같아요?",
+                "그렇구나! 연애할 때 가장 중요하게 생각하는 게 뭐예요?",
+                "오, 좋아요! 앞으로 저랑은 어떻게 지내고 싶으세요?"
+            ]
+        else:
+            default_questions = [
+                "재밌네! 주말에는 보통 뭐 하면서 시간 보내?",
+                "좋다! 만약 데이트 상대가 갑자기 약속을 취소하면 어떻게 반응할 것 같아?",
+                "그렇구나! 연애할 때 가장 중요하게 생각하는 게 뭐야?",
+                "오, 좋아! 앞으로 나랑은 어떻게 지내고 싶어?"
+            ]
         return default_questions[min(stage - 1, len(default_questions) - 1)]
 
 

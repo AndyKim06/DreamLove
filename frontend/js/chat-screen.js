@@ -17,7 +17,8 @@ let gameState = {
     ideal_image_base_path: '', // 서버에서 받은 "frontend\\imageCloud\\standard_female_1_cinema" 형태 저장
     negativeFeedbacks: [],
     currentQuestion: '',
-    isWaiting: false
+    isWaiting: false,
+    imageRetryCount: 0
 };
 
 window.onload = function() {
@@ -187,11 +188,42 @@ function updateCharacterImage(forcedEmotion = null) {
         .replace(/^frontend\//i, '');      // 앞부분의 frontend/ 제거
 
     // 파일명 조립 및 확장자 처리
-    const basePath = webPath.replace(/\.png$/i, ''); 
-    const fileName = `./${basePath}_${emotion}.png`;
-    
-    mainPhoto.src = fileName;
-    console.log(`📸 이미지 업데이트: ${emotion} (${fileName})`);
+    const basePath = webPath.replace(/\.png$/i, '');
+    const expressionPath = `./${basePath}_${emotion}.png`;
+
+    loadExpressionImage(expressionPath);
+    console.log(`📸 이미지 업데이트 시도: ${emotion} (${expressionPath})`);
+}
+
+function loadExpressionImage(src, maxRetries = 12, delayMs = 1000) {
+    const mainPhoto = document.getElementById('main-photo');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    if (loadingOverlay) {
+        loadingOverlay.classList.remove('hidden');
+    }
+
+    const tryLoad = () => {
+        mainPhoto.onerror = () => {
+            if (gameState.imageRetryCount < maxRetries) {
+                gameState.imageRetryCount += 1;
+                setTimeout(tryLoad, delayMs);
+            } else {
+                console.error(`❌ 이미지 로딩 실패: ${src}`);
+            }
+        };
+
+        mainPhoto.onload = () => {
+            gameState.imageRetryCount = 0;
+            if (loadingOverlay) {
+                loadingOverlay.classList.add('hidden');
+            }
+        };
+
+        mainPhoto.src = src;
+    };
+
+    tryLoad();
 }
 
 function updateUI(data) {

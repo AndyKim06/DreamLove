@@ -88,13 +88,23 @@ class ImageGenService:
         user = self.repo.findById(userId)
         image_dir = Path("frontend/imageCloud")
         if user.userCustom:
-            idealImage = str(image_dir / f"{userId}_{user.userIdealType}.png")
+            idealImage = image_dir / f"{userId}_{user.userIdealType}.png"
         else:
+            basic_dir = Path("frontend/assets/images/basic")
             if user.userGender == "남자":
-                idealImage = str(image_dir / f"standard_female_{user.userIdealType}.png")
+                # 남자 사용자라면 이상형은 여성
+                idealImage = basic_dir / f"basic_girl_{user.userIdealType}.png"
             else:
-                idealImage = str(image_dir / f"standard_male_{user.userIdealType}.png")
-        return idealImage
+                # 여자 사용자라면 이상형은 남성
+                idealImage = basic_dir / f"basic_boy_{user.userIdealType}.png"
+
+        # 파일이 없으면 첫 번째 기본 이미지로 폴백
+        if not idealImage.exists():
+            basic_dir = Path("frontend/assets/images/basic")
+            fallback = basic_dir / "basic_girl_1.png" if user.userGender == "남자" else basic_dir / "basic_boy_1.png"
+            idealImage = fallback
+
+        return str(idealImage)
     
     def generateExpressionService(self, userId:str):
         user = self.repo.findById(userId)
@@ -111,18 +121,22 @@ class ImageGenService:
             Generate a {exp_name} expression of the person in the reference image at {location}. 16:9 aspect ratio.
             """
 
+            # google.genai 버전에 따라 ImageConfig 지원 여부가 다름
+            config_kwargs = {
+                "system_instruction": ROLE_INSTRUCTION,
+                "temperature": 0.7,
+                "response_modalities": ["IMAGE"],
+            }
+            if hasattr(types, "ImageConfig"):
+                config_kwargs["image_config"] = types.ImageConfig(aspect_ratio="16:9")
+
+            generate_config = types.GenerateContentConfig(**config_kwargs)
+
             try:
                 response = self.geminiClient.models.generate_content(
                     model="gemini-2.5-flash-image",
                     contents=[current_prompt, image],
-                    config=types.GenerateContentConfig(
-                        system_instruction=ROLE_INSTRUCTION,
-                        temperature=0.7,
-                        response_modalities=["IMAGE"],
-                        image_config=types.ImageConfig(
-                            aspect_ratio="16:9",
-                        )
-                    )
+                    config=generate_config
                 )
 
                 if response.candidates:
@@ -132,6 +146,13 @@ class ImageGenService:
                             img_data = part.inline_data.data
                             if isinstance(img_data, str):
                                 img_data = base64.b64decode(img_data)
+                            elif isinstance(img_data, (bytes, bytearray)):
+                                # Some SDKs return base64-encoded bytes, not raw PNG bytes
+                                if img_data[:8] != b"\x89PNG\r\n\x1a\n":
+                                    try:
+                                        img_data = base64.b64decode(img_data)
+                                    except Exception:
+                                        pass
                             with open(file_name, "wb") as f:
                                 f.write(img_data)
                         elif part.text is not None:
@@ -172,17 +193,19 @@ class ImageGenService:
         """
 
         try:
+            config_kwargs = {
+                "system_instruction": ROLE_INSTRUCTION,
+                "temperature": 0.7,
+                "response_modalities": ["IMAGE"],
+            }
+            if hasattr(types, "ImageConfig"):
+                config_kwargs["image_config"] = types.ImageConfig(aspect_ratio="16:9")
+
+            generate_config = types.GenerateContentConfig(**config_kwargs)
             response = self.geminiClient.models.generate_content(
                 model="gemini-2.5-flash-image",
                 contents=[current_prompt, Image.open(user.userImage), Image.open(idealImage)],
-                config=types.GenerateContentConfig(
-                        system_instruction=ROLE_INSTRUCTION,
-                        temperature=0.7,
-                        response_modalities=["IMAGE"],
-                        image_config=types.ImageConfig(
-                            aspect_ratio="16:9",
-                        )
-                    )
+                config=generate_config
             )
 
             if response.candidates:
@@ -192,7 +215,13 @@ class ImageGenService:
                         file_name = str(image_dir / f"{userId}_success_result.png")
                         img_data = part.inline_data.data
                         if isinstance(img_data, str):
-                                img_data = base64.b64decode(img_data)
+                            img_data = base64.b64decode(img_data)
+                        elif isinstance(img_data, (bytes, bytearray)):
+                            if img_data[:8] != b"\x89PNG\r\n\x1a\n":
+                                try:
+                                    img_data = base64.b64decode(img_data)
+                                except Exception:
+                                    pass
                         with open(file_name, "wb") as f:
                                 f.write(img_data)
                         return file_name
