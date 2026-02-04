@@ -412,10 +412,10 @@ async def run_chat_flow(userId, request: ChatRequest) -> ChatResponse:
         
         # 아래 코드 실행하면 이상형의 표정변환 사진 3가지 얻을수 있음
         # 프론트엔드에 맞춰서 이미지 경로 보내주고 프론트엔드에서 가져온 경로로 이미지 띄우게 만들어야함
+        # ex) idealImagePath = ["~.location_Netural.png", "~.location_Disappointed.png", "~.location_Smiling.png"]
         from app.dependency import getUserService
         parsed_context = await parse_concern(request.user_info.concern)
         idealImagePath = getUserService().getUserIdealImagePath(userId)
-        # idealImagePath = ["~.location_Netural.png", "~.location_Disappointed.png", "~.location_Smiling.png"]
 
         # 2) 첫 인사말 생성
         greeting = await generate_greeting(
@@ -432,6 +432,7 @@ async def run_chat_flow(userId, request: ChatRequest) -> ChatResponse:
             end=False,
             final_feedback=None,
             parsed_context=parsed_context,  # 프론트엔드에서 저장해야 함!
+            ideal_image_base_path=idealImagePath,
             negative_feedbacks=[]
         )
     

@@ -102,8 +102,10 @@ class ImageGenService:
         image_path = self.getUserIdealImagePath(userId)
         image = Image.open(image_path)
         image_path = image_path.removesuffix(".png")
-
-        expressions = ["Smiling", "Neutral", "Disappointed"]
+        base_path = f"{image_path}_{location}"
+        user.userIdealImagePath = base_path
+        self.repo.save(user)
+        expressions = ["Neutral", "Smiling", "Disappointed"]
         for i, exp_name in enumerate(expressions):
             current_prompt = f"""
             Generate a {exp_name} expression of the person in the reference image at {location}. 16:9 aspect ratio.
@@ -126,8 +128,7 @@ class ImageGenService:
                 if response.candidates:
                     for part in response.candidates[0].content.parts:
                         if part.inline_data:
-                            file_name = f"{image_path}_{location}_{exp_name}.png"
-                            user.userIdealImagePath.append(file_name)
+                            file_name = f"{base_path}_{exp_name}.png"
                             img_data = part.inline_data.data
                             if isinstance(img_data, str):
                                 img_data = base64.b64decode(img_data)
@@ -141,8 +142,6 @@ class ImageGenService:
             except Exception as e:
                 print(f"Error during {exp_name} generation: {e}")
                 
-        self.repo.save(user)
-
 
     def generateCoupleImageService(self, userId):
         location = self.repo.findById(userId).userLocation

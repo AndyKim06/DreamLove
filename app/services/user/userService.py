@@ -32,7 +32,7 @@ class UserService:
             userConcern="",
             userIdealType=0,
             userLocation="",
-            userIdealImagePath=[]
+            userIdealImagePath=""
         )
         return self.repo.save(user)
 

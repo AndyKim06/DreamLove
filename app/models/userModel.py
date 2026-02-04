@@ -10,4 +10,4 @@ class User(BaseModel):
     userCustom : bool
     userIdealType : int
     userLocation : str
-    userIdealImagePath : List[str]
+    userIdealImagePath : str
