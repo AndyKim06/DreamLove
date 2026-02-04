@@ -184,7 +184,7 @@ function restartGame() {
     // 필요한 다른 항목들도 초기화할 수 있음 (예: user_info 등은 유지할지 여부에 따라 결정)
     
     // 처음 화면으로 이동
-    location.href = '01-profile.html';
+    location.href = '00-onboarding.html';
 }
 
 function convertMarkdown(text) {
