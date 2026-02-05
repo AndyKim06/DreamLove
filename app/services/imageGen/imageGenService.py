@@ -15,6 +15,7 @@ from pathlib import Path
 import base64
 from app.core.config import settings
 from google.genai import types
+import socket
 
 ROLE_INSTRUCTION = """
 You are a professional image generation model specialized in preserving human identity.
@@ -131,37 +132,46 @@ class ImageGenService:
                 config_kwargs["image_config"] = types.ImageConfig(aspect_ratio="16:9")
 
             generate_config = types.GenerateContentConfig(**config_kwargs)
+            max_retries = 3
+            for attempt in range(1, max_retries + 1):
+                try:
+                    response = self.geminiClient.models.generate_content(
+                        model="gemini-2.5-flash-image",
+                        contents=[current_prompt, image],
+                        config=generate_config
+                    )
 
-            try:
-                response = self.geminiClient.models.generate_content(
-                    model="gemini-2.5-flash-image",
-                    contents=[current_prompt, image],
-                    config=generate_config
-                )
+                    if response.candidates:
+                        for part in response.candidates[0].content.parts:
+                            if part.inline_data:
+                                file_name = f"{base_path}_{exp_name}.png"
+                                img_data = part.inline_data.data
+                                if isinstance(img_data, str):
+                                    img_data = base64.b64decode(img_data)
+                                elif isinstance(img_data, (bytes, bytearray)):
+                                    # Some SDKs return base64-encoded bytes, not raw PNG bytes
+                                    if img_data[:8] != b"\x89PNG\r\n\x1a\n":
+                                        try:
+                                            img_data = base64.b64decode(img_data)
+                                        except Exception:
+                                            pass
+                                with open(file_name, "wb") as f:
+                                    f.write(img_data)
+                            elif part.text is not None:
+                                print(f"Model text: {part.text}")
 
-                if response.candidates:
-                    for part in response.candidates[0].content.parts:
-                        if part.inline_data:
-                            file_name = f"{base_path}_{exp_name}.png"
-                            img_data = part.inline_data.data
-                            if isinstance(img_data, str):
-                                img_data = base64.b64decode(img_data)
-                            elif isinstance(img_data, (bytes, bytearray)):
-                                # Some SDKs return base64-encoded bytes, not raw PNG bytes
-                                if img_data[:8] != b"\x89PNG\r\n\x1a\n":
-                                    try:
-                                        img_data = base64.b64decode(img_data)
-                                    except Exception:
-                                        pass
-                            with open(file_name, "wb") as f:
-                                f.write(img_data)
-                        elif part.text is not None:
-                            print(f"Model text: {part.text}")
+                    time.sleep(1)
+                    break
 
-                time.sleep(1)
-
-            except Exception as e:
-                print(f"Error during {exp_name} generation: {e}")
+                except Exception as e:
+                    is_retryable = isinstance(e, (ConnectionResetError, TimeoutError, socket.timeout)) or "Connection aborted" in str(e)
+                    if attempt < max_retries and is_retryable:
+                        wait_seconds = 2 ** attempt
+                        logging.warning(f"Retry {attempt}/{max_retries} for {exp_name} due to connection error: {e}")
+                        time.sleep(wait_seconds)
+                        continue
+                    print(f"Error during {exp_name} generation: {e}")
+                    break
                 
 
     def generateCoupleImageService(self, userId):
@@ -192,44 +202,55 @@ class ImageGenService:
         Do NOT introduce additional people.
         """
 
-        try:
-            config_kwargs = {
-                "system_instruction": ROLE_INSTRUCTION,
-                "temperature": 0.7,
-                "response_modalities": ["IMAGE"],
-            }
-            if hasattr(types, "ImageConfig"):
-                config_kwargs["image_config"] = types.ImageConfig(aspect_ratio="16:9")
+        max_retries = 3
+        for attempt in range(1, max_retries + 1):
+            try:
+                config_kwargs = {
+                    "system_instruction": ROLE_INSTRUCTION,
+                    "temperature": 0.7,
+                    "response_modalities": ["IMAGE"],
+                }
+                if hasattr(types, "ImageConfig"):
+                    config_kwargs["image_config"] = types.ImageConfig(aspect_ratio="16:9")
 
-            generate_config = types.GenerateContentConfig(**config_kwargs)
-            response = self.geminiClient.models.generate_content(
-                model="gemini-2.5-flash-image",
-                contents=[current_prompt, Image.open(user.userImage), Image.open(idealImage)],
-                config=generate_config
-            )
+                generate_config = types.GenerateContentConfig(**config_kwargs)
+                response = self.geminiClient.models.generate_content(
+                    model="gemini-2.5-flash-image",
+                    contents=[current_prompt, Image.open(user.userImage), Image.open(idealImage)],
+                    config=generate_config
+                )
 
-            if response.candidates:
-                for part in response.candidates[0].content.parts:
-                    if part.inline_data:
-                        image_dir = Path("frontend/imageCloud/user")
-                        file_name = str(image_dir / f"{userId}_success_result.png")
-                        img_data = part.inline_data.data
-                        if isinstance(img_data, str):
-                            img_data = base64.b64decode(img_data)
-                        elif isinstance(img_data, (bytes, bytearray)):
-                            if img_data[:8] != b"\x89PNG\r\n\x1a\n":
-                                try:
-                                    img_data = base64.b64decode(img_data)
-                                except Exception:
-                                    pass
-                        with open(file_name, "wb") as f:
-                                f.write(img_data)
-                        return file_name
-                    elif part.text is not None:
-                        print(f"Model text: {part.text}")
-                
-        except Exception as e:
-            print(f"Error during generation: {e}")
+                if response.candidates:
+                    for part in response.candidates[0].content.parts:
+                        if part.inline_data:
+                            image_dir = Path("frontend/imageCloud/user")
+                            file_name = str(image_dir / f"{userId}_success_result.png")
+                            img_data = part.inline_data.data
+                            if isinstance(img_data, str):
+                                img_data = base64.b64decode(img_data)
+                            elif isinstance(img_data, (bytes, bytearray)):
+                                if img_data[:8] != b"\x89PNG\r\n\x1a\n":
+                                    try:
+                                        img_data = base64.b64decode(img_data)
+                                    except Exception:
+                                        pass
+                            with open(file_name, "wb") as f:
+                                    f.write(img_data)
+                            return file_name
+                        elif part.text is not None:
+                            print(f"Model text: {part.text}")
+
+                break
+
+            except Exception as e:
+                is_retryable = isinstance(e, (ConnectionResetError, TimeoutError, socket.timeout)) or "Connection aborted" in str(e)
+                if attempt < max_retries and is_retryable:
+                    wait_seconds = 2 ** attempt
+                    logging.warning(f"Retry {attempt}/{max_retries} for couple image due to connection error: {e}")
+                    time.sleep(wait_seconds)
+                    continue
+                print(f"Error during generation: {e}")
+                break
 
     def getIdealImageList(self, userId):
         potential_paths = [

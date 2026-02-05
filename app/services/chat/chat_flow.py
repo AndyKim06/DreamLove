@@ -44,43 +44,39 @@ async def generate_greeting(user_info: UserInfo, ideal_type: IdealType, parsed_c
     speech_style = "존댓말" if is_formal_relationship(parsed_context.relationship) else "반말"
 
     system_prompt = f"""
-        너는 사용자의 이상형 역할을 하는 데이트 상대야.
-        다음 정보를 바탕으로 자연스러운 첫 인사를 해줘.
+너는 사용자의 이상형 역할을 하는 데이트 상대야.
+{parsed_context.location}에서 약속하고 만난 데이트 상황이야.
 
-        **데이트 상대(당신)의 특징:**
-        - 성격 유형: {ideal_type.personality}
-        - 성격 설명: {personality_description}
+**당신의 특징:**
+- 성격: {ideal_type.personality}
+- 성격 설명: {personality_description}
 
-        **상황:**
-        - 데이트 장소: {parsed_context.location}
-        - 상대방 이름: {user_info.name}
-        - 상대방 성별: {user_info.gender}
-        - 관계: {parsed_context.relationship}
-        - 말투: {speech_style}
+**상황:**
+- 장소: {parsed_context.location}
+- 상대방: {user_info.name} ({user_info.gender})
+- 관계: {parsed_context.relationship}
+- 말투: {speech_style}
 
-        **지침:**
-        - 설렘이 느껴지는 자연스러운 인사말을 작성해.
-        - 데이트 장소와 관련된 인사말로 대화를 시작해.
-        - 너무 오글거리지 않되, 약간 호감이 느껴지는 톤으로 작성해.
-        - 가벼운 질문 1개를 포함하여 자연스럽게 대화를 이어갈 수 있게 해.
-        - 성적인 표현, 폭력적 표현, 혐오 표현은 절대 사용하지 마.
+**인사말 작성 규칙:**
+1. 데이트 약속을 하고 만난 상황이므로 자연스럽고 따뜻하게 인사해
+2. 장소에 대한 과한 묘사나 분위기 설명은 하지 마
+3. 평범하고 현실적인 데이트 인사말로 시작해
+4. 반드시 질문은 딱 1개만 해 (절대 2개 이상 금지)
+5. 40자 이내로 짧고 간결하게 작성해
 
-        **글자 수 제한:** 질문은 반드시 70자 이내로 짧게 작성해.
+**절대 금지:**
+- 2개 이상의 질문 (예: "~했어? ~했어?" 형태 금지)
+- 장소의 냄새, 소리 등 구체적인 감각 묘사
+- 괄호, 별표, 화살표 등 메타 설명
+- 오글거리거나 과한 표현
 
-        **중요한 출력 규칙:**
-        - 오직 실제로 말하는 대화 내용만 작성해.
-        - 괄호 (...)를 사용한 행동 묘사를 절대 포함하지 마.
-        - 별표 *...* 를 사용한 톤이나 분위기 설명을 절대 포함하지 마.
-        - "예를 들어", "힌트", "참고" 같은 메타적인 설명을 절대 포함하지 마.
-        - 오직 상대방에게 직접 말하는 대사만 작성해.
-
-        """
+**출력:**
+오직 상대방에게 직접 말하는 한 문장만 작성해.
+"""
 
     user_prompt = f"""
-{parsed_context.location}에서 처음 만난 상황입니다.
-상대방({user_info.name})에게 첫 인사를 건네주세요.
-
-다시 한 번 강조: 괄호, 별표, 메타 설명 없이 순수한 대화 내용만 작성하세요.
+{parsed_context.location}에서 {user_info.name}님과 데이트 약속을 하고 만났습니다.
+자연스럽고 간결한 첫 인사를 해주세요. (질문은 1개만!)
 """
 
     try:
@@ -103,6 +99,7 @@ async def generate_question(
     user_info: UserInfo,
     ideal_type: IdealType,
     parsed_context: ParsedContext,
+    conversation_history: list[dict] = None,
     last_user_message: Optional[str] = None
 ) -> str:
     """
@@ -113,6 +110,7 @@ async def generate_question(
         user_info: 사용자 정보
         ideal_type: 이상형 정보
         parsed_context: 추출된 컨텍스트
+        conversation_history: 전체 대화 히스토리
         last_user_message: 사용자의 마지막 답변
         
     Returns:
@@ -126,58 +124,95 @@ async def generate_question(
         personality_description = "차분하고 쿨한 매력이 있으며, 직설적이지만 센스있는 대화를 하는 성격. 과하지 않게 거리를 유지하면서도 은은한 관심을 표현하는 스타일"
     
     speech_style = "존댓말" if is_formal_relationship(parsed_context.relationship) else "반말"
+    
+    # 대화 히스토리가 있으면 활용
+    if conversation_history and len(conversation_history) > 0:
+        # query_solar_with_history 사용
+        from app.services.chat.solar_client import query_solar_with_history
+        
+        system_prompt_with_history = f"""
+너는 사용자의 이상형 역할을 하는 데이트 상대야.
 
+**당신의 특징:**
+- 성격: {ideal_type.personality} ({personality_description})
+- 장소: {parsed_context.location}
+- 관계: {parsed_context.relationship}
+- 말투: {speech_style}
+
+**대화 규칙:**
+1. 지금까지의 대화 맥락을 잘 파악해
+2. 사용자가 이전에 말한 내용과 방금 답변을 함께 고려해
+3. 대화가 자연스럽게 이어지도록 반응하고 질문해
+4. 한 문장만 말해 (짧게)
+5. 괄호, 별표, 화살표, 글자 수 표시 절대 금지
+
+이전 대화를 고려해서 자연스럽고 맥락있는 대화를 이어가.
+문법적으로 올바르고 자연스러운 한국어 문장을 사용해.
+"""
+        
+        try:
+            question = await query_solar_with_history(
+                system_prompt=system_prompt_with_history,
+                conversation_history=conversation_history,
+                temperature=0.8,
+                max_tokens=400
+            )
+            if not question or not question.strip():
+                raise ValueError("Empty response from Solar API")
+            return question
+        except Exception:
+            # 실패 시 기본 방식으로 폴백
+            pass
+
+    # 히스토리가 없거나 실패 시 기본 방식
     system_prompt = f"""
-        너는 사용자의 이상형 역할을 하는 데이트 상대야.
+너는 사용자의 이상형 역할을 하는 데이트 상대야.
 
-        **당신의 특징:**
-        - 성격 유형: {ideal_type.personality}
-        - 성격 설명: {personality_description}
+**당신의 특징:**
+- 성격: {ideal_type.personality}
+- 성격 설명: {personality_description}
 
-        **상황:**
-        - 데이트 장소: {parsed_context.location}
-        - 상대방 이름: {user_info.name}
-        - 상대방 성별: {user_info.gender}
-        - 관계: {parsed_context.relationship}
-        - 현재 대화 단계: {stage}/5
-        - 말투: {speech_style}
+**상황:**
+- 장소: {parsed_context.location}
+- 상대방: {user_info.name} ({user_info.gender})
+- 관계: {parsed_context.relationship}
+- 대화 단계: {stage}/5
+- 말투: {speech_style}
 
-        **역할:**
-        - 사용자의 이전 답변에 대해 자연스럽게 반응해.
-        - 그리고 데이트 장소 {parsed_context.location}에 어울리고 상대방과의 관계 {parsed_context.relationship}를 반영하여
-        열린 질문을 1가지 던져.
+**대화 목표:**
+사용자의 답변 내용과 자연스럽게 이어지는 대화를 해야 해.
+사용자가 말한 내용에 공감하거나 반응하면서, 그 주제를 깊이있게 이어가는 질문을 해.
 
-**[절대 금지] 다음과 같은 질문 형태는 사용하지 마세요:**
-- "A인가요, B인가요?" 형태 금지
-- "A 아니면 B?" 형태 금지  
-- "~하시나요, 아니면 ~하시나요?" 형태 금지
-- "~를 좋아하세요, ~를 좋아하세요?" 형태 금지
-- 두 가지 선택지를 제시하는 모든 질문 금지
+**대화 작성 방법:**
+1. 사용자가 방금 한 말의 핵심을 파악해
+2. 그 내용에 대해 짧게 공감하거나 반응해 (예: "오", "그렇구나", "좋네" 등)
+3. 사용자가 말한 내용과 관련된 질문을 자연스럽게 이어서 해
+4. 전체를 한 문장으로 매끄럽게 연결해
 
-**좋은 질문 예시:**
-- "연애에서 가장 중요하게 생각하는 게 뭐예요?"
-- "요즘 가장 행복했던 순간이 언제예요?"
-- "저의 어떤 부분이 가장 마음에 들어요?"
 
-**글자 수 제한:** 질문은 반드시 70자 이내로 짧게 작성하세요.
+**나쁜 예시 (이렇게 하지 마):**
+- 사용자 답변과 동떨어진 질문
+- 갑자기 다른 주제로 전환
+- 사용자가 언급하지 않은 것을 물어봄
 
-**주의사항:**
-- 질문은 1개만 하세요
-- 성적인 표현, 폭력적 표현, 혐오 표현 금지
+**제약사항:**
+- 짧게 한 문장만
+- 질문은 1개만
+- 괄호, 별표, 화살표, 글자 수 표시 절대 금지
+- 문법적으로 올바른 한국어 사용
 
-**출력 규칙:**
-- 오직 대사만 출력하세요
-- 괄호, 별표, 설명 텍스트 금지
-
+**출력:**
+사용자 답변과 자연스럽게 이어지는 한 문장을 작성해. 글자 수는 절대 표시하지 마.
 """
 
-    context_text = f"\n\n**사용자의 이전 답변:** {last_user_message}" if last_user_message else ""
+    context_text = f"\n\n**사용자의 답변:** {last_user_message}" if last_user_message else ""
     
     user_prompt = f"""
-지금은 {stage}번째 대화 차례입니다.
+대화 {stage}번째 차례입니다.
 {context_text}
 
-사용자의 답변에 짧게 반응하고, 이어서 연애 능력을 평가할 수 있는 자연스러운 질문을 1가지 해주세요.
+위 답변의 내용을 잘 파악하고, 그 주제와 자연스럽게 이어지는 반응과 질문을 해주세요.
+사용자가 말한 것과 관련된 질문을 해야 합니다!
 """
 
     try:
@@ -187,6 +222,8 @@ async def generate_question(
             temperature=0.8,
             max_tokens=400
         )
+        if not question or not question.strip():
+            raise ValueError("Empty response from Solar API")
         return question
     except Exception:
         # API 오류 또는 기타 예외 시 기본 질문 반환
@@ -275,8 +312,10 @@ JSON 형식으로 점수와 간단한 이유를 반환하세요.
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             temperature=0.3,
-            max_tokens=200
+            max_tokens=1000  # Pro3 reasoning 모델은 추론에 더 많은 토큰 필요
         )
+        if not response or not response.strip():
+            raise ValueError("Empty response from Solar API")
         
         # JSON 파싱
         # 응답에서 JSON 부분만 추출 (```json ``` 등이 포함될 수 있음)
@@ -285,6 +324,12 @@ JSON 형식으로 점수와 간단한 이유를 반환하세요.
             response = response.split("```json")[1].split("```")[0].strip()
         elif "```" in response:
             response = response.split("```")[1].split("```")[0].strip()
+        else:
+            # JSON 본문만 있는 경우를 대비해 중괄호 범위 추출
+            json_start = response.find("{")
+            json_end = response.rfind("}")
+            if json_start != -1 and json_end != -1 and json_end > json_start:
+                response = response[json_start:json_end + 1].strip()
         
         result = json.loads(response)
         score = int(result.get("score", 5))
@@ -389,13 +434,14 @@ A. (사용자 답변) [-점수]
 
 ### **실전 종합 팁**
 
-(사용자의 고민과 연결한 종합 조언 2~3문장)
+(핵심 조언 1~2문장. 예시 없이 간결하게)
 
 **주의사항:**
 - 이모티콘 절대 금지
 - 반드시 "---" 구분자를 넣어서 요약과 상세를 구분하세요
 - "---" 위에는 간단한 요약만, "---" 아래에는 상세 피드백만 작성하세요
 - 부드럽고 건설적인 톤으로 작성하세요
+- 실전 종합 팁은 예시("예를 들어", "~라고 질문할 수 있습니다" 등) 없이 핵심만 간결하게 작성하세요
 """
 
     user_prompt = f"""
@@ -455,7 +501,8 @@ async def run_chat_flow(userId, request: ChatRequest) -> ChatResponse:
             final_feedback=None,
             parsed_context=parsed_context,  # 프론트엔드에서 저장해야 함!
             ideal_image_base_path=idealImagePath,
-            negative_feedbacks=[]
+            negative_feedbacks=[],
+            conversation_history=[{"role": "assistant", "content": greeting}]  # 첫 인사 기록
         )
     
     # Stage 1~5: 사용자 답변 평가 + 다음 질문 또는 최종 피드백
@@ -487,13 +534,22 @@ async def run_chat_flow(userId, request: ChatRequest) -> ChatResponse:
             
             # 2) 아직 마지막 질문 전이라면 → 다음 질문 생성
             if request.stage < 5:
+                # 대화 히스토리 업데이트
+                updated_history = request.conversation_history.copy()
+                updated_history.append({"role": "user", "content": request.user_message})
+                
                 question = await generate_question(
                     stage=request.stage,
                     user_info=request.user_info,
                     ideal_type=request.ideal_type,
                     parsed_context=parsed_context,
+                    conversation_history=updated_history,
                     last_user_message=request.user_message
                 )
+                
+                # 질문을 히스토리에 추가
+                updated_history.append({"role": "assistant", "content": question})
+                
                 return ChatResponse(
                     bot_message=question,
                     next_stage=request.stage + 1,
@@ -502,7 +558,8 @@ async def run_chat_flow(userId, request: ChatRequest) -> ChatResponse:
                     end=False,
                     final_feedback=None,
                     parsed_context=parsed_context,
-                    negative_feedbacks=negative_feedbacks
+                    negative_feedbacks=negative_feedbacks,
+                    conversation_history=updated_history
                 )
             
             # 3) 5번째 질문까지 끝났다면 → 최종 피드백
@@ -522,7 +579,8 @@ async def run_chat_flow(userId, request: ChatRequest) -> ChatResponse:
                     end=True,
                     final_feedback=feedback,
                     parsed_context=parsed_context,
-                    negative_feedbacks=negative_feedbacks
+                    negative_feedbacks=negative_feedbacks,
+                    conversation_history=request.conversation_history
                 )
         
         # Stage 6 이후: 이미 종료된 상태 → 간단한 안내 메시지
@@ -534,7 +592,8 @@ async def run_chat_flow(userId, request: ChatRequest) -> ChatResponse:
             end=True,
             final_feedback=None,
             parsed_context=request.parsed_context,
-            negative_feedbacks=request.negative_feedbacks
+            negative_feedbacks=request.negative_feedbacks,
+            conversation_history=request.conversation_history
         )
 
     except Exception as e:
@@ -547,6 +606,7 @@ async def run_chat_flow(userId, request: ChatRequest) -> ChatResponse:
             end=False,
             final_feedback=None,
             parsed_context=request.parsed_context,
-            negative_feedbacks=request.negative_feedbacks
+            negative_feedbacks=request.negative_feedbacks,
+            conversation_history=request.conversation_history
         )
 

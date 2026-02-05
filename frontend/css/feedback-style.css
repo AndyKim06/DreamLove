@@ -1,3 +1,110 @@
+/* 숨김 클래스 */
+.hidden {
+    display: none !important;
+}
+
+/* 상세 피드백 스타일 */
+.feedback-section-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #e91e63;
+    margin: 30px 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #fce4ec;
+    text-align: left;
+}
+
+.feedback-item-group {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-left: 5px solid #ff9800;
+}
+
+.feedback-question {
+    background: #fff3e0;
+    padding: 15px 18px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    font-weight: 500;
+    font-size: 1.05em;
+    line-height: 1.6;
+}
+
+.feedback-question .q-label {
+    color: #ff9800;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-right: 10px;
+}
+
+.feedback-answer {
+    background: #fce4ec;
+    padding: 15px 18px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    line-height: 1.6;
+    font-size: 1.02em;
+}
+
+.feedback-answer .a-label {
+    color: #e91e63;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-right: 10px;
+}
+
+.feedback-answer .score-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.feedback-answer .score-badge.negative {
+    background: #ffcdd2;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+}
+
+.feedback-advice {
+    background: #e8f5e9;
+    padding: 15px 18px;
+    border-radius: 10px;
+    margin-bottom: 0;
+    border-left: 5px solid #4caf50;
+    line-height: 1.7;
+    font-size: 1.02em;
+}
+
+.feedback-advice .arrow {
+    color: #4caf50;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-right: 10px;
+}
+
+.feedback-divider {
+    border: none;
+    border-top: 2px dashed #ddd;
+    margin: 30px 0;
+}
+
+.detail-body p {
+    line-height: 1.9;
+    margin-bottom: 15px;
+    font-size: 1.02em;
+}
+
+.detail-body strong {
+    color: #333;
+    font-weight: 600;
+}
+
 /* 1. 배경을 화면 전체에 꽉 채우는 컨테이너 */
 .ending-container {
     width: 100vw;
@@ -200,24 +307,75 @@
 }
 
 .detail-body {
-    padding: 30px;
+    padding: 35px;
     overflow-y: auto;
-    font-size: 1.1em;
+    font-size: 1.05em;
     line-height: 1.8;
     color: #444;
     flex: 1;
+    background: #fafafa;
 }
 
 .detail-body strong {
     color: #ff6b8a;
+    font-weight: 600;
 }
 
 .detail-body h3 {
-    font-size: 1.25em;
+    font-size: 1.3em;
     font-weight: bold;
     color: #333;
-    margin-top: 25px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    border-bottom: 3px solid #fecfef;
+    padding-bottom: 8px;
+}
+
+/* 일반 문단 스타일 */
+.feedback-paragraph {
+    line-height: 1.9;
     margin-bottom: 15px;
-    border-bottom: 2px solid #fecfef;
-    padding-bottom: 5px;
+    font-size: 1.05em;
+    color: #555;
+    padding: 0 5px;
+}
+
+/* 점수 뱃지 - 긍정 */
+.score-badge.positive {
+    background: #c8e6c9;
+    color: #2e7d32;
+    border: 1px solid #81c784;
+}
+
+/* 실전 종합 팁 박스 */
+.tip-box {
+    background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+    border-radius: 15px;
+    padding: 0;
+    margin: 30px 0 20px 0;
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+    border: 2px solid #ffc107;
+    overflow: hidden;
+}
+
+.tip-header {
+    background: linear-gradient(135deg, #ffc107 0%, #ffca28 100%);
+    color: #5d4037;
+    padding: 15px 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tip-icon {
+    font-size: 1.3em;
+}
+
+.tip-content {
+    padding: 20px 25px;
+    line-height: 1.9;
+    font-size: 1.05em;
+    color: #5d4037;
 }

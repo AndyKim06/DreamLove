@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     
     # Solar API 설정
     SOLAR_API_KEY: str = ""
-    SOLAR_API_URL: str = "https://api.upstage.ai/v1/solar/chat/completions"
+    SOLAR_API_URL: str = "https://api.upstage.ai/v1/chat/completions"
 
     # Flux API 설정
     FLUX_API_KEY: str = ""
