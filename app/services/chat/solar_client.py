@@ -45,8 +45,14 @@ def clean_response(text: str) -> str:
     
     # 5. 화살표 이후의 내용 제거: → ...
     text = re.sub(r'→.*', '', text)
+
+    # 6. 하이픈(-)으로 시작하는 설명문 제거 (줄 끝에 붙은 경우)
+    # 예: "대사" - 설명...
+    if '"' in text or "'" in text:
+         # 다옴표가 닫힌 뒤에 나오는 - ... 제거
+         text = re.sub(r'(["\'])[\s]*-[^\1]*$', r'\1', text)
     
-    # 6. 연속된 공백 정리
+    # 7. 연속된 공백 정리
     text = re.sub(r'\s+', ' ', text)
     
     # 7. 앞뒤 공백 제거
@@ -198,7 +204,9 @@ async def query_solar_with_history(
             result = response.json()
             
             if "choices" in result and len(result["choices"]) > 0:
-                return result["choices"][0]["message"]["content"].strip()
+                # 괄호/별표 등 메타 설명 제거 후 반환
+                cleaned = clean_response(result["choices"][0]["message"]["content"].strip())
+                return cleaned
             else:
                 raise SolarAPIError("응답 형식이 올바르지 않습니다.")
                 

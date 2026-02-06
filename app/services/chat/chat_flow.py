@@ -43,6 +43,12 @@ async def generate_greeting(user_info: UserInfo, ideal_type: IdealType, parsed_c
     
     speech_style = "존댓말" if is_formal_relationship(parsed_context.relationship) else "반말"
 
+    # 호칭 규칙 설정
+    if speech_style == "반말":
+        addressing_rule = f"사용자를 부를 때는 '{user_info.name}아/야' 또는 '너'라고 해. 절대 '{user_info.name}님'이라고 부르지 마."
+    else:
+        addressing_rule = f"사용자를 부를 때는 '{user_info.name}님'이라고 불러."
+
     system_prompt = f"""
 너는 사용자의 이상형 역할을 하는 데이트 상대야.
 {parsed_context.location}에서 약속하고 만난 데이트 상황이야.
@@ -56,16 +62,18 @@ async def generate_greeting(user_info: UserInfo, ideal_type: IdealType, parsed_c
 - 상대방: {user_info.name} ({user_info.gender})
 - 관계: {parsed_context.relationship}
 - 말투: {speech_style}
+- 호칭: {addressing_rule}
 
 **인사말 작성 규칙:**
 1. 데이트 약속을 하고 만난 상황이므로 자연스럽고 따뜻하게 인사해
-2. 장소에 대한 과한 묘사나 분위기 설명은 하지 마
+2. **중요: 방금 만난 상황이므로 장소에 대해 '어땠어?' 같은 과거형 질문을 절대 하지 마.** 대신 현재나 직전 상황을 물어봐.
 3. 평범하고 현실적인 데이트 인사말로 시작해
 4. 반드시 질문은 딱 1개만 해 (절대 2개 이상 금지)
 5. 40자 이내로 짧고 간결하게 작성해
 
 **절대 금지:**
 - 2개 이상의 질문 (예: "~했어? ~했어?" 형태 금지)
+- **장소에 대한 과거형 질문 (예: "카페 어땠어?" -> X)**
 - 장소의 냄새, 소리 등 구체적인 감각 묘사
 - 괄호, 별표, 화살표 등 메타 설명
 - 오글거리거나 과한 표현
@@ -125,10 +133,18 @@ async def generate_question(
     
     speech_style = "존댓말" if is_formal_relationship(parsed_context.relationship) else "반말"
     
+    # 호칭 규칙 설정
+    if speech_style == "반말":
+        addressing_rule = f"사용자를 부를 때는 '{user_info.name}아/야' 또는 '너'라고 해. 절대 '{user_info.name}님'이라고 부르지 마."
+    else:
+        addressing_rule = f"사용자를 부를 때는 '{user_info.name}님'이라고 불러."
+    
     # 대화 히스토리가 있으면 활용
     if conversation_history and len(conversation_history) > 0:
         # query_solar_with_history 사용
         from app.services.chat.solar_client import query_solar_with_history
+        
+        # 이전 대화와 현재 답변을 분리해서 고려
         
         system_prompt_with_history = f"""
 너는 사용자의 이상형 역할을 하는 데이트 상대야.
@@ -138,19 +154,36 @@ async def generate_question(
 - 장소: {parsed_context.location}
 - 관계: {parsed_context.relationship}
 - 말투: {speech_style}
+- 호칭: {addressing_rule}
 
-**대화 규칙:**
-1. 지금까지의 대화 맥락을 잘 파악해
-2. 사용자가 이전에 말한 내용과 방금 답변을 함께 고려해
-3. 대화가 자연스럽게 이어지도록 반응하고 질문해
-4. 한 문장만 말해 (짧게)
-5. 괄호, 별표, 화살표, 글자 수 표시 절대 금지
+**중요 규칙 (반드시 지킬 것):**
+1. **사용자의 마지막 말에 먼저 반응해.** (공감, 칭찬, 놀람 등)
+   - 예: "정말?", "와 감동이야", "그랬구나" 등으로 시작
+2. **절대 인사말을 반복하지 마.** 이미 인사는 끝났어.
+3. **질문은 무조건 1개만 해.** (질문 2개 이상 금지)
+4. **선택형(A vs B) 질문 절대 금지.** 상대방의 주관적인 생각이나 취향을 묻는 '열린 질문'을 해.
+   - 나쁜 예: "영화 볼래 게임 할래?", "짬뽕 좋아해 짜장 좋아해?"
+   - 좋은 예: "원래 쉴 땐 주로 어떤 거 해?", "가장 기억에 남는 여행지는 어디야?"
+5. **전체 길이는 공백 포함 70자 이내로 짧게!** (필수)
+6. 괄호, 별표, 화살표, 글자 수 표시 절대 금지
+7. **사용자의 마지막 말:** "{last_user_message}" -> 이 말에 꼭 대답해!
+8. **인칭 대명사 변환:** 사용자가 '너'(챗봇)라고 한 건 '나'로, '나'(사용자)라고 한 건 '너'로 바꿔서 이해하고 말해.
+   - 예: "너 볼 생각에 좋았어" -> "나 볼 생각에 좋았다니" (O) / "너 볼 생각에 좋았다니" (X)
+9. **반응 정확도:** 사용자의 감정(설렘, 기대, 힘듦 등)을 정확히 파악해서 그에 맞는 반응을 해. 엉뚱한 반응 금지.
+10. **자연스러운 한국어:** 번역투나 어색한 문장 절대 금지.
+11. **출력 형식:** 오직 챗봇의 **'대사'**만 출력해.
+    - 금지: "생각하는 과정", "분석 내용", "- 사용자의 감정 반영" 같은 설명 절대 포함하지 마.
+12. **주제 유지(중요):** 대화 주제를 갑자기 바꾸지 마. 사용자가 하던 이야기(감정, 상황, 특별한 의미)에 집중해서 그 내용을 더 깊이 물어보거나 공감해. 
+    - 뜬금없이 음악, 날씨, 취미 등을 묻는 것 절대 금지.
 
-이전 대화를 고려해서 자연스럽고 맥락있는 대화를 이어가.
-문법적으로 올바르고 자연스러운 한국어 문장을 사용해.
+이전 대화 흐름을 보고, 사용자의 마지막 말에 자연스럽게 반응하면서 대화를 이어가.
 """
         
         try:
+            # 히스토리에 마지막 사용자 메시지가 중복 추가되지 않도록 관리 필요하지만
+            # 호출부에서 이미 추가해서 넘겨주고 있음 (updated_history)
+            # system prompt에 last_user_message를 강조했으므로 LLM이 인식 잘 할 것임
+            
             question = await query_solar_with_history(
                 system_prompt=system_prompt_with_history,
                 conversation_history=conversation_history,
@@ -178,6 +211,7 @@ async def generate_question(
 - 관계: {parsed_context.relationship}
 - 대화 단계: {stage}/5
 - 말투: {speech_style}
+- 호칭: {addressing_rule}
 
 **대화 목표:**
 사용자의 답변 내용과 자연스럽게 이어지는 대화를 해야 해.
@@ -186,20 +220,24 @@ async def generate_question(
 **대화 작성 방법:**
 1. 사용자가 방금 한 말의 핵심을 파악해
 2. 그 내용에 대해 짧게 공감하거나 반응해 (예: "오", "그렇구나", "좋네" 등)
-3. 사용자가 말한 내용과 관련된 질문을 자연스럽게 이어서 해
-4. 전체를 한 문장으로 매끄럽게 연결해
+3. **인칭 대명사 시점 변환:** 사용자의 '너'는 '나'로, '나'는 '너'로 바꿔서 반응해.
+4. 사용자가 말한 내용과 관련된 질문을 자연스럽게 이어서 해
+5. 전체를 한 문장으로 매끄럽게 연결해
 
 
 **나쁜 예시 (이렇게 하지 마):**
 - 사용자 답변과 동떨어진 질문
 - 갑자기 다른 주제로 전환
 - 사용자가 언급하지 않은 것을 물어봄
+- **A vs B 중 선택하게 하는 질문 (예: "영화가 좋아 드라마가 좋아?")**
+- **어색한 한국어 표현 (예: "오늘 뭐하고 지냈어?" -> "오늘 뭐 했어?"로 수정)**
+- **갑작스러운 화제 전환 (예: 분위기 좋은데 갑자기 "노래 뭐 좋아해?" 묻기 금지)**
 
 **제약사항:**
-- 짧게 한 문장만
-- 질문은 1개만
+- **전체 길이는 70자 이내로 짧게 작성 (필수)**
+- **질문은 1개만 (선택형 금지, 서술형 질문 권장)**
 - 괄호, 별표, 화살표, 글자 수 표시 절대 금지
-- 문법적으로 올바른 한국어 사용
+- 문법적으로 올바르고 자연스러운 한국어 사용
 
 **출력:**
 사용자 답변과 자연스럽게 이어지는 한 문장을 작성해. 글자 수는 절대 표시하지 마.
@@ -572,12 +610,12 @@ async def run_chat_flow(userId, request: ChatRequest) -> ChatResponse:
                     negative_feedbacks=negative_feedbacks
                 )
                 return ChatResponse(
-                    bot_message=feedback,
+                    bot_message=f"{request.user_info.name}, 오늘 대화 정말 즐거웠어! 다음에 또 보자! 😊",  # 채팅창에는 작별 인사만
                     next_stage=6,
                     updated_score=new_score,
                     score_change=score_delta,
                     end=True,
-                    final_feedback=feedback,
+                    final_feedback=feedback,  # 결과 페이지용 피드백 데이터는 그대로 전달
                     parsed_context=parsed_context,
                     negative_feedbacks=negative_feedbacks,
                     conversation_history=request.conversation_history
