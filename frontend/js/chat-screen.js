@@ -195,37 +195,50 @@ function updateCharacterImage(forcedEmotion = null) {
     console.log(`📸 이미지 업데이트 시도: ${emotion} (${expressionPath})`);
 }
 
+/* frontend/js/chat-screen.js */
+
 function loadExpressionImage(src, maxRetries = 12, delayMs = 1000) {
     const mainPhoto = document.getElementById('main-photo');
     const loadingOverlay = document.getElementById('loading-overlay');
 
+    // ✅ [추가] 로딩 시작 시 오버레이는 보여주고, 기존 사진은 투명하게 만듭니다.
     if (loadingOverlay) {
         loadingOverlay.classList.remove('hidden');
     }
+    mainPhoto.style.opacity = '0'; // ✨ 사진을 즉시 투명하게 숨김
 
     const tryLoad = () => {
-        mainPhoto.onerror = () => {
+        // 실제 이미지를 메모리에 미리 로드하기 위한 객체 생성
+        const img = new Image();
+        img.src = src;
+
+        img.onload = () => {
+            // ✅ [수정] 메모리에 로드가 완전히 끝난 시점에만 사진을 교체하고 보여줍니다.
+            mainPhoto.src = src;
+            mainPhoto.style.opacity = '1'; // ✨ 새 사진이 준비되면 다시 선명하게 보임
+            
+            gameState.imageRetryCount = 0;
+            
+            if (loadingOverlay) {
+                loadingOverlay.classList.add('hidden'); // 로딩창 숨김
+            }
+            console.log("✅ 새 이미지 로드 완료:", src);
+        };
+
+        img.onerror = () => {
             if (gameState.imageRetryCount < maxRetries) {
                 gameState.imageRetryCount += 1;
+                console.warn(`⚠️ 로드 실패, 재시도 중... (${gameState.imageRetryCount})`);
                 setTimeout(tryLoad, delayMs);
             } else {
-                console.error(`❌ 이미지 로딩 실패: ${src}`);
+                console.error(`❌ 이미지 로딩 최종 실패: ${src}`);
+                if (loadingOverlay) loadingOverlay.classList.add('hidden');
             }
         };
-
-        mainPhoto.onload = () => {
-            gameState.imageRetryCount = 0;
-            if (loadingOverlay) {
-                loadingOverlay.classList.add('hidden');
-            }
-        };
-
-        mainPhoto.src = src;
     };
 
     tryLoad();
 }
-
 function updateUI(data) {
     const charName = document.getElementById('char-name');
     const charMsg = document.getElementById('char-msg');
@@ -233,6 +246,8 @@ function updateUI(data) {
     if (document.getElementById('intro-layer').classList.contains('hidden')) {
         charName.innerText = gameState.partnerName + " :";
         charMsg.innerHTML = data.bot_message.replace(/\n/g, '<br>');
+
+        typeWriter(charMsg, data.bot_message, 40);
         
         // 점수에 따른 이미지 변경 실행
         updateCharacterImage();
@@ -253,14 +268,19 @@ function updateUI(data) {
 function sendMessage() {
     const input = document.getElementById('user-input');
     const userAnswer = input.value.trim();
+    const mainPhoto = document.getElementById('main-photo'); // 추가
+    const loadingOverlay = document.getElementById('loading-overlay');
     
-    if (!userAnswer) return;
-    if (gameState.isWaiting) return;
+    if (!userAnswer || gameState.isWaiting) return;
     
+    input.value = ''; 
     input.disabled = true;
+
+    if (mainPhoto) mainPhoto.style.opacity = '0'; 
+    if (loadingOverlay) loadingOverlay.classList.remove('hidden');
+
     sendChatRequest(userAnswer);
 }
-
 function showFinalResult(data) {
     const resultData = {
         score: data.updated_score,
