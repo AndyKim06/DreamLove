@@ -83,3 +83,15 @@ def get_test_image_qr():
         media_type="image/png",
         filename="test_image_qr.png"
     )
+
+@router.get(
+    "/sucess",
+    summary="사용자가 선택한 요소를 가지고 이상형을 생성함",
+)
+def getSuccessImage( userId: str,
+                     service: ImageGenService = Depends(getImageGenService),
+                    ):
+    image_paths = service.getSuccessResultImagePath(userId)
+    return {
+        "image": image_paths
+    }

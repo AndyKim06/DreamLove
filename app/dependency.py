@@ -9,3 +9,5 @@ def getUserService():
 def getImageGenService():
     return ImageGenService(_repo)
 
+def getUserRepository():
+    return _repo

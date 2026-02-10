@@ -1,3 +1,110 @@
+/* 숨김 클래스 */
+.hidden {
+    display: none !important;
+}
+
+/* 상세 피드백 스타일 */
+.feedback-section-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #e91e63;
+    margin: 30px 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #fce4ec;
+    text-align: left;
+}
+
+.feedback-item-group {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-left: 5px solid #ff9800;
+}
+
+.feedback-question {
+    background: #fff3e0;
+    padding: 15px 18px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    font-weight: 500;
+    font-size: 1.05em;
+    line-height: 1.6;
+}
+
+.feedback-question .q-label {
+    color: #ff9800;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-right: 10px;
+}
+
+.feedback-answer {
+    background: #fce4ec;
+    padding: 15px 18px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    line-height: 1.6;
+    font-size: 1.02em;
+}
+
+.feedback-answer .a-label {
+    color: #e91e63;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-right: 10px;
+}
+
+.feedback-answer .score-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.feedback-answer .score-badge.negative {
+    background: #ffcdd2;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+}
+
+.feedback-advice {
+    background: #e8f5e9;
+    padding: 15px 18px;
+    border-radius: 10px;
+    margin-bottom: 0;
+    border-left: 5px solid #4caf50;
+    line-height: 1.7;
+    font-size: 1.02em;
+}
+
+.feedback-advice .arrow {
+    color: #4caf50;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-right: 10px;
+}
+
+.feedback-divider {
+    border: none;
+    border-top: 2px dashed #ddd;
+    margin: 30px 0;
+}
+
+.detail-body p {
+    line-height: 1.9;
+    margin-bottom: 15px;
+    font-size: 1.02em;
+}
+
+.detail-body strong {
+    color: #333;
+    font-weight: 600;
+}
+
 /* 1. 배경을 화면 전체에 꽉 채우는 컨테이너 */
 .ending-container {
     width: 100vw;
@@ -64,11 +171,12 @@
 
 /* 성공 셀카 이미지 스타일 */
 .couple-photo {
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 60%;
+    max-height: 60%;
     object-fit: contain;
     border: 0.5vw solid #fff;
     box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+    margin-left: 20%;
 }
 
 /* 하단 버튼 */
@@ -80,4 +188,194 @@
     display: flex;
     gap: 20px;
     z-index: 10;
+}
+
+/* 상세 피드백 보기 버튼 */
+.result-btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.detail-btn, .restart-btn {
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.9vw;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.detail-btn {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+    border: 2px solid #ff6b8a;
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(255, 107, 138, 0.3);
+}
+
+.restart-btn {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    border: 2px solid #4facfe;
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(79, 172, 254, 0.3);
+}
+
+.detail-btn:hover, .restart-btn:hover {
+    transform: scale(1.05);
+}
+
+.detail-btn:hover {
+    box-shadow: 0 5px 15px rgba(255, 107, 138, 0.5);
+}
+
+.restart-btn:hover {
+    box-shadow: 0 5px 15px rgba(79, 172, 254, 0.5);
+}
+
+.detail-btn.hidden {
+    display: none;
+}
+
+/* 상세 피드백 모달 */
+.detail-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.detail-modal.hidden {
+    display: none;
+}
+
+.detail-modal-content {
+    background: #fff;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 900px;
+    height: 85vh;
+    max-height: 85vh;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.detail-header {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detail-header h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.2em;
+}
+
+.detail-close {
+    color: #fff;
+    font-size: 1.5em;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+
+.detail-close:hover {
+    transform: scale(1.2);
+}
+
+.detail-body {
+    padding: 35px;
+    overflow-y: auto;
+    font-size: 1.05em;
+    line-height: 1.8;
+    color: #444;
+    flex: 1;
+    background: #fafafa;
+}
+
+.detail-body strong {
+    color: #ff6b8a;
+    font-weight: 600;
+}
+
+.detail-body h3 {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #333;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    border-bottom: 3px solid #fecfef;
+    padding-bottom: 8px;
+}
+
+/* 일반 문단 스타일 */
+.feedback-paragraph {
+    line-height: 1.9;
+    margin-bottom: 15px;
+    font-size: 1.05em;
+    color: #555;
+    padding: 0 5px;
+}
+
+/* 점수 뱃지 - 긍정 */
+.score-badge.positive {
+    background: #c8e6c9;
+    color: #2e7d32;
+    border: 1px solid #81c784;
+}
+
+/* 실전 종합 팁 박스 */
+.tip-box {
+    background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+    border-radius: 15px;
+    padding: 0;
+    margin: 30px 0 20px 0;
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+    border: 2px solid #ffc107;
+    overflow: hidden;
+}
+
+.tip-header {
+    background: linear-gradient(135deg, #ffc107 0%, #ffca28 100%);
+    color: #5d4037;
+    padding: 15px 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tip-icon {
+    font-size: 1.3em;
+}
+
+.tip-content {
+    padding: 20px 25px;
+    line-height: 1.9;
+    font-size: 1.05em;
+    color: #5d4037;
 }

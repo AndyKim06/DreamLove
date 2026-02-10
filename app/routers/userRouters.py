@@ -99,7 +99,6 @@ def saveUserIdealType(idealType: int,
         userId,
         image_service
     )
-
     return result
 
 def generate_expression_bg(
@@ -107,3 +106,35 @@ def generate_expression_bg(
     image_service: ImageGenService
 ):
     image_service.generateExpressionService(userId)
+    image_service.generateCoupleImageService(userId)
+
+@router.patch(
+    "/idealType",
+    summary="사용자의 이상형 선택 저장",
+    description="사용자가 선택한 이상형을 저장함."
+)
+def saveUserIdealType(idealType: int,
+                    background_tasks: BackgroundTasks,
+                    userId: str,
+                    user_service: UserService = Depends(getUserService),
+                    image_service: ImageGenService = Depends(getImageGenService),):
+    # 1️⃣ 이상형 저장
+    result = user_service.chooseIdealTypeService(userId, idealType)
+    
+    # 2️⃣ 이미지 생성은 백그라운드로
+    background_tasks.add_task(
+        generate_expression_bg,
+        userId,
+        image_service
+    )
+    return result
+
+@router.get(
+    "/checkImage",
+    summary="이미지 생성을 체크함",
+    description="사용자의 맞춤형 이상형이 생성되기를 기다림"
+)
+def checkImageGen(userId: str,
+                    user_service: UserService = Depends(getUserService),):
+
+    return user_service.checkImageGenService(userId)

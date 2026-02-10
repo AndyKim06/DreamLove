@@ -22,7 +22,7 @@ router = APIRouter(
     summary="연애 시뮬레이션 채팅",
     description="사용자 정보와 이상형 정보를 기반으로 AI 챗봇과 연애 시뮬레이션 대화를 진행합니다."
 )
-async def simulate_chat(request: ChatRequest) -> ChatResponse:
+async def simulate_chat(userId:str, request: ChatRequest) -> ChatResponse:
     """
     연애 시뮬레이션 채팅 엔드포인트
     
@@ -37,7 +37,7 @@ async def simulate_chat(request: ChatRequest) -> ChatResponse:
     """
     try:
         # 대화 흐름 실행
-        response = await run_chat_flow(request)
+        response = await run_chat_flow(userId, request)
         return response
         
     except SolarAPIError as e:

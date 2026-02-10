@@ -131,7 +131,7 @@
 .mission-container { text-align: center; font-family: 'Galmuri14'; }
 .mission-header { font-size: 2.8cqi; margin-bottom: 20%; font-weight: bold; color: #5A4A82;  letter-spacing: 0.1em; }
 .mission-body { font-size: 1.8cqi; color: #333;  }
-#main-photo { width: 96%; height: 93%; object-fit: cover; border-radius: 4px; }
+#main-photo { margin-left: 2px; margin-bottom: 3.5px; width: 95%; height: 91%; object-fit: cover; }
 
 /* 5. 하단 채팅바: 입력창 짤림 방지 */
 .bottom-bar-box {
@@ -148,7 +148,17 @@
 }
 
 
-.send-btn, .start-btn {
+.start-btn {
+    background: none;
+    width: auto;
+    height: 100%;
+    border: none; 
+    font-family: 'Galmuri14'; 
+    font-size: 2.3cqi; color: #FF69B4; cursor: pointer;
+    white-space: nowrap; padding-right: 10px;
+}
+
+.send-btn {
     background: #FF69B4; 
     width: auto;
     height: 100%;
@@ -156,4 +166,27 @@
     font-family: 'Galmuri14'; 
     font-size: 2.3cqi; color: #ffffff; cursor: pointer;
     white-space: nowrap; padding-right: 10px;
+}
+
+/* 로딩 오버레이 스타일 */
+.loading-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 192, 203, 0.8); /* 핑크빛 반투명 */
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    z-index: 20; font-family: 'Galmuri14'; color: #5A4A82;
+}
+
+.pixel-spinner {
+    width: 40px; height: 40px;
+    border: 4px solid #fff;
+    border-top: 4px solid #FF69B4;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

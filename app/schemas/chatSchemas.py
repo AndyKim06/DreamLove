@@ -55,6 +55,7 @@ class ChatRequest(BaseModel):
     stage: int = Field(default=0, ge=0, le=6, description="현재 대화 단계 (0~6)")
     current_score: int = Field(default=0, description="현재까지의 누적 점수")
     negative_feedbacks: list[NegativeFeedbackItem] = Field(default=[], description="누적된 부정적 평가 내역")
+    conversation_history: list[dict] = Field(default=[], description="대화 히스토리 [{\"role\": \"assistant/user\", \"content\": \"...\"}]")
 
 
 class ChatResponse(BaseModel):
@@ -68,5 +69,6 @@ class ChatResponse(BaseModel):
     end: bool = Field(..., description="대화 종료 여부")
     final_feedback: Optional[str] = Field(None, description="최종 피드백 (대화 종료 시)")
     parsed_context: Optional[ParsedContext] = Field(None, description="추출된 컨텍스트 정보 (프론트엔드에서 저장 필요)")
+    ideal_image_base_path: Optional[str] = Field(None, description="이상형 이미지의 베이스 파일명 (예: standard_female_1)")
     negative_feedbacks: list[NegativeFeedbackItem] = Field(default=[], description="갱신된 부정적 평가 내역")
-
+    conversation_history: list[dict] = Field(default=[], description="갱신된 대화 히스토리")

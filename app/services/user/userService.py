@@ -7,6 +7,7 @@ from PIL import Image
 import os
 from pathlib import Path
 from deep_translator import GoogleTranslator
+import logging
 
 class UserService:
     def __init__(self, repo: UserRepository):
@@ -32,7 +33,7 @@ class UserService:
             userConcern="",
             userIdealType=0,
             userLocation="",
-            userIdealImagePath=[]
+            userIdealImagePath=""
         )
         return self.repo.save(user)
 
@@ -86,3 +87,18 @@ class UserService:
 
         user.userIdealType = idealType
         return self.repo.save(user)
+
+    def checkImageGenService(self, userId: str):
+        user = self.repo.findById(userId)
+        
+        if not user or not user.userIdealImagePath:
+            return False
+
+        image_paths = [
+            f"{user.userIdealImagePath}_Neutral.png",
+            f"{user.userIdealImagePath}_Smiling.png",
+            f"{user.userIdealImagePath}_Disappointed.png",
+            os.path.join("frontend", "imageCloud", "user", f"{userId}_success_result.png")
+        ]
+
+        return all(os.path.exists(path) for path in image_paths)

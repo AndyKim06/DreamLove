@@ -32,5 +32,5 @@ function goNext() {
 
     // 다음 페이지 이동 (예: 08-game-start.html)
     // alert("성격 선택 완료! 다음으로 넘어갑니다.");
-    location.href = '08-game-start.html';
+    location.href = 'loading.html';
 }

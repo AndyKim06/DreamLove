@@ -1,0 +1,65 @@
+/* frontend/css/loading.css */
+
+/* 1. 기존 폰트 및 헤더 설정 유지 */
+@font-face {
+    font-family: 'Galmuri14';
+    src: url('../assets/fonts/Galmuri14.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Minecraft';
+    src: url('../assets/fonts/minecraft.ttf') format('truetype');
+}
+
+.header-title {
+    font-family: 'Minecraft', 'Galmuri14', sans-serif;
+    letter-spacing: 0.1em;
+}
+
+.design-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  /* 세로축 중앙 정렬 */
+    align-items: center;      /* 가로축 중앙 정렬 */
+    height: calc(100vh - 80px); /* 화면 전체 높이에서 헤더 높이만큼 뺌 */
+    padding-top: 50px;        /* 필요하다면 상단에 여백을 추가로 줌 */
+}
+
+.start-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;      /* 스피너와 텍스트를 가로 중앙으로 */
+    text-align: center;
+}
+
+/* 2. 보라색 로딩 스피너 스타일 */
+.purple-spinner {
+    width: 80px;
+    height: 80px;
+    border: 15px solid rgba(89, 96, 157, 0.2); /* 연한 보라 배경 */
+    border-top: 15px solid #7a87f5; /* 진한 보라색 포인트 */
+    border-radius: 50%;
+    margin: 0 auto 40px; /* 텍스트와의 간격 */
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 3. 텍스트 설정 */
+.start-text-wrapper {
+    text-align: center;
+}
+
+.game-start-text {
+    font-family:  'Galmuri14', sans-serif;
+    font-size: 7rem;
+    font-weight: bold;
+    color: #2e3aa8;
+    transition: all 0.5s ease;
+}
+
+/* 상태별 색상 */
+.complete-color { color: #ff69b4 !important; }
+.start-color { color: #7a87f5 !important; }

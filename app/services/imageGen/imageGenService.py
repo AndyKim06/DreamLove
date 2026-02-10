@@ -15,6 +15,7 @@ from pathlib import Path
 import base64
 from app.core.config import settings
 from google.genai import types
+import socket
 
 ROLE_INSTRUCTION = """
 You are a professional image generation model specialized in preserving human identity.
@@ -75,7 +76,7 @@ class ImageGenService:
                     prompt=prompt_eng,
                     model="black-forest-labs/FLUX.1-dev",
                     negative_prompt=negative_prompt,
-                    guidance_scale=7.5,
+                    guidance_scale=3.5,
                     num_inference_steps=50,
                     height=1024,
                     width=1024
@@ -88,13 +89,23 @@ class ImageGenService:
         user = self.repo.findById(userId)
         image_dir = Path("frontend/imageCloud")
         if user.userCustom:
-            idealImage = str(image_dir / f"{userId}_{user.userIdealType}.png")
+            idealImage = image_dir / f"{userId}_{user.userIdealType}.png"
         else:
+            basic_dir = Path("frontend/assets/images/basic")
             if user.userGender == "남자":
-                idealImage = str(image_dir / f"standard_female_{user.userIdealType}.png")
+                # 남자 사용자라면 이상형은 여성
+                idealImage = basic_dir / f"basic_girl_{user.userIdealType}.png"
             else:
-                idealImage = str(image_dir / f"standard_male_{user.userIdealType}.png")
-        return idealImage
+                # 여자 사용자라면 이상형은 남성
+                idealImage = basic_dir / f"basic_boy_{user.userIdealType}.png"
+
+        # 파일이 없으면 첫 번째 기본 이미지로 폴백
+        if not idealImage.exists():
+            basic_dir = Path("frontend/assets/images/basic")
+            fallback = basic_dir / "basic_girl_1.png" if user.userGender == "남자" else basic_dir / "basic_boy_1.png"
+            idealImage = fallback
+
+        return str(idealImage)
     
     def generateExpressionService(self, userId:str):
         user = self.repo.findById(userId)
@@ -102,47 +113,66 @@ class ImageGenService:
         image_path = self.getUserIdealImagePath(userId)
         image = Image.open(image_path)
         image_path = image_path.removesuffix(".png")
-
-        expressions = ["Smiling", "Neutral", "Disappointed"]
+        base_path = f"{image_path}_{location}"
+        user.userIdealImagePath = base_path
+        self.repo.save(user)
+        expressions = ["Neutral", "Smiling", "Disappointed"]
         for i, exp_name in enumerate(expressions):
             current_prompt = f"""
             Generate a {exp_name} expression of the person in the reference image at {location}. 16:9 aspect ratio.
             """
 
-            try:
-                response = self.geminiClient.models.generate_content(
-                    model="gemini-2.5-flash-image",
-                    contents=[current_prompt, image],
-                    config=types.GenerateContentConfig(
-                        system_instruction=ROLE_INSTRUCTION,
-                        temperature=0.7,
-                        response_modalities=["IMAGE"],
-                        image_config=types.ImageConfig(
-                            aspect_ratio="16:9",
-                        )
+            # google.genai 버전에 따라 ImageConfig 지원 여부가 다름
+            config_kwargs = {
+                "system_instruction": ROLE_INSTRUCTION,
+                "temperature": 0.7,
+                "response_modalities": ["IMAGE"],
+            }
+            if hasattr(types, "ImageConfig"):
+                config_kwargs["image_config"] = types.ImageConfig(aspect_ratio="16:9")
+
+            generate_config = types.GenerateContentConfig(**config_kwargs)
+            max_retries = 3
+            for attempt in range(1, max_retries + 1):
+                try:
+                    response = self.geminiClient.models.generate_content(
+                        model="gemini-2.5-flash-image",
+                        contents=[current_prompt, image],
+                        config=generate_config
                     )
-                )
 
-                if response.candidates:
-                    for part in response.candidates[0].content.parts:
-                        if part.inline_data:
-                            file_name = f"{image_path}_{location}_{exp_name}.png"
-                            user.userIdealImagePath.append(file_name)
-                            img_data = part.inline_data.data
-                            if isinstance(img_data, str):
-                                img_data = base64.b64decode(img_data)
-                            with open(file_name, "wb") as f:
-                                f.write(img_data)
-                        elif part.text is not None:
-                            print(f"Model text: {part.text}")
+                    if response.candidates:
+                        for part in response.candidates[0].content.parts:
+                            if part.inline_data:
+                                file_name = f"{base_path}_{exp_name}.png"
+                                img_data = part.inline_data.data
+                                if isinstance(img_data, str):
+                                    img_data = base64.b64decode(img_data)
+                                elif isinstance(img_data, (bytes, bytearray)):
+                                    # Some SDKs return base64-encoded bytes, not raw PNG bytes
+                                    if img_data[:8] != b"\x89PNG\r\n\x1a\n":
+                                        try:
+                                            img_data = base64.b64decode(img_data)
+                                        except Exception:
+                                            pass
+                                with open(file_name, "wb") as f:
+                                    f.write(img_data)
+                            elif part.text is not None:
+                                print(f"Model text: {part.text}")
 
-                time.sleep(1)
+                    time.sleep(1)
+                    break
 
-            except Exception as e:
-                print(f"Error during {exp_name} generation: {e}")
+                except Exception as e:
+                    is_retryable = isinstance(e, (ConnectionResetError, TimeoutError, socket.timeout)) or "Connection aborted" in str(e)
+                    if attempt < max_retries and is_retryable:
+                        wait_seconds = 2 ** attempt
+                        logging.warning(f"Retry {attempt}/{max_retries} for {exp_name} due to connection error: {e}")
+                        time.sleep(wait_seconds)
+                        continue
+                    print(f"Error during {exp_name} generation: {e}")
+                    break
                 
-        self.repo.save(user)
-
 
     def generateCoupleImageService(self, userId):
         location = self.repo.findById(userId).userLocation
@@ -172,36 +202,55 @@ class ImageGenService:
         Do NOT introduce additional people.
         """
 
-        try:
-            response = self.geminiClient.models.generate_content(
-                model="gemini-2.5-flash-image",
-                contents=[current_prompt, Image.open(user.userImage), Image.open(idealImage)],
-                config=types.GenerateContentConfig(
-                        system_instruction=ROLE_INSTRUCTION,
-                        temperature=0.7,
-                        response_modalities=["IMAGE"],
-                        image_config=types.ImageConfig(
-                            aspect_ratio="16:9",
-                        )
-                    )
-            )
+        max_retries = 3
+        for attempt in range(1, max_retries + 1):
+            try:
+                config_kwargs = {
+                    "system_instruction": ROLE_INSTRUCTION,
+                    "temperature": 0.7,
+                    "response_modalities": ["IMAGE"],
+                }
+                if hasattr(types, "ImageConfig"):
+                    config_kwargs["image_config"] = types.ImageConfig(aspect_ratio="16:9")
 
-            if response.candidates:
-                for part in response.candidates[0].content.parts:
-                    if part.inline_data:
-                        image_dir = Path("frontend/imageCloud/user")
-                        file_name = str(image_dir / f"{userId}_success_result.png")
-                        img_data = part.inline_data.data
-                        if isinstance(img_data, str):
+                generate_config = types.GenerateContentConfig(**config_kwargs)
+                response = self.geminiClient.models.generate_content(
+                    model="gemini-2.5-flash-image",
+                    contents=[current_prompt, Image.open(user.userImage), Image.open(idealImage)],
+                    config=generate_config
+                )
+
+                if response.candidates:
+                    for part in response.candidates[0].content.parts:
+                        if part.inline_data:
+                            image_dir = Path("frontend/imageCloud/user")
+                            file_name = str(image_dir / f"{userId}_success_result.png")
+                            img_data = part.inline_data.data
+                            if isinstance(img_data, str):
                                 img_data = base64.b64decode(img_data)
-                        with open(file_name, "wb") as f:
-                                f.write(img_data)
-                        return file_name
-                    elif part.text is not None:
-                        print(f"Model text: {part.text}")
-                
-        except Exception as e:
-            print(f"Error during generation: {e}")
+                            elif isinstance(img_data, (bytes, bytearray)):
+                                if img_data[:8] != b"\x89PNG\r\n\x1a\n":
+                                    try:
+                                        img_data = base64.b64decode(img_data)
+                                    except Exception:
+                                        pass
+                            with open(file_name, "wb") as f:
+                                    f.write(img_data)
+                            return file_name
+                        elif part.text is not None:
+                            print(f"Model text: {part.text}")
+
+                break
+
+            except Exception as e:
+                is_retryable = isinstance(e, (ConnectionResetError, TimeoutError, socket.timeout)) or "Connection aborted" in str(e)
+                if attempt < max_retries and is_retryable:
+                    wait_seconds = 2 ** attempt
+                    logging.warning(f"Retry {attempt}/{max_retries} for couple image due to connection error: {e}")
+                    time.sleep(wait_seconds)
+                    continue
+                print(f"Error during generation: {e}")
+                break
 
     def getIdealImageList(self, userId):
         potential_paths = [
@@ -214,6 +263,10 @@ class ImageGenService:
         image_path = [path for path in potential_paths if os.path.exists(path)]
         
         return image_path
+    
+    def getSuccessResultImagePath(self, userId):
+        image_dir = Path("frontend/imageCloud/user")
+        return str(image_dir / f"{userId}_success_result.png")
     
     # def upScalingImage(self, image, userId):
     #     image_path = self.getUserIdealImagePath(userId)

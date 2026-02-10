@@ -1,7 +1,4 @@
 /* frontend/js/required.js */
-
-/* frontend/js/required.js */
-
 function goBack() {
     window.history.back();
 }
